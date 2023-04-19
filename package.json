@@ -19,6 +19,7 @@
     "mongoose": "^7.0.3",
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.22",
+    "passport-local-mongoose": "^8.0.0",
     "path": "^0.12.7"
   }
 }
