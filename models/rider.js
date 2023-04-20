@@ -7,9 +7,18 @@ const schema = new mongoose.Schema({
 	dob: Date,
 	gender: String,
 	profilePic: String,
-	likes: [],
-	reviews: [],
-	bookings: [],
+	likes: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Property'
+	}],
+	reviews: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Review'
+	}],
+	bookings: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Booking'
+	}],
 	covidCert: String,
 	occupation: String,
 	emergencyContact: {

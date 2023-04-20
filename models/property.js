@@ -15,13 +15,40 @@ const schema = new mongoose.Schema({
 	maxOcc: Number,
 	type: String,
 	desc: String,
-	food: [],
-	amenities: [],
-	rules: [],
-	otherCharges: [],
+	food: [{
+		detail: String,
+		icon: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Icon'
+		}
+	}],
+	amenities: [{
+		detail: String,
+		icon: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Icon'
+		}
+	}],
+	rules: [{
+		detail: String,
+		icon: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Icon'
+		}
+	}],
+	otherCharges: [{
+		detail: String,
+		icon: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Icon'
+		}
+	}],
 	occupancy: Number,
 	rate: Number,
-	reviews: [],
+	reviews: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Review'
+	}],
 	tagline: String,
 	owner: {
 		type: mongoose.Schema.Types.ObjectId,
