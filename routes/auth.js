@@ -4,13 +4,14 @@ const logins = require('../models/login');
 const registrations = require('../models/register');
 const {generateValidationKey} = require('../utils/key_generator');
 const {sendRegistrationEmail} = require('../utils/mail_sender');
+const {validateRegistration} = require('../utils/schema_validator');
 
 /* --------- REGISTRATION --------- */
 router.get('/registration', (req, res) => {
 	res.status(200).send('registration page');
 });
 
-router.post('/registration', async (req, res) => {
+router.post('/registration', validateRegistration, async (req, res) => {
 	const {email, pass, role} = req.body;
 	const whether_login_present = await logins.findOne({email: email});
 
