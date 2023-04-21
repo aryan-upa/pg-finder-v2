@@ -37,4 +37,31 @@ router.post('/registration', validateRegistration, async (req, res) => {
 	res.status(200).send({success: 'email sent successfully'});
 });
 
+/* --------- VALIDATION --------- */
+
+router.get('/validation', async (req, res) => {
+	const {validationKey} = req.query;
+	const registrationFound = await registrations.findOne({validationKey});
+
+	if (!registrationFound)
+		return res.status(404).send({error: 'Validation Key not found!'});
+
+	const {email, pass, role} = registrationFound;
+
+	const isEmailAlreadyValidated = await logins.findOne({email});
+	if (isEmailAlreadyValidated) {
+		await registrations.deleteOne({validationKey});
+		return res.status(401).send({error: 'Email already registered!'});
+	}
+
+	const createdLogin = await logins.register(new logins({ username: email, role: role }), pass);
+
+	if (!createdLogin)
+		res.status(500).send({error: 'Internal Server Error, please login again!'});
+
+	await registrations.deleteOne({validationKey});
+	res.status(200).send({success: 'account created, now you can login with your credentials'});
+	console.log('Account successfully created for user : ' + email);
+});
+
 module.exports = router;
