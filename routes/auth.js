@@ -13,6 +13,12 @@ router.get('/registration', (req, res) => {
 });
 
 router.post('/registration', validateRegistration, async (req, res) => {
+	if (req.user)
+		req.logout(err => {
+			if (err)
+				console.log('could not log out for registration due to ' + err);
+		});
+
 	const {email, pass, role} = req.body;
 	const whether_login_present = await logins.findOne({email: email});
 
