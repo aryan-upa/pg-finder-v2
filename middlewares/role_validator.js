@@ -5,7 +5,7 @@ function isRoleAdmin (req, res, next) {
 		return res.status(401).send({error: 'Unauthorized access!'});
 
 	if (current.role !== 'admin')
-		return res.status(401).send({error: 'Invalid access!'});
+		return res.status(403).send({error: 'Invalid access!'});
 
 	next();
 }
@@ -17,7 +17,7 @@ function isRoleRider (req, res, next) {
 		return res.status(401).send({error: 'Unauthorized access!'});
 
 	if (current.role !== 'rider')
-		return res.status(401).send({error: 'Invalid access!'});
+		return res.status(403).send({error: 'Invalid access!'});
 
 	next();
 }
@@ -29,7 +29,7 @@ function isRoleProvider (req, res, next) {
 		return res.status(401).send({error: 'Unauthorized access!'});
 
 	if (current.role !== 'provider')
-		return res.status(401).send({error: 'Invalid access!'});
+		return res.status(403).send({error: 'Invalid access!'});
 
 	next();
 }
@@ -41,7 +41,7 @@ function isRoleAdminOrRider (req, res, next) {
 		return res.status(401).send({error: 'Unauthorized access!'});
 
 	if (current.role !== 'admin' && current.role !== 'rider')
-		return res.status(401).send({error: 'Invalid access!'});
+		return res.status(403).send({error: 'Invalid access!'});
 
 	next();
 }
@@ -53,7 +53,16 @@ function isRoleAdminOrProvider (req, res, next) {
 		return res.status(401).send({error: 'Unauthorized access!'});
 
 	if (current.role !== 'admin' && current.role !== 'provider')
-		return res.status(401).send({error: 'Invalid access!'});
+		return res.status(403).send({error: 'Invalid access!'});
+
+	next();
+}
+
+function isLoggedIn (req, res, next) {
+	req.session.redirectUrl = req.originalUrl;
+
+	if (!req.isAuthenticated())
+		return res.redirect('/auth/login');
 
 	next();
 }
@@ -63,5 +72,6 @@ module.exports = {
 	isRoleRider,
 	isRoleProvider,
 	isRoleAdminOrRider,
-	isRoleAdminOrProvider
+	isRoleAdminOrProvider,
+	isLoggedIn
 }
