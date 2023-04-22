@@ -1,4 +1,4 @@
-const {registrationSchema, loginSchema} = require('./validation_schemas');
+const {registrationSchema, loginSchema} = require('../utils/validation_schemas');
 
 /* UTILITY FUNCTION TO GET ERROR MESSAGES */
 
