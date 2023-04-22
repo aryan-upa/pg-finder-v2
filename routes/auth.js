@@ -22,7 +22,7 @@ router.post('/registration', validateRegistration, async (req, res) => {
 		});
 
 	const {email, pass, role, name} = req.body;
-	const whether_login_present = await logins.findOne({email: email});
+	const whether_login_present = await logins.findOne({username: email});
 
 	if (whether_login_present)
 		return res.status(400).send({error: 'user already exists'});
@@ -60,7 +60,7 @@ router.get('/validation', async (req, res) => {
 
 	const {email, pass, name, role} = registrationFound;
 
-	const isEmailAlreadyValidated = await logins.findOne({email});
+	const isEmailAlreadyValidated = await logins.findOne({username: email});
 	if (isEmailAlreadyValidated) {
 		await registrations.deleteOne({validationKey});
 		return res.status(401).send({error: 'Email already registered!'});
