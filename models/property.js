@@ -45,6 +45,7 @@ const schema = new mongoose.Schema({
 	}],
 	occupancy: Number,
 	rate: Number,
+	interested: Number,
 	reviews: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Review'
