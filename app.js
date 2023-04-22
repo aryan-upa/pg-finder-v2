@@ -57,8 +57,10 @@ app.get('/', (req, res) => {
 
 /* ROUTER CONFIGURATION */
 const authRouter = require('./routes/auth');
+const riderRouter = require('./routes/rider');
 
 app.use('/auth', authRouter);
+app.use('/rider', riderRouter);
 
 
 /* LISTENING TO PORT */
