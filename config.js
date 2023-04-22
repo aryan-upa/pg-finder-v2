@@ -7,4 +7,5 @@ module.exports = {
 	emailAdd: process.env.EMAIL_ADDRESS,
 	appPass: process.env.APP_PASSCODE,
 	port: process.env.PORT || 3000,
+	sessionSecret: process.env.SESSION_SECRET,
 };
