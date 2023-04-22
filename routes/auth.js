@@ -5,6 +5,7 @@ const registrations = require('../models/register');
 const {generateValidationKey} = require('../utils/key_generator');
 const {sendRegistrationEmail} = require('../utils/mail_sender');
 const {validateRegistration} = require('../utils/schema_validator');
+const passport = require('passport');
 
 /* --------- REGISTRATION --------- */
 router.get('/registration', (req, res) => {
@@ -62,6 +63,32 @@ router.get('/validation', async (req, res) => {
 	await registrations.deleteOne({validationKey});
 	res.status(200).send({success: 'account created, now you can login with your credentials'});
 	console.log('Account successfully created for user : ' + email);
+});
+
+/* --------- LOGIN --------- */
+
+router.get('/login', (req, res) => {
+	res.send('login page');
+});
+
+router.post(
+	'/login', (req, res, next) => {
+		return passport.authenticate('passport-local', {
+			successRedirect: req.session.redirectUrl || '/',
+			failureRedirect: '/auth/login'
+		}) (req, res, next);
+	}
+);
+
+
+router.get('/logout', (req, res) => {
+	req.logout(err => {
+		if (err)
+			return res.status(500).send({error: 'could not logout! Internal Server Failure!'});
+	});
+
+	console.log('user logged out!');
+	res.redirect('/');
 });
 
 module.exports = router;
