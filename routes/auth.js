@@ -47,11 +47,14 @@ router.post('/registration', validateRegistration, async (req, res) => {
 /* --------- VALIDATION --------- */
 
 router.get('/validation', async (req, res) => {
+	if (!req.query.validationKey)
+		return res.status(406).send({error: 'Validation Key not provided!'});
+
 	const {validationKey} = req.query;
 	const registrationFound = await registrations.findOne({validationKey});
 
 	if (!registrationFound)
-		return res.status(404).send({error: 'Validation Key not found!'});
+		return res.status(404).send({error: 'Invalid Validation Key!'});
 
 	const {email, pass, role} = registrationFound;
 
@@ -64,10 +67,10 @@ router.get('/validation', async (req, res) => {
 	const createdLogin = await logins.register(new logins({ username: email, role: role }), pass);
 
 	if (!createdLogin)
-		res.status(500).send({error: 'Internal Server Error, please login again!'});
+		res.status(500).send({error: 'Internal Server Error, please try again!'});
 
 	await registrations.deleteOne({validationKey});
-	res.status(200).send({success: 'account created, now you can login with your credentials'});
+	res.status(200).send({success: 'account created successfully, now you can login with your credentials'});
 	console.log('Account successfully created for user : ' + email);
 });
 
