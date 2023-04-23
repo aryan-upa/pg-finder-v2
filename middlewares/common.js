@@ -1,9 +1,9 @@
 const riders = require('../models/rider');
 const providers = require('../models/provider');
 
-async function addUserDet (req, res, next) {
+async function addRoleID (req, res, next) {
 	if (req.user) {
-		if (req.session.userDet)
+		if (req.session.userRoleID)
 			next();
 
 		const {username, role} = req.user;

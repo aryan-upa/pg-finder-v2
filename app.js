@@ -7,7 +7,7 @@ const session = require('express-session');
 const sessionStore = require('connect-mongodb-session')(session);
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
-const {addUserDet} = require("./middlewares/common");
+const {addRoleID} = require("./middlewares/common");
 
 /* SERVER CONFIGURATIONS */
 app.use(express.urlencoded({extended: true}));
@@ -51,7 +51,7 @@ passport.deserializeUser(logins.deserializeUser());
 
 
 /* MIDDLEWARES */
-app.use(addUserDet);
+app.use(addRoleID);
 app.use((req, res, next) => {
     res.locals.userRoleID = req.session.userRoleID || null;
     next();
