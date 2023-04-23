@@ -67,11 +67,34 @@ function isLoggedIn (req, res, next) {
 	next();
 }
 
+function isCurrentUserOrAdmin (req, res, next) {
+	const {id} = req.params;
+
+	if (req.user.role === 'admin')
+		return next();
+
+	if (req.session.userRoleID === id)
+		return next();
+
+	res.status(403).send({error: 'Not Authorized!'});
+}
+
+function isCurrentUser (req, res, next) {
+	const {id} = req.params;
+
+	if (req.session.userRoleID === id)
+		return next();
+
+	res.status(403).send({error: 'Not Authorized'});
+}
+
 module.exports = {
 	isRoleAdmin,
 	isRoleRider,
 	isRoleProvider,
 	isRoleAdminOrRider,
 	isRoleAdminOrProvider,
-	isLoggedIn
+	isLoggedIn,
+	isCurrentUserOrAdmin,
+	isCurrentUser
 }
