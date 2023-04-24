@@ -1,4 +1,4 @@
-const {registrationSchema, loginSchema} = require('../utils/validation_schemas');
+const {registrationSchema, loginSchema, riderSchema, providerSchema} = require('../utils/validation_schemas');
 
 /* UTILITY FUNCTION TO GET ERROR MESSAGES */
 
@@ -42,9 +42,21 @@ function validateLogin (req, res, next) {
 
 function validateRiderDetails (req, res, next) {
 	const {phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone} = req.body;
-	const {error} = registrationSchema.validate({
+	const {error} = riderSchema.validate({
 		phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone
 	});
+
+	if (error) {
+		const errors = errorModifier(error);
+		return res.status(406).send({error: true, errors});
+	}
+
+	next();
+}
+
+function validateProviderDetails (req, res, next) {
+	const {phone, dob, gst, addBuilding, addL1, landmark, state, city, zipCode} = req.body;
+	const {error} = providerSchema.validate({phone, dob, gst, addBuilding, addL1, landmark, state, city, zipCode});
 
 	if (error) {
 		const errors = errorModifier(error);
@@ -58,4 +70,5 @@ module.exports = {
 	validateRegistration,
 	validateLogin,
 	validateRiderDetails,
+	validateProviderDetails
 }
