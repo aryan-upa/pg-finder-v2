@@ -5,9 +5,15 @@ const providers = require('provider');
 const properties = require('property');
 
 const schema = new mongoose.Schema({
-	name: String,
+	name: {
+		type: String,
+		immutable: true,
+	},
 	phone: Number,
-	email: String,
+	email: {
+		type: String,
+		immutable: true
+	},
 	dob: Date,
 	gender: String,
 	profilePic: String,
