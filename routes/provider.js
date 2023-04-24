@@ -3,6 +3,7 @@ const router = express.Router();
 const providers = require('../models/provider');
 const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser} = require("../middlewares/role_validator");
 const {validateProviderDetails} = require('../middlewares/schema_validator');
+const logins = require('../models/login');
 
 router.use(isLoggedIn);
 
@@ -42,6 +43,8 @@ router.patch('/:id', isCurrentUser, validateProviderDetails, async (req, res) =>
 		gst: gst,
 		address: address
 	});
+
+	await logins.findOneAndUpdate({email: newProvider.email}, {isFilled: true});
 
 	res.send({success: 'Profile Updated!'});
 });

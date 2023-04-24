@@ -4,6 +4,7 @@ const riders = require('../models/rider');
 const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser} = require("../middlewares/role_validator");
 const {validateRiderDetails} = require('../middlewares/schema_validator');
 const {uploadFile} = require("../utils/file_uploader");
+const logins = require('../models/login');
 
 router.use(isLoggedIn);
 
@@ -37,7 +38,7 @@ router.patch('/:id',
 			phone: emContactPhone
 		};
 
-		const newRider = await riders.findOneAndUpdate({id: id}, {
+		const newUser = await riders.findOneAndUpdate({id: id}, {
 			phone: phone,
 			gender: gender,
 			dob: dob,
@@ -47,6 +48,7 @@ router.patch('/:id',
 			emergencyContact: updateEmContact
 		});
 
+		await logins.findOneAndUpdate({email: newUser.email}, {isFilled: true});
 		res.send({success: 'Profile Updated!'});
 });
 
