@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const riders = require('rider');
+const providers = require('provider');
 
 const schema = new mongoose.Schema({
 	by: {
@@ -17,6 +19,11 @@ const schema = new mongoose.Schema({
 	completed: Boolean,
 	res: String,
 	comment: String
+});
+
+schema.post('findOneAndDelete', async (data) => {
+	await providers.findOneAndUpdate({id: data.owner}, {$pull: {bookingPending: {id: data.id}}});
+	await riders.findOneAndUpdate({id: data.by}, {$pull: {bookings: {id: data.id}}});
 });
 
 const model = mongoose.model('Booking', schema);

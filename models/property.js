@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bookings = require('booking');
+const reviews = require('review');
 
 const schema = new mongoose.Schema({
 	name: String,
@@ -56,6 +58,14 @@ const schema = new mongoose.Schema({
 		ref: 'Provider'
 	},
 	since: Number
+});
+
+schema.post('findOneAndDelete', async (data) => {
+	if (data.bookings.length > 0)
+		await bookings.deleteMany({$and: [{property: data.id}, {completed: false}]});
+
+	if (data.reviews.length > 0)
+		await reviews.deleteMany({id: {$in: data.reviews}});
 });
 
 const model = mongoose.model('Property', schema);

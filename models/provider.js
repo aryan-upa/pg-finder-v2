@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const properties = require('property');
 
 const schema = new mongoose.Schema({
 	name: String,
@@ -29,6 +30,12 @@ const schema = new mongoose.Schema({
 		country: String
 	}
 });
+
+schema.post('findOneAndDelete', (data) => {
+	if (data.properties.length !== 0)
+		properties.deleteMany({id: {$in: data.properties}});
+});
+
 
 const model = mongoose.model('Provider', schema);
 module.exports = model;
