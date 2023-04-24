@@ -40,7 +40,22 @@ function validateLogin (req, res, next) {
 	next();
 }
 
+function validateRiderDetails (req, res, next) {
+	const {phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone} = req.body;
+	const {error} = registrationSchema.validate({
+		phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone
+	});
+
+	if (error) {
+		const errors = errorModifier(error);
+		return res.status(406).send({error: true, errors});
+	}
+
+	next();
+}
+
 module.exports = {
 	validateRegistration,
 	validateLogin,
+	validateRiderDetails,
 }
