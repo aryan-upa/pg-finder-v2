@@ -8,4 +8,5 @@ module.exports = {
 	appPass: process.env.APP_PASSCODE,
 	port: process.env.PORT || 3000,
 	sessionSecret: process.env.SESSION_SECRET,
+	zipcodeKey: process.env.ZIPCODE_STACK_KEY,
 };
