@@ -60,6 +60,19 @@ const schema = new mongoose.Schema({
 	since: Number
 });
 
+schema.index({
+	'address.building': "text",
+	'address.addL1': 'text',
+	'address.addL2': 'text',
+	'address.landmark': 'text',
+	'address.city': 'text',
+	'address.state': 'text',
+	'address.zipcode': 'text',
+	'name': 'text',
+}, {
+	default_language: 'en',
+});
+
 schema.post('findOneAndDelete', async (data) => {
 	if (data.bookings.length > 0)
 		await bookings.deleteMany({$and: [{property: data.id}, {completed: false}]});
