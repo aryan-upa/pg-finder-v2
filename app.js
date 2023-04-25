@@ -73,11 +73,15 @@ const authRouter = require('./routes/auth');
 const riderRouter = require('./routes/rider');
 const providerRouter = require('./routes/provider');
 const propertyRouter = require('./routes/property');
+const bookingRouter = require('./routes/booking');
+const reviewRouter = require('./routes/review');
 
 app.use('/auth', authRouter);
 app.use('/rider', riderRouter);
 app.use('/provider', providerRouter);
 app.use('/property', propertyRouter);
+app.use('/booking', bookingRouter);
+app.use('/review', reviewRouter);
 
 
 /* LISTENING TO PORT */
