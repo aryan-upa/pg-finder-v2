@@ -32,7 +32,12 @@ router.post('/registration', validateRegistration, async (req, res) => {
 	if (whether_registration_present)
 		await registrations.deleteOne({email: email});
 
-	const validationKey = generateValidationKey();
+	let validationKey, validationKeyAlreadyPresent;
+	do {
+		validationKey = generateValidationKey();
+		validationKeyAlreadyPresent = await registrations.findOne({validationKey});
+	} while (validationKeyAlreadyPresent)
+
 	await registrations.create({
 		email, pass, name, role, validationKey
 	});
