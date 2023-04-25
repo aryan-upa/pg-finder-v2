@@ -1,5 +1,5 @@
 const express = require('express');
-const {isLoggedIn, isRoleAdmin, isRoleProvider, isRoleRider} = require("../middlewares/role_validator");
+const {isLoggedIn, isRoleAdmin, isRoleProvider, isRoleRider, isRoleAdminOrProvider} = require("../middlewares/role_validator");
 const bookings = require('../models/booking');
 const providers = require('../models/provider');
 const properties = require('../models/property');
@@ -72,6 +72,18 @@ router.get('/:id', async (req, res) => {
 	const {id} = req.params;
 	const booking = await bookings.findById({id});
 	res.send(booking);
+});
+
+router.delete('/:id', isRoleAdminOrProvider, async (req, res) => {
+	const {id: bookingID} = req.params;
+	const booking = await bookings.findById({bookingID});
+
+	const {providerID} = req.session.userRoleID;
+	if (booking.owner !== providerID)
+		return res.status(406).send({error: 'Request denied!'});
+
+	const info = await bookings.deleteOne({bookingID});
+	res.send({success: 'booking deleted successfully', info});
 });
 
 module.exports = router;
