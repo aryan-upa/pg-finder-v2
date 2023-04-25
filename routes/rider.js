@@ -3,7 +3,7 @@ const router = express.Router();
 const riders = require('../models/rider');
 const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser} = require("../middlewares/role_validator");
 const {validateRiderDetails} = require('../middlewares/schema_validator');
-const {uploadFile} = require("../utils/file_uploader");
+const {uploadProfilePic, uploadCovidCert} = require("../middlewares/file_uploader");
 const logins = require('../models/login');
 
 router.use(isLoggedIn);
@@ -27,8 +27,8 @@ router.get('/:id/edit', isCurrentUser, (req, res) => {
 router.patch('/:id',
 	isCurrentUser,
 	validateRiderDetails,
-	uploadFile('profile', 'profile-pic'),
-	uploadFile('covidCert', 'covid-cert'),
+	uploadProfilePic.single('profile-pic'),
+	uploadCovidCert.single('covid-cert'),
 	async (req, res) => {
 		const {id} = req.params;
 		const {phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone, imageLink, covidCertLink} = req.body;

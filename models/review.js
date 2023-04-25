@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const riders = require('rider');
-const properties = require('property');
+const riders = require('./rider');
+const properties = require('./property');
 
 const schema = new mongoose.Schema({
 	rating: Number,

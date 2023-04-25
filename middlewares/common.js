@@ -19,5 +19,5 @@ async function addRoleID (req, res, next) {
 }
 
 module.exports = {
-	addUserDet,
+	addRoleID,
 }

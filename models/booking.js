@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const riders = require('rider');
-const providers = require('provider');
+const riders = require('./rider');
+const providers = require('./provider');
 
 const schema = new mongoose.Schema({
 	by: {

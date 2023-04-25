@@ -1,5 +1,5 @@
 const joi = require('joi');
-const {stateUTList, cityMap} = require('state_city_provider');
+const {stateUTList, cityMap} = require('./state_city_provider');
 const {getZipcodeDetails} = require("./zipcode_details");
 
 const registrationSchema = joi.object({

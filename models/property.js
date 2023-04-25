@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const bookings = require('booking');
-const reviews = require('review');
+const bookings = require('./booking');
+const reviews = require('./review');
 
 const schema = new mongoose.Schema({
 	name: String,

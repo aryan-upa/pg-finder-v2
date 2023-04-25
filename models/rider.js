@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const bookings = require('booking');
-const reviews = require('review');
-const providers = require('provider');
-const properties = require('property');
+const bookings = require('./booking');
+const reviews = require('./review');
+const providers = require('./provider');
+const properties = require('./property');
 
 const schema = new mongoose.Schema({
 	name: {

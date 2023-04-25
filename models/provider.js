@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const properties = require('property');
+const properties = require('./property');
 
 const schema = new mongoose.Schema({
 	name: String,
