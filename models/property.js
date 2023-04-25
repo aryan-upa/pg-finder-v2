@@ -50,7 +50,8 @@ const schema = new mongoose.Schema({
 		ref: 'Provider'
 	},
 	images: [String],
-	since: Number
+	since: Number,
+	bookingMoney: Number
 });
 
 schema.index({
