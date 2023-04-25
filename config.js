@@ -9,4 +9,7 @@ module.exports = {
 	port: process.env.PORT || 3000,
 	sessionSecret: process.env.SESSION_SECRET,
 	zipcodeKey: process.env.ZIPCODE_STACK_KEY,
+	cloudName: process.env.CLOUD_NAME,
+	cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+	cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET
 };
