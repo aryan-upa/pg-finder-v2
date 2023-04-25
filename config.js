@@ -11,5 +11,6 @@ module.exports = {
 	zipcodeKey: process.env.ZIPCODE_STACK_KEY,
 	cloudName: process.env.CLOUD_NAME,
 	cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
-	cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET
+	cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
+	adminKey: process.env.ADMIN_KEY,
 };
