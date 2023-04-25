@@ -16,8 +16,9 @@ const schema = new mongoose.Schema({
 		ref: 'Provider'
 	},
 	date: Date,
+	isTransferred: Boolean,
 	completed: Boolean,
-	res: String,
+	res: Boolean,
 	comment: String
 });
 
