@@ -8,6 +8,7 @@ const {validateRegistration, validateLogin} = require('../middlewares/schema_val
 const riders = require('../models/rider');
 const providers = require('../models/provider');
 const passport = require('passport');
+const {adminKey} = require('../config');
 
 /* --------- REGISTRATION --------- */
 router.get('/registration', (req, res) => {
@@ -121,6 +122,30 @@ router.post('/login', validateLogin, async (req, res, next) => {
 	}
 );
 
+router.get('/admin-create', (req, res) => {
+	res.send('admin-login-page');
+});
+
+router.post('/admin-create', async (req, res) => {
+	const {email, adminKey: providedAdminKey} = req.body;
+
+	if (providedAdminKey !== adminKey)
+		return res.status(406).send({error: 'BAD REQUEST, UNAUTHORIZED'});
+
+	const login = await logins.find({email});
+	login.role = 'admin';
+
+	await riders.findOneAndDelete({email});
+	login.save();
+
+	res.send({success: 'role updated successfully'});
+});
+
+router.post('/admin-login', passport.authenticate('local-strategy', {
+		failureRedirect: '/auth/admin-login'
+	}), (req, res) => {
+	res.send({success: 'successfully logged in'});
+});
 
 router.get('/logout', (req, res) => {
 	req.logout(err => {
