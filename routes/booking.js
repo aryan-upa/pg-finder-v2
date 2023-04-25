@@ -53,9 +53,9 @@ router.patch('/:id', isRoleProvider, async (req, res) => {
 	if (booking.completed)
 		return res.status(403).send({error: 'Bad request, Booking already completed'});
 
-	const {res, comment} = req.body;
+	const {res: result, comment} = req.body;
 
-	booking.res = Boolean(res);
+	booking.res = Boolean(result);
 	booking.comment = comment;
 	booking.completed = true;
 
