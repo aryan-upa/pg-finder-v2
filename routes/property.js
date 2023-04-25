@@ -56,7 +56,7 @@ router.get('/new', isLoggedIn, isRoleProvider, (req, res) => {
 router.post('/', isLoggedIn, isRoleProvider, validatePropertyDetails, async (req, res) => {
 	const {
 		name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
-		amenities, amenitiesText, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since
+		amenities, amenitiesText, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
 	} = req.body;
 
 	const address = { addBuilding, addL1, addL2, landmark, state, city, zipCode, country: 'India' };
@@ -86,7 +86,7 @@ router.post('/', isLoggedIn, isRoleProvider, validatePropertyDetails, async (req
 
 	const propertyCreated = await properties.create({
 		name, address: address, maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
-		otherCharges: otherChargesProp, occupancy, rate, tagLine, since, interested: 0, owner: owner
+		otherCharges: otherChargesProp, occupancy, rate, tagLine, since, interested: 0, owner: owner, bookingMoney
 	});
 
 	return res.send({
@@ -124,7 +124,7 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 
 	const {
 		addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
-		amenities, amenitiesText, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since
+		amenities, amenitiesText, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
 	} = req.body;
 
 	const address = {
@@ -161,6 +161,7 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 	property.rate = rate;
 	property.tagLine = tagLine;
 	property.since = since;
+	property.bookingMoney = bookingMoney;
 
 	await property.save();
 
@@ -187,15 +188,18 @@ router.post('/:id/toggle', isLoggedIn, isRoleRider, async (req, res) => {
 
 	let state;
 	if (user.likes.includes(id)) {
+		property.interested += 1;
 		await riders.findOneAndUpdate({id}, {$pull: {likes: property}});
 		state = false; // does not exist in likes of user now.
 	}
 
 	else {
+		property.interested -= 1;
 		await riders.findOneAndUpdate({id}, {$push: {likes: property}});
 		state = true; // does exist in likes of user now.
 	}
 
+	await property.save();
 	res.send({success: 'updated successfully', state});
 });
 
