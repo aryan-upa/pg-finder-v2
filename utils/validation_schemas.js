@@ -185,7 +185,12 @@ const propertySchema = joi.object({
 		'number.max': 'year input is invalid',
 		'number.empty': 'required to defined year value!'
 	}),
-	tagLine: joi.string()
+	tagLine: joi.string(),
+	bookingMoney: joi.number().min(1).max(10000).required().messages({
+		'number.min': 'booking money can not be less than 1 rupee',
+		'number.max': 'booking money can not be more than 10,000 rupees',
+		'number.empty': 'booking money is required!'
+	})
 }).custom ( async (obj, helper) => {
 	const {state, city, zipcode} = obj;
 

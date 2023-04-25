@@ -69,13 +69,12 @@ function validateProviderDetails (req, res, next) {
 function validatePropertyDetails (req, res, next) {
 	const {
 		name, addBuilding, addL1, landmark, state, city, zipCode, maxOccupancy,
-		type, desc, food, amenities, rules, otherCharges, occupancy, rate,
-		tagLine, since
+		type, desc, occupancy, rate, tagLine, since, bookingMoney
 	} = req.body;
 
 	const {error} = propertySchema.validate({
 		name, addBuilding, addL1, landmark, state, city, zipCode, maxOccupancy,
-		type, desc, occupancy, rate, tagLine, since
+		type, desc, occupancy, rate, tagLine, since, bookingMoney
 	});
 
 	if (error) {
