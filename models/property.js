@@ -39,6 +39,7 @@ const schema = new mongoose.Schema({
 	}],
 	occupancy: [String],
 	rate: Number,
+	rating: Number,
 	interested: Number,
 	reviews: [{
 		type: mongoose.Schema.Types.ObjectId,
