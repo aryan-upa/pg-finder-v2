@@ -72,10 +72,12 @@ app.get('/', (req, res) => {
 const authRouter = require('./routes/auth');
 const riderRouter = require('./routes/rider');
 const providerRouter = require('./routes/provider');
+const propertyRouter = require('./routes/property');
 
 app.use('/auth', authRouter);
 app.use('/rider', riderRouter);
 app.use('/provider', providerRouter);
+app.use('/property', propertyRouter);
 
 
 /* LISTENING TO PORT */
