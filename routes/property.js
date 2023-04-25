@@ -5,6 +5,7 @@ const router = express.Router();
 const providers = require('../models/provider');
 const properties = require('../models/property');
 const riders = require('../models/rider');
+const {uploadPropertyImages} = require("../middlewares/file_uploader");
 
 router.get('/', async (req, res) => {
 	let {
@@ -53,7 +54,12 @@ router.get('/new', isLoggedIn, isRoleProvider, (req, res) => {
 	res.send('new Property page!');
 });
 
-router.post('/', isLoggedIn, isRoleProvider, validatePropertyDetails, async (req, res) => {
+router.post('/',
+	isLoggedIn,
+	isRoleProvider,
+	validatePropertyDetails,
+	uploadPropertyImages.array('property-image', 5),
+	async (req, res) => {
 	const {
 		name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
 		amenities, amenitiesText, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney

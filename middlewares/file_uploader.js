@@ -1,6 +1,6 @@
 const multer = require("multer");
 const cloudinary = require("cloudinary");
-const cloudinaryStorage = require("multer-storage-cloudinary");
+const {CloudinaryStorage} = require("multer-storage-cloudinary");
 const {cloudName, cloudinaryApiKey, cloudinaryApiSecret} = require('../config');
 
 cloudinary.config({
@@ -9,19 +9,19 @@ cloudinary.config({
 	api_secret: cloudinaryApiSecret
 });
 
-const profilePicStorage = cloudinaryStorage({
+const profilePicStorage = new CloudinaryStorage({
 	cloudinary: cloudinary,
 	folder: 'profile-pic',
 	allowedFormats: ["jpg", "png"],
 });
 
-const covidCertificateStorage = cloudinaryStorage({
+const covidCertificateStorage = new CloudinaryStorage({
 	cloudinary: cloudinary,
 	folder: 'covid-cert',
 	allowedFormats: ["pdf"]
 });
 
-const propertyImages = cloudinaryStorage({
+const propertyImages = new CloudinaryStorage({
 	cloudinary: cloudinary,
 	folder: 'properties',
 	allowedFormats: ["jpg", "png"],
@@ -64,7 +64,7 @@ const uploadPropertyImages = multer ({
 
 		cb (undefined, true);
 	}
-}).array('property-image', 5);
+});
 
 module.exports = {
 	uploadProfilePic,
