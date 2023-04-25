@@ -18,34 +18,26 @@ const schema = new mongoose.Schema({
 	type: String,
 	desc: String,
 	food: [{
+		name: String,
 		detail: String,
-		icon: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Icon'
-		}
+		path: String
 	}],
 	amenities: [{
+		name: String,
 		detail: String,
-		icon: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Icon'
-		}
+		path: String
 	}],
 	rules: [{
-		detail: String,
-		icon: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Icon'
-		}
+		name: String,
+		allowed: Boolean,
+		path: String,
 	}],
 	otherCharges: [{
+		name: String,
 		detail: String,
-		icon: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Icon'
-		}
+		path: String
 	}],
-	occupancy: Number,
+	occupancy: [String],
 	rate: Number,
 	interested: Number,
 	reviews: [{
@@ -57,6 +49,7 @@ const schema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Provider'
 	},
+	images: [String],
 	since: Number
 });
 
