@@ -1,4 +1,4 @@
-const {registrationSchema, loginSchema, riderSchema, providerSchema} = require('../utils/validation_schemas');
+const {registrationSchema, loginSchema, riderSchema, providerSchema, propertySchema} = require('../utils/validation_schemas');
 
 /* UTILITY FUNCTION TO GET ERROR MESSAGES */
 
@@ -66,9 +66,30 @@ function validateProviderDetails (req, res, next) {
 	next();
 }
 
+function validatePropertyDetails (req, res, next) {
+	const {
+		name, addBuilding, addL1, landmark, state, city, zipCode, maxOccupancy,
+		type, desc, food, amenities, rules, otherCharges, occupancy, rate,
+		tagLine, since
+	} = req.body;
+
+	const {error} = propertySchema.validate({
+		name, addBuilding, addL1, landmark, state, city, zipCode, maxOccupancy,
+		type, desc, occupancy, rate, tagLine, since
+	});
+
+	if (error) {
+		const errors = errorModifier(error);
+		return res.status(406).send({error: true, errors});
+	}
+
+	next();
+}
+
 module.exports = {
 	validateRegistration,
 	validateLogin,
 	validateRiderDetails,
-	validateProviderDetails
+	validateProviderDetails,
+	validatePropertyDetails,
 }
