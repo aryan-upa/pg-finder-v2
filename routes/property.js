@@ -7,6 +7,8 @@ const properties = require('../models/property');
 const riders = require('../models/rider');
 const {uploadPropertyImages} = require("../middlewares/file_uploader");
 const {convertToArray} = require("../utils/some_methods");
+const {stripePrivateKey, serverURL} = require('../config');
+const stripe = require('stripe')(stripePrivateKey);
 
 router.get('/', async (req, res) => {
 	let {
@@ -224,6 +226,30 @@ router.post('/:id/toggle', isLoggedIn, isRoleRider, async (req, res) => {
 
 	await property.save();
 	res.send({success: 'updated successfully', state});
+});
+
+router.post('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
+	const {id} = req.params;
+	const property = await properties.findById({id});
+
+	const paymentSession = await stripe.checkout.sessions.create({
+		payment_method_types: ['card', 'wallets'],
+		line_items: [{
+			price_data: {
+				currency: 'inr',
+				product_data: {
+					name: property.name
+				},
+				unit_amount: property.bookingMoney*100
+			},
+			quantity: 1
+		}],
+		mode: 'payment',
+		success_url: `${serverURL}/payment-successful?propertyID=${id}`,
+		cancel_url: `${serverURL}/property/${id}`
+	});
+
+	res.send({url: paymentSession.url}).json();
 });
 
 module.exports = router;

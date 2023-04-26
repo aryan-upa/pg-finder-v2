@@ -9,6 +9,12 @@ const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const {addRoleID} = require("./middlewares/common");
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "https://slick-peas-relax-223-233-65-180.loca.lt"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 /* SERVER CONFIGURATIONS */
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -65,6 +71,16 @@ app.get('/', (req, res) => {
         user: req.user || null,
         userRoleID: req.session.userRoleID || null
     });
+});
+
+const {stateUTList, cityMap} = require('./utils/state_city_provider');
+app.get('/state-list', (req, res) => {
+    res.send(stateUTList);
+});
+
+app.get('/city/:state', (req, res) => {
+    const {state} = req.params;
+    res.send(cityMap[state]);
 });
 
 
