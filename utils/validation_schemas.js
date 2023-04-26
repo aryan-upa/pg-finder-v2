@@ -170,12 +170,18 @@ const propertySchema = joi.object({
 		'string.max': 'please write description under 1000 characters',
 		'string.empty': 'description is required'
 	}),
-	occupancy: joi.array().items(joi.string().valid('single', 'double').messages({
-		'any.only': 'invalid occupancy type!',
-	})).min(1).messages({
-		'array.empty': 'occupancy can not be empty',
-		'array.min': 'choose at least 1 occupancy type!'
-	}),
+	occupancy: [
+		joi.array().items(joi.string().valid('single', 'double').messages({
+			'any.only': 'invalid occupancy type!',
+		})).min(1).messages({
+			'array.empty': 'occupancy can not be empty',
+			'array.min': 'choose at least 1 occupancy type!'
+		}),
+		joi.string().valid('single', 'double').messages({
+			'any.only': 'invalid occupancy type!',
+			'string.empty': 'occupancy can not be empty!'
+		}).required()
+	],
 	rate: joi.number().min(1).required().messages({
 		'number.empty' : 'defining rate is required',
 		'number.min': 'rate has to be at least 1 rupee'
