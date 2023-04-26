@@ -168,7 +168,7 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 	});
 
 	property.otherCharges.length = 0;
-	otherCharges = convertToArray(otherChargesText);
+	otherCharges = convertToArray(otherCharges);
 	otherChargesText = convertToArray(otherChargesText);
 	otherCharges.forEach((v, idx) => {
 		property.otherCharges.push({name: v, detail: otherChargesText[idx], path: `images/svg/${v}`})
