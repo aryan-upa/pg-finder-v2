@@ -6,6 +6,7 @@ const providers = require('../models/provider');
 const properties = require('../models/property');
 const riders = require('../models/rider');
 const {uploadPropertyImages} = require("../middlewares/file_uploader");
+const {convertToArray} = require("../utils/some_methods");
 
 router.get('/', async (req, res) => {
 	let {
@@ -60,35 +61,43 @@ router.post('/',
 	validatePropertyDetails,
 	uploadPropertyImages.array('property-image', 5),
 	async (req, res) => {
-	const {
+	let {
 		name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
-		amenities, amenitiesText, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
+		amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
 	} = req.body;
-
 	const address = { addBuilding, addL1, addL2, landmark, state, city, zipCode, country: 'India' };
+
 	const foodProp = [];
+	food = convertToArray(food);
+	foodText = convertToArray(foodText);
 	food.forEach((v, idx) => {
 		foodProp.push({ name: v, detail: foodText[idx], path: `images/svg/${v}`});
 	});
 
 	const amenityProp = [];
+	amenities = convertToArray(amenities);
 	amenities.forEach((v, idx) => {
-		amenityProp.push({ name: v, detail: amenitiesText[idx], path: `images/svg/${v}`});
+		amenityProp.push({ name: v, path: `images/svg/${v}`});
 	});
 
 	const allRules = ['visitor-entry', 'non-veg-food', 'opposite-gender', 'smoking', 'drinking', 'loud-music', 'party'];
 	const rulesProp = [];
+	rules = convertToArray(rules);
 	allRules.forEach((v) => {
 		rulesProp.push({ name: v, allowed: rules.includes(v), path: `images/svg/${v}`});
 	});
 
 	const otherChargesProp = [];
+	otherCharges = convertToArray(otherCharges);
+	otherChargesText = convertToArray(otherChargesText);
 	otherCharges.forEach((v, idx) => {
 		otherChargesProp.push({name: v, detail: otherChargesText[idx], path: `images/svg/${v}`})
 	});
 
 	const userRoleID = req.session.userRoleID;
 	const owner = providers.findById({id: userRoleID});
+
+	occupancy = convertToArray(occupancy);
 
 	const propertyCreated = await properties.create({
 		name, address: address, maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
@@ -128,9 +137,9 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 	if (req.session.userRoleID !== property.owner)
 		return res.status(403).send({error: 'Not Authorized!'});
 
-	const {
+	let {
 		addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
-		amenities, amenitiesText, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
+		amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
 	} = req.body;
 
 	const address = {
@@ -139,25 +148,33 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 	};
 
 	property.food.length = 0;
+	food = convertToArray(food);
+	foodText = convertToArray(foodText);
 	food.forEach((v, idx) => {
 		property.food.push({ name: v, detail: foodText[idx], path: `images/svg/${v}`});
 	});
 
 	property.amenities.length = 0;
+	amenities = convertToArray(amenities);
 	amenities.forEach((v, idx) => {
-		property.amenities.push({ name: v, detail: amenitiesText[idx], path: `images/svg/${v}`});
+		property.amenities.push({ name: v, path: `images/svg/${v}`});
 	});
 
 	const allRules = ['visitor-entry', 'non-veg-food', 'opposite-gender', 'smoking', 'drinking', 'loud-music', 'party'];
 	property.rules.length = 0;
+	rules = convertToArray(rules);
 	allRules.forEach((v) => {
 		property.rules.push({ name: v, allowed: rules.includes(v), path: `images/svg/${v}`});
 	});
 
 	property.otherCharges.length = 0;
+	otherCharges = convertToArray(otherChargesText);
+	otherChargesText = convertToArray(otherChargesText);
 	otherCharges.forEach((v, idx) => {
 		property.otherCharges.push({name: v, detail: otherChargesText[idx], path: `images/svg/${v}`})
 	});
+
+	occupancy = convertToArray(occupancy);
 
 	property.address = address;
 	property.maxOccupancy = maxOccupancy;
