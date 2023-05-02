@@ -8,12 +8,12 @@ const registrationSchema = joi.object({
 			'string.empty': 'Email is required!',
 			'string.pattern.base': 'Please enter a valid email!'
 		}),
-	pass: joi.string().min(8).alphanum().required().messages({
+	pass: joi.string().min(8).required().messages({
 		'string.empty': 'Password is required!',
 		'any.only': 'Confirm password must be same as Password',
 		'string.min': 'Password must be 8 characters long.'
 	}),
-	name: joi.string().trim().pattern(new RegExp('^[A-Za-z]+$')).required().messages({
+	name: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
 		'string.empty': 'Name can not be empty!',
 		'string.pattern.base': 'Name contains invalid characters.',
 	}),
@@ -30,13 +30,13 @@ const loginSchema = joi.object({
 		'string.empty': 'Email is required!',
 		'string.pattern.base': 'Please enter a valid email!'
 	}),
-	pass: joi.string().alphanum().required().messages({
+	pass: joi.string().required().messages({
 		'string.empty': 'Password is required!',
 	})
 }).options({abortEarly: false});
 
 const riderSchema = joi.object({
-	name: joi.string().trim().pattern(new RegExp('^[A-Za-z]+$')).required().messages({
+	name: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
 		'string.pattern.base' : 'Name contains invalid characters.'
 	}),
 	phone: joi.string().pattern(new RegExp('^(?:(?:\\+|0{0,2})91(\\s*-\\s*)?|0?)?[6789]\d{9}$')).required().messages({
@@ -65,7 +65,7 @@ const riderSchema = joi.object({
 }).options({abortEarly: false});
 
 const providerSchema = joi.object({
-	name: joi.string().trim().pattern(new RegExp('^[A-Za-z]+$')).required().messages({
+	name: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
 		'string.pattern.base' : 'Name contains invalid characters.'
 	}),
 	phone: joi.string().pattern(new RegExp('^(?:(?:\\+|0{0,2})91(\\s*-\\s*)?|0?)?[6789]\d{9}$')).required().messages({
@@ -128,7 +128,7 @@ const providerSchema = joi.object({
 }).options({abortEarly: false});
 
 const propertySchema = joi.object({
-	name: joi.string().trim().pattern(new RegExp('^[A-Za-z]+$')).required().messages({
+	name: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
 		'string.pattern.base' : 'Name contains invalid characters.'
 	}),
 	addBuilding: joi.string().trim().required().min(5).max(50).messages({
