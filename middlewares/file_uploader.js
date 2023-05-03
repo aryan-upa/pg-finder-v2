@@ -1,5 +1,5 @@
 const multer = require("multer");
-const cloudinary = require("cloudinary");
+const cloudinary = require("cloudinary").v2;
 const {CloudinaryStorage} = require("multer-storage-cloudinary");
 const {cloudName, cloudinaryApiKey, cloudinaryApiSecret} = require('../config');
 
@@ -9,49 +9,34 @@ cloudinary.config({
 	api_secret: cloudinaryApiSecret
 });
 
-const profilePicStorage = new CloudinaryStorage({
+const riderStorage = new CloudinaryStorage({
 	cloudinary: cloudinary,
-	folder: 'profile-pic',
-	allowedFormats: ["jpg", "png"],
-});
-
-const covidCertificateStorage = new CloudinaryStorage({
-	cloudinary: cloudinary,
-	folder: 'covid-cert',
-	allowedFormats: ["pdf"]
+	params: {
+		folder: 'user-files',
+	},
+	allowedFormats: ["jpg", "png", "pdf"]
 });
 
 const propertyImages = new CloudinaryStorage({
 	cloudinary: cloudinary,
-	folder: 'properties',
+	params: {
+		folder: 'properties',
+	},
 	allowedFormats: ["jpg", "png"],
 });
 
-const uploadProfilePic = multer({
-	storage: profilePicStorage,
+const uploadRiderFiles = multer({
+	storage: riderStorage,
 	limits: {
-		fileSize: 1024 * 1024 // 1MB
+		fileSize: 1024 * 1024
 	},
 	fileFilter (req, file, cb) {
-		if (!file.originalname.match(/\.(png|jpg)$/))
-			return cb(new Error('Please upload an image file!'));
+		if (!file.originalname.match(/\.(png|jpg|pdf)$/))
+			return cb(new Error('Please upload files in correct format!'));
 
 		cb (undefined, true);
 	}
-});
-
-const uploadCovidCert = multer({
-	storage: covidCertificateStorage,
-	limits: {
-		fileSize: 1024 * 1024 * 4 // 4MBs
-	},
-	fileFilter (req, file, cb) {
-		if (!file.originalname.match(/\.(pdf)$/))
-			return cb(new Error('please upload pdf file!'));
-
-		cb (undefined, true);
-	}
-});
+})
 
 const uploadPropertyImages = multer ({
 	storage: propertyImages,
@@ -67,7 +52,6 @@ const uploadPropertyImages = multer ({
 });
 
 module.exports = {
-	uploadProfilePic,
-	uploadCovidCert,
+	uploadRiderFiles,
 	uploadPropertyImages
 }
