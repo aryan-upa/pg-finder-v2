@@ -36,10 +36,7 @@ const loginSchema = joi.object({
 }).options({abortEarly: false});
 
 const riderSchema = joi.object({
-	name: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
-		'string.pattern.base' : 'Name contains invalid characters.'
-	}),
-	phone: joi.string().pattern(new RegExp('^(?:(?:\\+|0{0,2})91(\\s*-\\s*)?|0?)?[6789]\d{9}$')).required().messages({
+	phone: joi.string().pattern(new RegExp('^[6789]\\d{9}')).required().messages({
 		'string.empty': 'Please provide phone number.',
 		'string.pattern.base': 'Phone number invalid.'
 	}),
@@ -52,23 +49,20 @@ const riderSchema = joi.object({
 		'any.only': 'invalid gender value.'
 	}),
 	occupation: joi.string().trim(),
-	emContactName: joi.string().trim().pattern(new RegExp('^[A-Za-z]+$')).required().messages({
+	emContactName: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
 		'string.empty': 'require emergency contact name!',
 	}),
 	emContactRelation: joi.string().trim().required().messages({
 		'string.empty': 'require emergency contact relation!',
 	}),
-	emContactPhone: joi.string().pattern(new RegExp('^(?:(?:\\+|0{0,2})91(\\s*-\\s*)?|0?)?[6789]\d{9}$')).required().messages({
+	emContactPhone: joi.string().pattern(new RegExp('^([6789])\\d{9}$')).required().messages({
 		'string.empty': 'Please provide emergency contact phone number.',
 		'string.pattern.base': 'Phone number invalid.'
 	}),
 }).options({abortEarly: false});
 
 const providerSchema = joi.object({
-	name: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
-		'string.pattern.base' : 'Name contains invalid characters.'
-	}),
-	phone: joi.string().pattern(new RegExp('^(?:(?:\\+|0{0,2})91(\\s*-\\s*)?|0?)?[6789]\d{9}$')).required().messages({
+	phone: joi.string().pattern(new RegExp('^[6789]\\d{9}$')).required().messages({
 		'string.empty': 'Please provide phone number.',
 		'string.pattern.base': 'Phone number invalid.'
 	}),
