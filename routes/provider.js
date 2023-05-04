@@ -16,16 +16,25 @@ router.get('/', isRoleAdmin, async (req, res) => {
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 	const {id} = req.params;
 	const user = await providers.findOne({_id: id});
-	res.send(user);
+	await user.populate['properties', 'bookingCompleted', 'bookingPending'];
+	res.render('provider-dashboard', {user}); // working properly
 });
 
-router.get('/:id/edit', isCurrentUser, (req, res) => {
-	res.send('edit profile page for provider ' + req.params.id);
+router.get('/:id/new-user', isCurrentUser, async (req, res) => {
+	const {id} = req.params;
+	const user = await providers.findById({_id: id});
+	res.render('register-provider', {user}); // working properly
+})
+router.get('/:id/edit', isCurrentUser, async (req, res) => {
+	const {id} = req.params;
+	const user = await providers.findById({_id: id});
+	res.render('update-provider', {user}); // working properly
 });
 
 router.patch('/:id', isCurrentUser, validateProviderDetails, async (req, res) => {
 	const {id} = req.params;
-	const {phone, dob, gst, addBuilding, addL1, addL2, landmark, state, city, zipCode} = req.body;
+	const {email, phone, dob, gst, addBuilding, addL1, addL2, landmark, state, city, zipCode} = req.body;
+
 	const address = {
 		building: addBuilding,
 		addL1: addL1,
@@ -33,20 +42,19 @@ router.patch('/:id', isCurrentUser, validateProviderDetails, async (req, res) =>
 		landmark: landmark,
 		city: city,
 		state: state,
-		zipCode: zipCode,
+		zipcode: zipCode,
 		country: 'India'
 	}
 
-	const newProvider = await providers.findOneAndUpdate({_id: id}, {
+	await providers.findOneAndUpdate({_id: id}, {
 		phone: phone,
 		dob: dob,
 		gst: gst,
 		address: address
 	});
 
-	await logins.findOneAndUpdate({email: newProvider.email}, {isFilled: true});
-
-	res.send({success: 'Profile Updated!'});
+	await logins.findOneAndUpdate({username: email}, {isFilled: true});
+	res.send({success: 'Profile Updated!'}); // working properly
 });
 
 router.get('/:id/properties', isCurrentUserOrAdmin, async (req, res) => {
