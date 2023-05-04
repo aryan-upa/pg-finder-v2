@@ -1,6 +1,5 @@
 const joi = require('joi');
 const {stateUTList, cityMap} = require('./state_city_provider');
-const {getZipcodeDetails} = require("./zipcode_details");
 
 const registrationSchema = joi.object({
 	email: joi.string().email().pattern(new RegExp('^\\w+([\.-]?\\w+)*@\\w+([\.-]?\\w+)*(\\.\\w{2,3})+$')).required().messages({
@@ -87,7 +86,7 @@ const providerSchema = joi.object({
 	state: joi.string().trim().required().custom((state, helper) => {
 		if (!stateUTList.includes(state))
 			return helper.error("any.invalid");
-		return true;
+		return state;
 	}).messages({
 		'string.empty' : 'State can not be empty!',
 		'any.invalid' : 'Invalid state input!',
@@ -100,21 +99,11 @@ const providerSchema = joi.object({
 		'string.max' : 'invalid zipcode',
 		'string.empty' : 'zipcode required',
 	})
-}).custom ( async (obj, helper) => {
-	const {state, city, zipcode} = obj;
+}).custom ( (obj, helper) => {
+	const {state, city} = obj;
 
 	if (!cityMap[state].includes(city))
 		return helper.error('city.invalid');
-
-	const zipDetails = await getZipcodeDetails(zipcode);
-
-	if (zipDetails.error)
-		return helper.error('zip.verify');
-
-	if (zipDetails.state !== state)
-		return helper.error('zip.invalid');
-
-	return true;
 }).messages({
 	'city.invalid': 'City name is invalid for current state!',
 	'zip.verify' : 'Could not verify zipcode, please check zipcode and try again!',
