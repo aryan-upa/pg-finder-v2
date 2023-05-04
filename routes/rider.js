@@ -3,7 +3,7 @@ const router = express.Router();
 const riders = require('../models/rider');
 const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser} = require("../middlewares/role_validator");
 const {validateRiderDetails} = require('../middlewares/schema_validator');
-const {uploadProfilePic, uploadCovidCert} = require("../middlewares/file_uploader");
+const {uploadRiderFiles} = require("../middlewares/file_uploader");
 const logins = require('../models/login');
 
 router.use(isLoggedIn);
@@ -17,28 +17,42 @@ router.get('/', isRoleAdmin, async (req, res) => {
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 	const {id} = req.params;
 	const user = await riders.findOne({_id: id});
-	res.send(user);
+	await user.populate(['bookings', 'likes']);
+	res.render('rider-dashboard', {user});
 });
 
-router.get('/:id/edit', isCurrentUser, (req, res) => {
-	res.send('edit profile page for user ' + req.params.id);
+router.get('/:id/new-user', isCurrentUser, async (req, res) => {
+	const {id} = req.params;
+	const user = await riders.findOne({_id: id});
+	res.render('register-user', {user}); // working properly
+});
+
+router.get('/:id/edit', isCurrentUser, async (req, res) => {
+	const {id} = req.params;
+	const user = await riders.findOne({_id: id});
+	res.render('update-user', {user}); // working properly
 });
 
 router.patch('/:id',
 	isCurrentUser,
+	uploadRiderFiles.fields([{name: "profile-pic"}, {name: "covid-cert"}]),
 	validateRiderDetails,
-	uploadProfilePic.single('profile-pic'),
-	uploadCovidCert.single('covid-cert'),
 	async (req, res) => {
 		const {id} = req.params;
-		const {phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone, imageLink, covidCertLink} = req.body;
+		const {email, phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone} = req.body;
+
+		const user = await riders.findById({_id: id});
+
+		const imageLink = req.files['profile-pic'] ? req.files['profile-pic'][0].path : user.profilePic;
+		const covidCertLink = req.files['covid-cert'] ? req.files['covid-cert'][0].path : user.covidCert;
+
 		const updateEmContact = {
 			name: emContactName,
 			relation: emContactRelation,
 			phone: emContactPhone
 		};
 
-		const newUser = await riders.findOneAndUpdate({id: id}, {
+		await riders.findOneAndUpdate({_id: id}, {
 			phone: phone,
 			gender: gender,
 			dob: dob,
@@ -48,8 +62,8 @@ router.patch('/:id',
 			emergencyContact: updateEmContact
 		});
 
-		await logins.findOneAndUpdate({email: newUser.email}, {isFilled: true});
-		res.send({success: 'Profile Updated!'});
+		await logins.findOneAndUpdate({username: email}, {isFilled: true});
+		res.send({success: 'Profile Updated!'}); // working properly
 });
 
 router.get('/:id/favourites', isCurrentUserOrAdmin, async (req, res) => {
