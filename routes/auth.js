@@ -8,11 +8,11 @@ const {validateRegistration, validateLogin} = require('../middlewares/schema_val
 const riders = require('../models/rider');
 const providers = require('../models/provider');
 const passport = require('passport');
-const {adminKey} = require('../config');
+const {adminKey, serverURL} = require('../config');
 
 /* --------- REGISTRATION --------- */
 router.get('/registration', (req, res) => {
-	res.status(200).send('registration page');
+	res.render('user-registration');
 });
 
 router.post('/registration', validateRegistration, async (req, res) => {
@@ -45,16 +45,16 @@ router.post('/registration', validateRegistration, async (req, res) => {
 	const whether_email_sent = await sendRegistrationEmail(email, validationKey);
 	if (!whether_email_sent) {
 		console.log('email sending unsuccessful @ ' + Date.now());
-		return res.status(500).send({error: 'internal server error, please re-register!'});
+		return res.status(500).render('error',{error: 'internal server error, please re-register!', code: '500'});
 	}
 
 	console.log(`email sent @ ${new Date().toISOString()} to email : ${email}.`);
-	res.status(200).send({success: 'email sent successfully'});
+	res.render('success', {success: 'Please check your email to verify it.'});
 });
 
 /* --------- VALIDATION --------- */
 
-router.get('/validation', async (req, res) => {
+router.get('/validate', async (req, res) => {
 	if (!req.query.validationKey)
 		return res.status(406).send({error: 'Validation Key not provided!'});
 
@@ -62,23 +62,23 @@ router.get('/validation', async (req, res) => {
 	const registrationFound = await registrations.findOne({validationKey});
 
 	if (!registrationFound)
-		return res.status(404).send({error: 'Invalid Validation Key!'});
+		return res.status(404).render('error', {error: 'Invalid Validation Key!', code: 404});
 
 	const {email, pass, name, role} = registrationFound;
 
 	const isEmailAlreadyValidated = await logins.findOne({username: email});
 	if (isEmailAlreadyValidated) {
 		await registrations.deleteOne({validationKey});
-		return res.status(401).send({error: 'Email already registered!'});
+		return res.status(401).render('error', {error: 'Email already registered!', code: 401});
 	}
 
 	const createdLogin = await logins.register(new logins({ username: email, name: name, role: role }), pass);
 
 	if (!createdLogin)
-		res.status(500).send({error: 'Internal Server Error, please try again!'});
+		res.status(500).render('error', {error: 'Internal Server Error, please try again!', code: 500});
 
 	await registrations.deleteOne({validationKey});
-	res.status(200).send({success: 'account created successfully, now you can login with your credentials'});
+	res.render('success', {success: 'account created successfully, now you can <a href=' + `${serverURL}/auth/login` + ' >login</a> with your credentials'})
 
 	const newUser = {email: email, name: name};
 
@@ -97,7 +97,7 @@ router.get('/validation', async (req, res) => {
 /* --------- LOGIN & LOGOUT --------- */
 
 router.get('/login', (req, res) => {
-	res.send('login page');
+	res.render('user-login');
 });
 
 router.post('/login', validateLogin, async (req, res, next) => {
@@ -116,7 +116,7 @@ router.post('/login', validateLogin, async (req, res, next) => {
 			else
 				user = await providers.findOne({email: email});
 
-			redirectTo = `/${role}/${user.id}/edit`;
+			redirectTo = `/${role}/${user.id}/new-user`;
 		}
 	}
 
