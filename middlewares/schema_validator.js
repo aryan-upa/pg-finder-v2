@@ -1,4 +1,5 @@
 const {registrationSchema, loginSchema, riderSchema, providerSchema, propertySchema} = require('../utils/validation_schemas');
+const {getZipcodeDetails} = require("../utils/zipcode_details");
 
 /* UTILITY FUNCTION TO GET ERROR MESSAGES */
 
@@ -54,7 +55,7 @@ function validateRiderDetails (req, res, next) {
 	next();
 }
 
-function validateProviderDetails (req, res, next) {
+async function validateProviderDetails (req, res, next) {
 	const {phone, dob, gst, addBuilding, addL1, landmark, state, city, zipCode} = req.body;
 	const {error} = providerSchema.validate({phone, dob, gst, addBuilding, addL1, landmark, state, city, zipCode});
 
@@ -62,6 +63,18 @@ function validateProviderDetails (req, res, next) {
 		const errors = errorModifier(error);
 		return res.status(406).send({error: true, errors});
 	}
+
+	const zipDetails = await getZipcodeDetails(zipCode);
+
+	if (zipDetails.error)
+		return res.status(406).send({error: true, errors: [
+				{msg: 'Zip Details could not be verified!'}
+			]});
+
+	if (zipDetails.state !== state)
+		return res.status(406).send({error: true, errors: [
+				{msg: 'Zip details invalid!'}
+			]});
 
 	next();
 }
