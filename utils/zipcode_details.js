@@ -1,13 +1,16 @@
 const {zipcodeKey} = require('../config');
+const axios = require('axios');
 
 async function getZipcodeDetails (zipcode) {
 	const requestURL = `https://api.zipcodestack.com/v1/search?codes=${zipcode}&country=in&apikey=${zipcodeKey}`
-	const res = await fetch(requestURL);
+	let result;
+	await axios.get(requestURL).then(res => {
+		result = res.data.results[`${zipcode}`][0];
+	}).catch(err => {
+		result = {error: 'Data could not be verified!'}
+	});
 
-	if (res.results)
-		return res.results[zipcode][0];
-
-	return {error: 'could not verify results'}
+	return result;
 }
 
 module.exports = {
