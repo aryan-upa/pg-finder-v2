@@ -8,11 +8,17 @@ async function addRoleID (req, res, next) {
 
 		const {username, role} = req.user;
 
-		if (role === 'rider')
-			req.session.userRoleID = (await riders.findOne({email: username})).id;
+		if (role === 'rider') {
+			const user = await riders.findOne({email: username});
+			req.session.userDet = user;
+			req.session.userRoleID = user.id;
+		}
 
-		else if (role === 'provider')
-			req.session.userRoleID = (await providers.findOne({email: username})).id;
+		else if (role === 'provider') {
+			const user = await providers.findOne({email: username});
+			req.session.userDet = user;
+			req.session.userRoleID = user.id;
+		}
 	}
 
 	next();
