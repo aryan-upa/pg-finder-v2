@@ -41,7 +41,7 @@ const uploadRiderFiles = multer({
 const uploadPropertyImages = multer ({
 	storage: propertyImages,
 	limits: {
-		fileSize: 1024 * 1024 // 1 MB
+		fileSize: 1024 * 1024 * 5 // 5 MB
 	},
 	fileFilter (req, file, cb) {
 		if (!file.originalname.match(/\.(jpg|png)$/))
