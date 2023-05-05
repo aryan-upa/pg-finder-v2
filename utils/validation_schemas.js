@@ -111,7 +111,7 @@ const providerSchema = joi.object({
 }).options({abortEarly: false});
 
 const propertySchema = joi.object({
-	name: joi.string().trim().pattern(new RegExp('^[A-Za-z ]{1,100}$')).required().messages({
+	name: joi.string().trim().pattern(new RegExp('^[A-Za-z0123456789&-() ]{1,100}$')).required().messages({
 		'string.pattern.base' : 'Name contains invalid characters.'
 	}),
 	addBuilding: joi.string().trim().required().min(5).max(50).messages({
@@ -126,7 +126,7 @@ const propertySchema = joi.object({
 	state: joi.string().trim().required().custom((state, helper) => {
 		if (!stateUTList.includes(state))
 			return helper.error("any.invalid");
-		return true;
+		return state;
 	}).messages({
 		'string.empty' : 'State can not be empty!',
 		'any.invalid' : 'Invalid state input!',
@@ -185,16 +185,6 @@ const propertySchema = joi.object({
 
 	if (!cityMap[state].includes(city))
 		return helper.error('city.invalid');
-
-	const zipDetails = await getZipcodeDetails(zipcode);
-
-	if (zipDetails.error)
-		return helper.error('zip.verify');
-
-	if (zipDetails.state !== state)
-		return helper.error('zip.invalid');
-
-	return true;
 }).messages({
 	'city.invalid': 'City name is invalid for current state!',
 	'zip.verify' : 'Could not verify zipcode, please check zipcode and try again!',
