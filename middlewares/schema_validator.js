@@ -79,7 +79,7 @@ async function validateProviderDetails (req, res, next) {
 	next();
 }
 
-function validatePropertyDetails (req, res, next) {
+async function validatePropertyDetails (req, res, next) {
 	const {
 		name, addBuilding, addL1, landmark, state, city, zipCode, maxOccupancy,
 		type, desc, occupancy, rate, tagLine, since, bookingMoney
@@ -94,6 +94,18 @@ function validatePropertyDetails (req, res, next) {
 		const errors = errorModifier(error);
 		return res.status(406).send({error: true, errors});
 	}
+
+	const zipDetails = await getZipcodeDetails(zipCode);
+
+	if (zipDetails.error)
+		return res.status(406).send({error: true, errors: [
+				{msg: 'Zip Details could not be verified!'}
+			]});
+
+	if (zipDetails.state !== state)
+		return res.status(406).send({error: true, errors: [
+				{msg: 'Zip details invalid!'}
+			]});
 
 	next();
 }
