@@ -54,14 +54,14 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/new', isLoggedIn, isRoleProvider, (req, res) => {
-	res.send('new Property page!');
+	res.render('register-pg');
 });
 
 router.post('/',
 	isLoggedIn,
 	isRoleProvider,
-	validatePropertyDetails,
 	uploadPropertyImages.array('property-image', 5),
+	validatePropertyDetails,
 	async (req, res) => {
 	let {
 		name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
@@ -82,7 +82,7 @@ router.post('/',
 		amenityProp.push({ name: v, path: `images/svg/${v}`});
 	});
 
-	const allRules = ['visitor-entry', 'non-veg-food', 'opposite-gender', 'smoking', 'drinking', 'loud-music', 'party'];
+	const allRules = ['visitor', 'non-veg-food', 'other-gender', 'smoking', 'drinking', 'loud-music', 'party'];
 	const rulesProp = [];
 	rules = convertToArray(rules);
 	allRules.forEach((v) => {
@@ -97,14 +97,20 @@ router.post('/',
 	});
 
 	const userRoleID = req.session.userRoleID;
-	const owner = providers.findById({id: userRoleID});
+	const owner = await providers.findById({_id: userRoleID});
 
 	occupancy = convertToArray(occupancy);
 
+	const images = req.files.map(v => { return v.path; });
+
 	const propertyCreated = await properties.create({
 		name, address: address, maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
-		otherCharges: otherChargesProp, occupancy, rate, tagLine, since, interested: 0, owner: owner, bookingMoney
+		otherCharges: otherChargesProp, occupancy, rate, tagLine, since, interested: 0, owner: owner, bookingMoney,
+		images
 	});
+
+	owner.properties.push(propertyCreated.id);
+	owner.save();
 
 	return res.send({
 		success: 'Property Created Successfully',
