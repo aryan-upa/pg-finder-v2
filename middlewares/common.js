@@ -3,9 +3,6 @@ const providers = require('../models/provider');
 
 async function addRoleID (req, res, next) {
 	if (req.user) {
-		if (req.session.userRoleID)
-			return next();
-
 		const {username, role} = req.user;
 
 		if (role === 'rider') {
