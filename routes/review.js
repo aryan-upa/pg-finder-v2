@@ -12,6 +12,7 @@ router.get('/', isRoleAdmin, (req, res) => {
 router.get('/:id', async  (req, res) => {
 	const {id} = req.params;
 	const review = await reviews.findById({id});
+	await review.populate(['userID', 'propertyID']);
 	res.send({success: 'review found!', review});
 });
 
@@ -19,15 +20,13 @@ router.post('/', isLoggedIn, isRoleRider, async (req, res) => {
 	const {rating, comment} = req.body;
 
 	const {propertyID} = req.query;
-	const property = await properties.findById({propertyID});
+	const property = await properties.findById({_id: propertyID});
 
 	const riderID = req.session.userRoleID;
-	const rider = await riders.findById({riderID});
-
-	const numRating = Number(rating);
+	const rider = await riders.findById({_id: riderID});
 
 	const newReview = await reviews.create({
-		rating: numRating,
+		rating: rating,
 		userID: rider,
 		propertyID: property,
 		comment,
@@ -37,8 +36,8 @@ router.post('/', isLoggedIn, isRoleRider, async (req, res) => {
 	rider.reviews.push(newReview);
 	rider.save();
 
-	const totalRating = property.review.length();
-	const newRating = ((property.rating * totalRating) + numRating) / (totalRating + 1);
+	const totalRating = property.reviews.length;
+	const newRating = ((property.rating * totalRating) + Number(rating)) / (totalRating + 1);
 
 	property.reviews.push(newReview);
 	property.rating = newRating;
@@ -49,12 +48,19 @@ router.post('/', isLoggedIn, isRoleRider, async (req, res) => {
 
 router.delete('/:id', isLoggedIn, isRoleAdminOrRider, async (req, res) => {
 	const {id} = req.params;
-	const review = await reviews.findById({id});
+	const review = await reviews.findById({_id: id});
 
-	if (req.session.userRoleID !== review.userID)
+	if (!review)
+		return res.status(404).send({error: 'review not found!'});
+
+	if (!review.userID.equals(req.session.userRoleID))
 		return res.status(406).send({error: 'not authorized!'});
 
-	const info = await reviews.deleteOne({id});
+	const info = await reviews.findByIdAndDelete({_id: id});
+
+	await properties.findByIdAndUpdate(review.propertyID, {$pull: {reviews: id}});
+	await riders.findByIdAndUpdate(review.userID, {$pull: {reviews: id}})
+
 	res.send({success: 'review deleted successfully', info});
 });
 
