@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const providers = require('../models/provider');
-const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser} = require("../middlewares/role_validator");
+const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser, isRoleProvider} = require("../middlewares/role_validator");
 const {validateProviderDetails} = require('../middlewares/schema_validator');
 const logins = require('../models/login');
 
@@ -16,6 +16,10 @@ router.get('/', isRoleAdmin, async (req, res) => {
 		console.log(e);
 		res.status(500).render('error', {error: 'Internal server error!'});
 	}
+});
+
+router.get('/dashboard', isRoleProvider, (req, res) => {
+	res.redirect(`/provider/${req.session.userRoleID}`);
 });
 
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
