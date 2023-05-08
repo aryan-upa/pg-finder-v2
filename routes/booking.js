@@ -5,44 +5,93 @@ const providers = require('../models/provider');
 const properties = require('../models/property');
 const riders = require('../models/rider');
 const router = express.Router();
+const keys = require('../models/key');
+const axios = require("axios");
+const {sendBookingSuccessEmail, sendBookingFailEmail} = require('../utils/mail_sender');
+const {serverURL} = require('../config');
 
-router.use(isLoggedIn);
-
-router.get('/', isRoleAdmin, async (req, res) => {
+router.get('/', isLoggedIn, isRoleAdmin, async (req, res) => {
 	const skip = req.query.skip || 0;
 	const bookingList = await bookings.find().skip(skip).limit(10);
 	res.send(bookingList);
 });
 
-router.post('/', isRoleRider, async (req, res) => {
-	const {propertyID} = req.query;
-	const property = await properties.findById({propertyID});
+router.get('/payment-successful', isLoggedIn, isRoleRider, async (req, res) => {
+	const {propertyID, key} = req.query;
 
-	const {ownerID} = property.owner;
-	const owner = await providers.findById({ownerID});
+	const keyGiven = await keys.findOne({key: key});
 
-	const riderID = req.session.userRoleID;
-	const rider = await riders.findById({riderID});
+	if (!keyGiven)
+		return res.render('error', {code: '404', error: 'invalid booking attempt'});
 
-	const createdBooking = await bookings.create({
-		by: rider,
-		owner: owner,
-		property: property,
-		date: Date.now(),
-		isTransferred: false,
-		completed: false,
-	});
+	if (keyGiven.purpose !== 'payment')
+		return res.render('error', {code: '406', error: 'invalid booking attempt'});
 
-	rider.bookings.push(createdBooking);
-	await rider.save();
+	const property = await properties.findById({_id: propertyID});
 
-	owner.bookingPending.push(createdBooking);
-	await owner.save();
+	const config = {
+		url: `${serverURL}/booking?propertyID=${propertyID}&userID=${req.session.userRoleID}`,
+		method: 'post',
+	}
 
-	res.send({success: 'booking successfully done', createdBooking});
+	axios(config)
+		.then(async (response) => {
+			const bookingID = response.data.bookingID;
+			await sendBookingSuccessEmail(req.user.username, {
+				bookingID: bookingID,
+				customerName: req.session.userDet.name,
+				bookingDate: keyGiven.createdAt,
+				amountPaid: property.bookingMoney
+			});
+			res.render('success', {success: 'Your booking has been successful, Details have been mailed to you!'});
+		})
+		.catch(async (error) => {
+			await sendBookingFailEmail(req.user.username, {
+				amountPaid: property.bookingMoney,
+				customerName: req.session.userDet.name,
+				propertyID: propertyID,
+				paymentID: keyGiven.content.paymentID,
+				date: keyGiven.createdAt
+			});
+			res.render('error', {code: '500', error: 'Your booking was unsuccessful, details have been mailed to you!'});
+		});
+
+	await keys.findOneAndDelete({key: key});
 });
 
-router.patch('/:id', isRoleProvider, async (req, res) => {
+router.post('/', async (req, res) => {
+	try {
+		const {propertyID, userID: riderID} = req.query;
+
+		const property = await properties.findById({_id: propertyID});
+
+		const ownerID = property.owner;
+		const owner = await providers.findById(ownerID);
+
+		const rider = await riders.findById({_id: riderID});
+
+		const createdBooking = await bookings.create({
+			by: rider,
+			owner: owner,
+			property: property,
+			date: Date.now(),
+			isTransferred: false,
+			completed: false,
+		});
+
+		rider.bookings.push(createdBooking);
+		await rider.save();
+
+		owner.bookingPending.push(createdBooking);
+		await owner.save();
+
+		res.send({bookingID: createdBooking.id});
+	} catch (e) {
+		res.status(500).send({error: 'internal server error!'});
+	}
+});
+
+router.patch('/:id', isLoggedIn, isRoleProvider, async (req, res) => {
 	const {id: bookingID} = req.params;
 	const booking = await bookings.findById({bookingID});
 
@@ -68,13 +117,13 @@ router.patch('/:id', isRoleProvider, async (req, res) => {
 	res.send({success: 'booking updated'});
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', isLoggedIn, async (req, res) => {
 	const {id} = req.params;
 	const booking = await bookings.findById({id});
 	res.send(booking);
 });
 
-router.delete('/:id', isRoleAdminOrProvider, async (req, res) => {
+router.delete('/:id', isLoggedIn, isRoleAdminOrProvider, async (req, res) => {
 	const {id: bookingID} = req.params;
 	const booking = await bookings.findById({bookingID});
 
