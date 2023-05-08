@@ -34,6 +34,125 @@ const registrationMailHTML = '' +
 '		</p>' +
 '	</div>';
 
+const bookingSuccessHTML = '' +
+' <!DOCTYPE html>                                                                                                            ' +
+' 	<html lang="en">                                                                                                                   ' +
+' 	<head>                                                                                                                   ' +
+' 	<title>PG Booking Confirmation</title>                                                                                   ' +
+' 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">                     ' +
+' 	</head>                                                                                                                  ' +
+' 	<body>                                                                                                                   ' +
+' 		<div class="container mt-5">                                                                                     ' +
+' 			<div class="row">                                                                                            ' +
+' 				<div class="col-md-6 mx-auto">                                                                           ' +
+' 					<div class="card">                                                                                   ' +
+' 						<div class="card-body">                                                                          ' +
+' 							<h4 class="card-title">PG Booking Confirmation</h4>                                          ' +
+' 							<p class="card-text">Dear customer-name,</p>                                                 ' +
+' 							<p class="card-text">We hope this email finds you well. We would like to take this           ' +
+' 								opportunity to thank you for booking a PG with us. We appreciate your trust in our services  ' +
+' 								and look forward to providing you with the best possible experience.</p>                     ' +
+' 							<p class="card-text">As per your request, we would like to confirm your booking details:</p> ' +
+' 							<table class="table">                                                                        ' +
+' 								<tbody>                                                                                      ' +
+' 								<tr>                                                                                         ' +
+' 									<th scope="row">Booking ID:</th>                                                         ' +
+' 									<td>booking-id</td>                                                                      ' +
+' 								</tr>                                                                                        ' +
+' 								<tr>                                                                                         ' +
+' 									<th scope="row">Booking Date:</th>                                                       ' +
+' 									<td>booking-date</td>                                                                    ' +
+' 								</tr>                                                                                        ' +
+' 								<tr>                                                                                         ' +
+' 									<th scope="row">Amount Paid:</th>                                                        ' +
+' 									<td>amount-paid</td>                                                                     ' +
+' 								</tr>                                                                                        ' +
+' 								</tbody>                                                                                     ' +
+' 							</table>                                                                                         ' +
+' 							<p class="card-text">We have received your payment of amount-paid, and the confirmation of   ' +
+' 								your booking has been processed.</p>                                                         ' +
+' 							<p class="card-text">The completion status will be updated as soon and PG Owner confirms     ' +
+' 								your registration, please keep the booking confirmation in check from your dashboard on PG   ' +
+' 								Finder. If in any case this booking is denied, your amount will be returned to you as soon   ' +
+' 								as possible.</p>                                                                             ' +
+' 							<p class="card-text">Once again, thank you for choosing our PG. We look forward to serving   ' +
+' 								you soon.</p>                                                                                ' +
+' 							<p class="card-text">Best regards,</p>                                                       ' +
+' 							<p class="card-text">PG Finder ❤</p>                                                         ' +
+' 						</div>                                                                                               ' +
+' 					</div>                                                                                                   ' +
+' 				</div>                                                                                                       ' +
+' 			</div>                                                                                                           ' +
+' 		</div>                                                                                                               ' +
+' 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>                                             ' +
+' 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>                    ' +
+' 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>                          ' +
+' 	</body>                                                                                                                  ' +
+' </html>                                                                                                                    ';
+
+const bookingFailHTML = '' +
+'<!doctype html>                                                                                                                    ' +
+'	<html lang="en">                                                                                                                ' +
+'	<head>                                                                                                                          ' +
+'	<meta charset="UTF-8">                                                                                                          ' +
+'	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">  ' +
+'	<meta http-equiv="X-UA-Compatible" content="ie=edge">                                                                           ' +
+'	<title>PG Booking Failed</title>                                                                                                ' +
+'	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">                            ' +
+'	</head>                                                                                                                         ' +
+'	<body>                                                                                                                          ' +
+'	<div class="container mt-5">                                                                                                    ' +
+'		<div class="row">                                                                                                           ' +
+'			<div class="col-md-6 mx-auto">                                                                                          ' +
+'				<div class="card">                                                                                                 ' +
+'					<div class="card-body">                                                                                       ' +
+'						<h4 class="card-title">PG Booking Failed</h4>                                                             ' +
+'						<p class="card-text">Dear customer-name,</p>                                                              ' +
+'						<p class="card-text">We regret to inform you that your PG booking has failed due to an internal           ' +
+'							error. We apologize for the inconvenience caused.</p>                                                ' +
+'						<p class="card-text">As per our records, the following details were provided by you during the            ' +
+'							booking process:</p>                                                                                 ' +
+'						<table class="table">                                                                                     ' +
+'							<tbody>                                                                                              ' +
+'							<tr>                                                                                                 ' +
+'								<th scope="row">Payment ID:</th>                                                                 ' +
+'								<td>payment-id</td>                                                                              ' +
+'							</tr>                                                                                                ' +
+'							<tr>                                                                                                 ' +
+'								<th scope="row">Property ID:</th>                                                                ' +
+'								<td>property-id</td>                                                                             ' +
+'							</tr>                                                                                                ' +
+'							<tr>                                                                                                 ' +
+'								<th scope="row">Payment Date:</th>                                                               ' +
+'								<td>payment-date</td>                                                                            ' +
+'							</tr>                                                                                                ' +
+'							<tr>                                                                                                 ' +
+'								<th scope="row">Amount Paid:</th>                                                                ' +
+'								<td>amount-paid</td>                                                                             ' +
+'							</tr>                                                                                                ' +
+'							</tbody>                                                                                             ' +
+'						</table>                                                                                                  ' +
+'						<p class="card-text">We are investigating the issue and will ensure that such incidents do not            ' +
+'							happen in the future. Please rest assured that the payment amount of amount-paid will be             ' +
+'							refunded to you within 14 working days.</p>                                                          ' +
+'						<p class="card-text">We apologize for any inconvenience caused and appreciate your understanding          ' +
+'							in this matter. If you have any queries or concerns, please feel free to contact us.                 ' +
+'							We would be happy to assist you in any way we can.</p>                                               ' +
+'						<p class="card-text">Once again, we apologize for the inconvenience caused and hope to serve              ' +
+'							you better in the future.</p>                                                                        ' +
+'						<p class="card-text">Best regards,</p>                                                                    ' +
+'						<p class="card-text">PG Finder ❤</p>                                                                      ' +
+'					</div>                                                                                                        ' +
+'				</div>                                                                                                             ' +
+'			</div>                                                                                                                  ' +
+'		</div>                                                                                                                      ' +
+'	</div>                                                                                                                          ' +
+'	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>                                                        ' +
+'	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>                               ' +
+'	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>                                     ' +
+'	</body>                                                                                                                         ' +
+'</html>                                                                                                                            ';
+
 /* EMAIL SENDING FUNCTIONS */
 
 async function sendRegistrationEmail (recipientAddress, validationKey) {
@@ -49,6 +168,43 @@ async function sendRegistrationEmail (recipientAddress, validationKey) {
 	return await transporter.sendMail(mailOptions);
 }
 
+async function sendBookingSuccessEmail (recipientAddress, details) {
+	const htmlContent = bookingSuccessHTML
+		.replaceAll('customer-name', details.customerName)
+		.replaceAll('amount-paid', details.amountPaid)
+		.replaceAll('booking-id', details.bookingID)
+		.replaceAll('booking-date', details.bookingDate.toLocaleDateString('en'));
+
+	const mailOptions = {
+		from: emailAdd,
+		to: recipientAddress,
+		subject: "PG Finder | Booking Confirmation ",
+		html: htmlContent,
+	};
+
+	return await transporter.sendMail(mailOptions);
+}
+
+async function sendBookingFailEmail (recipientAddress, details) {
+	const htmlContent = bookingFailHTML
+		.replaceAll('customer-name', details.customerName)
+		.replaceAll('amount-paid', details.amountPaid)
+		.replaceAll('payment-id', details.paymentID)
+		.replaceAll('payment-date', details.date.toLocaleDateString('en'))
+		.replaceAll('property-id', details.propertyID);
+
+	const mailOptions = {
+		from: emailAdd,
+		to: recipientAddress,
+		subject: "PG Finder | Booking Confirmation ",
+		html: htmlContent,
+	};
+
+	return await transporter.sendMail(mailOptions);
+}
+
 module.exports = {
 	sendRegistrationEmail,
+	sendBookingSuccessEmail,
+	sendBookingFailEmail,
 }
