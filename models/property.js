@@ -2,6 +2,18 @@ const mongoose = require('mongoose');
 const bookings = require('./booking');
 const reviews = require('./review');
 
+const detSchema = new mongoose.Schema({
+	name: String,
+	detail: String,
+	path: String
+});
+
+const allowSchema = new mongoose.Schema({
+	name: String,
+	allowed: Boolean,
+	path: String,
+});
+
 const schema = new mongoose.Schema({
 	name: String,
 	address: {
@@ -17,26 +29,10 @@ const schema = new mongoose.Schema({
 	maxOcc: Number,
 	type: String,
 	desc: String,
-	food: [{
-		name: String,
-		detail: String,
-		path: String
-	}],
-	amenities: [{
-		name: String,
-		detail: String,
-		path: String
-	}],
-	rules: [{
-		name: String,
-		allowed: Boolean,
-		path: String,
-	}],
-	otherCharges: [{
-		name: String,
-		detail: String,
-		path: String
-	}],
+	food: [detSchema],
+	amenities: [detSchema],
+	rules: [allowSchema],
+	otherCharges: [detSchema],
 	occupancy: [String],
 	rate: Number,
 	rating: Number,
