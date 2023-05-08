@@ -1,7 +1,8 @@
 const validationKeyLen = 16;
+const paymentKeyLen = 32;
+const elements = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
 function generateValidationKey () {
-	const elements = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 	let key = '';
 
 	while (key.length < validationKeyLen)
@@ -10,6 +11,16 @@ function generateValidationKey () {
 	return key;
 }
 
+function paymentKeyGenerator () {
+	let key = '';
+
+	while (key.length < paymentKeyLen)
+		key += elements.charAt(Math.floor(Math.random()*elements.length));
+
+	return key;
+}
+
 module.exports = {
 	generateValidationKey,
+	paymentKeyGenerator,
 }
