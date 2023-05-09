@@ -93,10 +93,10 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', isLoggedIn, isRoleProvider, async (req, res) => {
 	const {id: bookingID} = req.params;
-	const booking = await bookings.findById({bookingID});
+	const booking = await bookings.findById({_id: bookingID});
 
-	const {providerID} = req.session.userRoleID;
-	if (booking.owner !== providerID)
+	const providerID = req.session.userRoleID;
+	if (booking.owner._id === providerID)
 		return res.status(406).send({error: 'Request denied!'});
 
 	if (booking.completed)
@@ -104,14 +104,15 @@ router.patch('/:id', isLoggedIn, isRoleProvider, async (req, res) => {
 
 	const {res: result, comment} = req.body;
 
-	booking.res = Boolean(result);
+	booking.res = result === 'true';
 	booking.comment = comment;
 	booking.completed = true;
 
 	await booking.save();
+	const updatedBooking = await bookings.findById({_id: bookingID});
 	await providers.findByIdAndUpdate(
-		{providerID},
-		{$pull: {bookingPending: booking}, $push: {bookingCompleted: booking}}
+		{_id: providerID},
+		{$pull: {bookingPending: updatedBooking._id}, $push: {bookingCompleted: updatedBooking._id}}
 	);
 
 	res.send({success: 'booking updated'});
