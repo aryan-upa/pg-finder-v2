@@ -5,10 +5,40 @@ const router = express.Router();
 const providers = require('../models/provider');
 const properties = require('../models/property');
 const riders = require('../models/rider');
+const keys = require('../models/key');
 const {uploadPropertyImages} = require("../middlewares/file_uploader");
 const {convertToArray} = require("../utils/some_methods");
+const {paymentKeyGenerator} = require('../utils/key_generator');
 const {stripePrivateKey, serverURL} = require('../config');
+const bookings = require("../models/booking");
 const stripe = require('stripe')(stripePrivateKey);
+
+router.get('/search', (req, res) => {
+	const topProperty = [
+		{
+			name: "Top PG 1",
+			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+			id: "6459aa771270670455029226",
+		},
+		{
+			name: "Top PG 2",
+			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+			id: "6459aa771270670455029226"
+		},
+		{
+			name: "Top PG 3",
+			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+			id: "6459aa771270670455029226"
+		},
+		{
+			name: "Top PG 4",
+			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+			id: "6459aa771270670455029226"
+		}
+	];
+
+	res.render('search-home', {topProperty});
+});
 
 router.get('/', async (req, res) => {
 	let {
@@ -21,35 +51,49 @@ router.get('/', async (req, res) => {
 		resCount // how many results to return
 	} = req.query;
 
-	gender = !gender ? 'co' : gender;
-	rating = !rating ? 0 : Number(rating);
-	rate = !rate ? Number.MAX_SAFE_INTEGER : Number(rate);
+	if (!searchType || !searchText)
+		return res.render('error', {error: 'Invalid search input', code: 403});
+
+	let filter = {};
+
+	if (gender) filter.type = gender;
+	if (rating) filter.rating = { $gte: rating };
+	if (rate) filter.rate = { $lte: Number(rate) };
+	if (searchType === 'zip')
+		filter['address.zipcode'] = searchText;
+	else
+		filter['$text'] = {$search: searchText};
+
+	if (!resCount) {
+		req.query.resCount = 10;
+		resCount = 10;
+	}
+
+	let isFirst = false;
+	if (!skip || skip === 0 || skip < 0) {
+		req.query.skip = 0;
+		skip = 0;
+		isFirst = true;
+	}
 
 	let result;
 	if (searchType === 'zip')
-		result = await properties.find({
-			zip: searchText, $and: [{type: gender}, {rating: {$gte: rating}}, {rate: {$lte: rate}}]
-		}).sort({'name': 1}).skip(skip).limit(resCount);
-
+		result = await properties.find(filter).sort({name: 1}).skip(skip).limit(resCount);
 	else
-		result = await properties.find({
-			$text: {$search: searchText}, $and: [{type: gender}, {rating: {$gte: rating}}, {rate: {$lte: rate}}]
-		}, {
+		result = await properties.find(filter, {
 			score: {$meta: "textScore"}
-		}).sort({score:{$meta:"textScore"}}).skip(skip).limit(resCount);
+		}).sort({score:{$meta:"textScore"}, name: 1}).skip(skip).limit(resCount);
 
-	let isFirst = false;
-	if (skip === 0)
-		isFirst = true;
 
 	let isLast = false;
 	if (result.length < resCount)
 		isLast = true;
 
-	return res.send({
+	return res.render('search-result',{
 		results: result,
 		isFirst: isFirst,
-		isLast: isLast
+		isLast: isLast,
+		query: req.query,
 	});
 });
 
@@ -67,7 +111,7 @@ router.post('/',
 		name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
 		amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
 	} = req.body;
-	const address = { addBuilding, addL1, addL2, landmark, state, city, zipCode, country: 'India' };
+	const address = { building: addBuilding, addL1, addL2, landmark, state, city, zipcode: zipCode, country: 'India' };
 
 	const foodProp = [];
 	food = convertToArray(food);
@@ -104,8 +148,8 @@ router.post('/',
 	const images = req.files.map(v => { return v.path; });
 
 	const propertyCreated = await properties.create({
-		name, address: address, maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
-		otherCharges: otherChargesProp, occupancy, rate, tagLine, since, interested: 0, owner: owner, bookingMoney,
+		name, address: address, maxOcc: maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
+		otherCharges: otherChargesProp, occupancy, rate, tagline: tagLine, since, interested: 0, rating: 0.0, owner: owner, bookingMoney,
 		images
 	});
 
@@ -120,62 +164,72 @@ router.post('/',
 
 router.get('/:id', async (req, res) => {
 	const {id} = req.params;
-	const property = await properties.findById({id});
-	await property.populate(['food', 'amenities', 'rules', 'otherCharges', 'reviews', 'owner'])
-	res.send(property);
+	const property = await properties.findById({_id: id});
+
+	if (!property)
+		return res.status(404).render('error', {error: 'Property not found!', code: 404});
+
+	await property.populate({
+		path: 'reviews',
+		populate: {
+			path: 'userID'
+		},
+		options: {
+			sort: {date: -1}
+		}
+	});
+
+	await property.populate('owner');
+	res.render('property-page', {property});
 });
 
 router.get('/:id/edit', isLoggedIn, isRoleProvider, async (req, res) => {
 	const {id} = req.params;
-	const property = await properties.findById({id});
+	const property = await properties.findById({_id: id});
 
-	if (req.session.userRoleID !== property.owner)
+	if (!property.owner.equals(req.session.userRoleID))
 		return res.status(403).send({error: 'Not Authorized!'});
 
-	res.send({
-		location: 'property edit page!',
-		property
-	});
+	res.render('edit-pg',{property});
 });
 
-router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async (req, res) => {
+router.patch('/:id',
+	isLoggedIn,
+	isRoleProvider,
+	validatePropertyDetails,
+	async (req, res) => {
 	const {id} = req.params;
-	const property = await properties.findById({id});
+	const property = await properties.findById({_id: id});
 
-	if (req.session.userRoleID !== property.owner)
+	if (!property.owner.equals(req.session.userRoleID))
 		return res.status(403).send({error: 'Not Authorized!'});
 
 	let {
-		addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
-		amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
+		maxOccupancy, type, desc, food, foodText,
+		amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since
 	} = req.body;
 
-	const address = {
-		...property.address,
-		addBuilding, addL1, addL2, landmark, state, city, zipCode,
-	};
-
-	property.food.length = 0;
+	property.food = [];
 	food = convertToArray(food);
 	foodText = convertToArray(foodText);
 	food.forEach((v, idx) => {
 		property.food.push({ name: v, detail: foodText[idx], path: `images/svg/${v}`});
 	});
 
-	property.amenities.length = 0;
+	property.amenities = [];
 	amenities = convertToArray(amenities);
 	amenities.forEach((v, idx) => {
 		property.amenities.push({ name: v, path: `images/svg/${v}`});
 	});
 
 	const allRules = ['visitor-entry', 'non-veg-food', 'opposite-gender', 'smoking', 'drinking', 'loud-music', 'party'];
-	property.rules.length = 0;
+	property.rules = [];
 	rules = convertToArray(rules);
 	allRules.forEach((v) => {
 		property.rules.push({ name: v, allowed: rules.includes(v), path: `images/svg/${v}`});
 	});
 
-	property.otherCharges.length = 0;
+	property.otherCharges = [];
 	otherCharges = convertToArray(otherCharges);
 	otherChargesText = convertToArray(otherChargesText);
 	otherCharges.forEach((v, idx) => {
@@ -184,7 +238,6 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 
 	occupancy = convertToArray(occupancy);
 
-	property.address = address;
 	property.maxOccupancy = maxOccupancy;
 	property.type = type;
 	property.desc = desc;
@@ -192,7 +245,6 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 	property.rate = rate;
 	property.tagLine = tagLine;
 	property.since = since;
-	property.bookingMoney = bookingMoney;
 
 	await property.save();
 
@@ -201,32 +253,41 @@ router.patch('/:id', isLoggedIn, isRoleProvider, validatePropertyDetails, async 
 
 router.delete('/:id', isLoggedIn, isRoleAdminOrProvider, async (req, res) => {
 	const {id} = req.params;
-	const property = await properties.findById({id});
+	const property = await properties.findById({_id: id});
 
-	if (req.session.userRoleID !== property.owner)
+	if (!property.owner.equals(req.session.userRoleID))
 		return res.status(403).send({error: 'Not Authorized!'});
 
-	await properties.deleteOne({id});
+	const owner = await providers.findById({_id: property.owner});
+	await owner.populate('bookingPending');
+	owner.bookingPending = owner.bookingPending.filter(book => !book.property.equals(id));
+	owner.save();
+
+	await bookings.deleteMany({$and: [{property: id}, {completed: false}]});
+	await riders.updateMany({}, {$pull: {bookings: {$and: [{property: id}, {completed: false}]}}});
+
+	await properties.deleteOne({_id: id});
+
 	return res.send({success: 'property deleted successfully'});
 });
 
 router.post('/:id/toggle', isLoggedIn, isRoleRider, async (req, res) => {
 	const userId = req.session.userRoleID;
-	const user = await riders.findById({userId});
+	const user = await riders.findById({_id: userId});
 
-	const id = req.params;
-	const property = await properties.findById({id});
+	const {id} = req.params;
+	const property = await properties.findById({_id: id});
 
 	let state;
 	if (user.likes.includes(id)) {
-		property.interested += 1;
-		await riders.findOneAndUpdate({id}, {$pull: {likes: property}});
+		property.interested -= 1;
+		await riders.findOneAndUpdate({_id: userId}, {$pull: {likes: property.id}});
 		state = false; // does not exist in likes of user now.
 	}
 
 	else {
-		property.interested -= 1;
-		await riders.findOneAndUpdate({id}, {$push: {likes: property}});
+		property.interested += 1;
+		await riders.findOneAndUpdate({_id: userId}, {$push: {likes: property.id}});
 		state = true; // does exist in likes of user now.
 	}
 
@@ -234,12 +295,13 @@ router.post('/:id/toggle', isLoggedIn, isRoleRider, async (req, res) => {
 	res.send({success: 'updated successfully', state});
 });
 
-router.post('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
+router.get('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
 	const {id} = req.params;
-	const property = await properties.findById({id});
+	const property = await properties.findById({_id: id});
 
+	const paymentKey = paymentKeyGenerator();
 	const paymentSession = await stripe.checkout.sessions.create({
-		payment_method_types: ['card', 'wallets'],
+		payment_method_types: ['card'],
 		line_items: [{
 			price_data: {
 				currency: 'inr',
@@ -251,11 +313,21 @@ router.post('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
 			quantity: 1
 		}],
 		mode: 'payment',
-		success_url: `${serverURL}/payment-successful?propertyID=${id}`,
+		success_url: `${serverURL}/booking/payment-successful?propertyID=${id}&key=${paymentKey}`,
 		cancel_url: `${serverURL}/property/${id}`
 	});
 
 	res.send({url: paymentSession.url}).json();
+
+	await keys.create({
+		key: paymentKey,
+		content: {
+			user: req.session.userRoleID.toString(),
+			prop: property._id.toString(),
+			paymentID: paymentSession.id,
+		},
+		purpose: 'payment'
+	});
 });
 
 module.exports = router;
