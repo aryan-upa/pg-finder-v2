@@ -129,29 +129,31 @@ router.post('/login', validateLogin, async (req, res, next) => {
 );
 
 router.get('/admin-create', (req, res) => {
-	res.send('admin-login-page');
+	res.render('admin-registration');
 });
 
 router.post('/admin-create', async (req, res) => {
 	const {email, adminKey: providedAdminKey} = req.body;
 
 	if (providedAdminKey !== adminKey)
-		return res.status(406).send({error: 'BAD REQUEST, UNAUTHORIZED'});
+		return res.render('error', {code: 406, error: 'BAD REQUEST, UNAUTHORIZED'});
 
-	const login = await logins.find({email});
+	const login = await logins.findOne({username: email});
 	login.role = 'admin';
 
 	await riders.findOneAndDelete({email});
 	login.save();
-
-	res.send({success: 'role updated successfully'});
+	res.redirect('/auth/admin-login');
 });
 
-router.post('/admin-login', passport.authenticate('local-strategy', {
-		failureRedirect: '/auth/admin-login'
-	}), (req, res) => {
-	res.send({success: 'successfully logged in'});
+router.get('/admin-login', (req, res) => {
+	res.render('admin-login')
 });
+
+router.post('/admin-login', passport.authenticate('passport-local', {
+		successRedirect: '/admin',
+		failureRedirect: '/auth/admin-login',
+}));
 
 router.get('/logout', (req, res) => {
 	req.logout(err => {
