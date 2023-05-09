@@ -1,4 +1,4 @@
-const {emailAdd, appPass, baseURL, port} = require('../config');
+const {emailAdd, appPass, baseURL, port, serverURL} = require('../config');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -20,7 +20,7 @@ const registrationMailHTML = '' +
 '			Please click the following link to verify your email address:' +
 '		</p>' +
 '' +
-'		<a href="' + `${baseURL}${port}/auth/validate?validationKey=insertValidationKey` + '" style="text-decoration: none; color: #1a1a1a; padding: 0.5rem 2rem; border-radius: 1rem; background-color: lightgreen;">Validate Now!</a>' +
+'		<a href="' + `${serverURL}/auth/validate?validationKey=insertValidationKey` + '" style="text-decoration: none; color: #1a1a1a; padding: 0.5rem 2rem; border-radius: 1rem; background-color: lightgreen;">Validate Now!</a>' +
 '' +
 '		<br>' +
 '		<br>' +
@@ -153,6 +153,25 @@ const bookingFailHTML = '' +
 '	</body>                                                                                                                         ' +
 '</html>                                                                                                                            ';
 
+const forgotPasswordHTML = '' +
+"<div>" +
+`	<div style='padding: 1rem; background-color: gray; text-align: center'>   	` +
+`		<h2>Password Change Request</h2>                                        ` +
+`	</div>                                                                    	` +
+`                                                                               ` +
+`	<p>Here's the link to reset your password <a href="${serverURL}/auth/change-password?key=insertKey">reset-password</a>. </p>` +
+"</div>";
+
+const passwordChangeHTML = '' +
+"<div>" +
+`	<div style='padding: 1rem; background-color: gray; text-align: center'>   	` +
+`		<h2>Password Change Confirmation</h2>                                        ` +
+`	</div>                                                                    	` +
+`                                                                               ` +
+`	<p>This email is to confirm that your password has recently changed. If it was not you then please change your password!</p>` +
+"</div>";
+
+
 /* EMAIL SENDING FUNCTIONS */
 
 async function sendRegistrationEmail (recipientAddress, validationKey) {
@@ -203,8 +222,34 @@ async function sendBookingFailEmail (recipientAddress, details) {
 	return await transporter.sendMail(mailOptions);
 }
 
+async function sendForgotPasswordEmail (recipientAddress, key) {
+	const htmlContent = forgotPasswordHTML.replace('insertKey', key);
+
+	const mailOptions = {
+		from: emailAdd,
+		to: recipientAddress,
+		subject: "PG Finder | Forgot Password ",
+		html: htmlContent,
+	};
+
+	return await transporter.sendMail(mailOptions);
+}
+
+async function sendPasswordChangeEmail (recipientAddress) {
+	const mailOptions = {
+		from: emailAdd,
+		to: recipientAddress,
+		subject: "PG Finder | Password Changed ",
+		html: passwordChangeHTML,
+	};
+
+	return await transporter.sendMail(mailOptions);
+}
+
 module.exports = {
 	sendRegistrationEmail,
 	sendBookingSuccessEmail,
 	sendBookingFailEmail,
+	sendForgotPasswordEmail,
+	sendPasswordChangeEmail,
 }
