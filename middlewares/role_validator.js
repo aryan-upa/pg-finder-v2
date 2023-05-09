@@ -67,6 +67,13 @@ function isLoggedIn (req, res, next) {
 	next();
 }
 
+function isAdminLoggedIn (req, res, next) {
+	if (!req.isAuthenticated())
+		return res.redirect('/auth/admin-login');
+
+	next();
+}
+
 function isCurrentUserOrAdmin (req, res, next) {
 	const {id} = req.params;
 
@@ -96,5 +103,6 @@ module.exports = {
 	isRoleAdminOrProvider,
 	isLoggedIn,
 	isCurrentUserOrAdmin,
-	isCurrentUser
+	isCurrentUser,
+	isAdminLoggedIn,
 }
