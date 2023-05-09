@@ -1,5 +1,5 @@
 const express = require('express');
-const {isLoggedIn, isRoleProvider, isRoleAdminOrProvider, isRoleRider} = require("../middlewares/role_validator");
+const {isLoggedIn, isRoleProvider, isRoleAdminOrProvider, isRoleRider, isRoleAdmin} = require("../middlewares/role_validator");
 const {validatePropertyDetails} = require('../middlewares/schema_validator');
 const router = express.Router();
 const providers = require('../models/provider');
@@ -12,6 +12,25 @@ const {paymentKeyGenerator} = require('../utils/key_generator');
 const {stripePrivateKey, serverURL} = require('../config');
 const bookings = require("../models/booking");
 const stripe = require('stripe')(stripePrivateKey);
+
+router.get('/all', isLoggedIn, isRoleAdmin, async (req, res) => {
+	let {skip} = req.query;
+
+	if (!skip || skip < 0) {
+		req.query.skip = 0;
+		skip = 0;
+	}
+
+	const results = await properties.find({}).skip(skip).limit(10);
+
+	return res.render('admin-details', {
+		type: 'property',
+		results,
+		query: req.query,
+		isFirst: skip === 0,
+		isLast: results.length < 10,
+	});
+});
 
 router.get('/search', (req, res) => {
 	const topProperty = [
