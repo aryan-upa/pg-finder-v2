@@ -6,13 +6,13 @@ const detSchema = new mongoose.Schema({
 	name: String,
 	detail: String,
 	path: String
-});
+}, {_id: false});
 
 const allowSchema = new mongoose.Schema({
 	name: String,
 	allowed: Boolean,
 	path: String,
-});
+}, {_id: false});
 
 const schema = new mongoose.Schema({
 	name: String,
