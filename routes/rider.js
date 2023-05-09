@@ -21,7 +21,16 @@ router.get('/dashboard', isRoleRider, (req, res) => {
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 	const {id} = req.params;
 	const user = await riders.findOne({_id: id});
-	await user.populate(['bookings', 'likes']);
+	await user.populate({
+		path: 'bookings',
+		populate: {
+			path: 'property'
+		},
+		sort: {
+			date: -1
+		}
+	});
+	await user.populate('likes');
 	res.render('rider-dashboard', {user});
 });
 
