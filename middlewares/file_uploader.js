@@ -28,7 +28,7 @@ const propertyImages = new CloudinaryStorage({
 const uploadRiderFiles = multer({
 	storage: riderStorage,
 	limits: {
-		fileSize: 1024 * 1024
+		fileSize: 1024 * 1024 * 2
 	},
 	fileFilter (req, file, cb) {
 		if (!file.originalname.match(/\.(png|jpg|pdf)$/))
