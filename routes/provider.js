@@ -30,7 +30,23 @@ router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 		if (!user)
 			return res.status(404).send({error: true, message: 'User not found!'});
 
-		await user.populate(['properties', 'bookingCompleted', 'bookingPending']);
+		await user.populate('properties');
+		await user.populate({
+			path: 'bookingPending',
+			populate: [
+				{ path: 'by' },
+				{ path: 'property' }
+			]
+		});
+
+		await user.populate({
+			path: 'bookingCompleted',
+			populate: [
+				{ path: 'by' },
+				{ path: 'property' }
+			]
+		});
+
 		res.render('provider-dashboard', {user}); // working properly
 	} catch (e) {
 		console.log(e);
