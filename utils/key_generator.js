@@ -1,5 +1,6 @@
 const validationKeyLen = 16;
 const paymentKeyLen = 32;
+const forgetPasswordKey = 16;
 const elements = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
 function generateValidationKey () {
@@ -20,7 +21,17 @@ function paymentKeyGenerator () {
 	return key;
 }
 
+function forgetPasswordKeyGenerator () {
+	let key = '';
+
+	while (key.length < forgetPasswordKey)
+		key += elements.charAt(Math.floor(Math.random()*elements.length));
+
+	return key;
+}
+
 module.exports = {
 	generateValidationKey,
 	paymentKeyGenerator,
+	forgetPasswordKeyGenerator
 }
