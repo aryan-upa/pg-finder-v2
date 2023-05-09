@@ -39,13 +39,13 @@ const schema = new mongoose.Schema({
 });
 
 schema.post('findOneAndDelete', async function (data) {
-	if (data.bookings.length > 0)
+	if (data.bookings && data.bookings.length > 0)
 		await bookings.deleteMany({$and: [{_id: {$in: data.bookings}}, {$completed: false}]});
 
-	if (data.reviews.length > 0)
+	if (data.reviews && data.reviews.length > 0)
 		await reviews.deleteMany({_id: {$in: data.reviews}});
 
-	if (data.likes.length > 0)
+	if (data.likes && data.likes.length > 0)
 		await properties.updateMany({_id: {$in: data.likes}}, {$inc: {interested: -1}});
 });
 
