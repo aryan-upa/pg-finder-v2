@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const logins = require('../models/login');
 const registrations = require('../models/register');
-const {generateValidationKey} = require('../utils/key_generator');
-const {sendRegistrationEmail} = require('../utils/mail_sender');
+const {generateValidationKey, forgetPasswordKeyGenerator} = require('../utils/key_generator');
+const {sendRegistrationEmail, sendForgotPasswordEmail, sendPasswordChangeEmail} = require('../utils/mail_sender');
 const {validateRegistration, validateLogin} = require('../middlewares/schema_validator');
 const riders = require('../models/rider');
 const providers = require('../models/provider');
+const keys = require('../models/key');
 const passport = require('passport');
 const {adminKey, serverURL} = require('../config');
 
@@ -97,7 +98,7 @@ router.get('/validate', async (req, res) => {
 /* --------- LOGIN & LOGOUT --------- */
 
 router.get('/login', (req, res) => {
-	res.render('user-login');
+	res.render('user-login', {attempt: req.query.attempt || 'first'});
 });
 
 router.post('/login', validateLogin, async (req, res, next) => {
@@ -122,7 +123,7 @@ router.post('/login', validateLogin, async (req, res, next) => {
 
 		return passport.authenticate('passport-local', {
 			successRedirect: redirectTo || '/',
-			failureRedirect: '/auth/login'
+			failureRedirect: '/auth/login?attempt=failed'
 		}) (req, res, next);
 	}
 );
@@ -160,6 +161,75 @@ router.get('/logout', (req, res) => {
 
 	console.log('user logged out!');
 	res.redirect('/');
+});
+
+router.get('/forget-password', (req, res) => {
+	if (req.user)
+		req.logout(err => {
+			if (err)
+				return res.status(500).send({error: 'could not logout! Internal Server Failure!'});
+		});
+
+	res.render('forgot-password');
+});
+
+router.post('/forget-password', async (req, res) => {
+	const {email} = req.body;
+
+	const resetUser = await logins.findOne({username: email});
+
+	if (!resetUser)
+		return res.status(403).send({error: 'User does not exist!'});
+
+	const key = forgetPasswordKeyGenerator();
+	await keys.create({
+		key: key,
+		purpose: 'password',
+		content: {
+			name: resetUser.name,
+			email: resetUser.username
+		}
+	});
+
+	await sendForgotPasswordEmail(resetUser.username, key);
+	res.send({success: 'Email sent successfully, check email to change password!'});
+});
+
+router.get('/change-password', async (req, res) => {
+	const {key} = req.query;
+
+	const keyData = await keys.findOne({key: key});
+
+	if (!keyData)
+		return res.render('error', {code: 404, error: 'Reset request not found!'});
+
+	res.render('reset-pass', {name: keyData.content.name, key});
+});
+
+router.post('/change-password', async (req, res) => {
+	try {
+		const {pass, key} = req.body;
+
+		const keyData = await keys.findOne({key: key});
+		if (!keyData)
+			return res.render('error', {code: 404, error: 'Reset request not found!'});
+
+		const username = keyData.content.email;
+		const resetUser = await logins.findOne({username: username});
+
+		resetUser.setPassword(pass, (err) => {
+			if (err)
+				return res.status(500).send({error: 'could not update password!'});
+
+			resetUser.save();
+		});
+
+		await keys.deleteOne({key: key});
+		await sendPasswordChangeEmail(username);
+		return res.send({success: 'Password changed successfully!'});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Could not change password, internal server failure!'});
+	}
 });
 
 module.exports = router;
