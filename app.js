@@ -93,6 +93,7 @@ const providerRouter = require('./routes/provider');
 const propertyRouter = require('./routes/property');
 const bookingRouter = require('./routes/booking');
 const reviewRouter = require('./routes/review');
+const adminRouter = require('./routes/admin');
 
 app.use('/auth', authRouter);
 app.use('/rider', riderRouter);
@@ -100,6 +101,7 @@ app.use('/provider', providerRouter);
 app.use('/property', propertyRouter);
 app.use('/booking', bookingRouter);
 app.use('/review', reviewRouter);
+app.use('/admin', adminRouter);
 
 
 /* LISTENING TO PORT */
