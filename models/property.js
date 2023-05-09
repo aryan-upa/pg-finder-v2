@@ -64,13 +64,5 @@ schema.index({
 	default_language: 'en',
 });
 
-schema.post('findOneAndDelete', async (data) => {
-	if (data.bookings.length > 0)
-		await bookings.deleteMany({$and: [{property: data.id}, {completed: false}]});
-
-	if (data.reviews.length > 0)
-		await reviews.deleteMany({id: {$in: data.reviews}});
-});
-
 const model = mongoose.model('Property', schema);
 module.exports = model;
