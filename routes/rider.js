@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const riders = require('../models/rider');
-const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser} = require("../middlewares/role_validator");
+const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser, isRoleRider} = require("../middlewares/role_validator");
 const {validateRiderDetails} = require('../middlewares/schema_validator');
 const {uploadRiderFiles} = require("../middlewares/file_uploader");
 const logins = require('../models/login');
@@ -12,6 +12,10 @@ router.get('/', isRoleAdmin, async (req, res) => {
 	const skip = req.query.skip || 0;
 	const riderList = await riders.find().skip(skip).limit(10);
 	res.send(riderList);
+});
+
+router.get('/dashboard', isRoleRider, (req, res) => {
+	res.redirect(`/rider/${req.session.userRoleID}`);
 });
 
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
