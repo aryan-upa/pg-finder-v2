@@ -1,24 +1,35 @@
 const express = require('express');
-const {isLoggedIn, isRoleAdmin} = require("../middlewares/role_validator");
+const {isRoleAdmin, isAdminLoggedIn} = require("../middlewares/role_validator");
 const providers = require('../models/provider');
 const riders = require('../models/rider');
 const bookings = require('../models/booking');
 const properties = require('../models/property');
+const {stripePrivateKey} = require('../config');
+const stripe = require('stripe')(stripePrivateKey);
 
 const router = express.Router();
 
-router.use(isLoggedIn);
+router.use(isAdminLoggedIn);
 router.use(isRoleAdmin);
 
 router.get('/', async (req, res) => {
 	const totalProperties = await properties.find({}).count();
-	const totalUsers = await riders.find({}).count();
+	const totalRiders = await riders.find({}).count();
 	const totalBookings = await bookings.find({}).count();
 	const totalProviders = await providers.find({}).count();
+	const balanceObject = await stripe.balance.retrieve();
 
-	res.send({location: 'admin-dashboard', success: 'successfully shown dashboard', data: {
-		totalProperties, totalUsers, totalBookings, totalProviders
-	}});
+	res.render('admin-dashboard', {
+		location: 'admin-dashboard',
+		success: 'successfully shown dashboard',
+		data: {
+			totalProperties,
+			totalRiders,
+			totalBookings,
+			totalProviders,
+			totalBalance: Math.round(balanceObject.pending[0].amount / 100),
+		}
+	});
 });
 
 module.exports = router;
