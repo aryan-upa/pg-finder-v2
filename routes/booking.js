@@ -18,7 +18,10 @@ router.get('/', isLoggedIn, isRoleAdmin, async (req, res) => {
 		skip = 0;
 	}
 
-	const results = await bookings.find({}).skip(skip).limit(10);
+	const results = await bookings.find({})
+		.populate({path: 'by'})
+		.populate({path: 'property'})
+		.skip(skip).limit(10);
 
 	return res.render('admin-details', {
 		type: 'booking',
