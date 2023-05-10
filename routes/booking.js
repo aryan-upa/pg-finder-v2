@@ -11,9 +11,22 @@ const {sendBookingSuccessEmail, sendBookingFailEmail} = require('../utils/mail_s
 const {serverURL} = require('../config');
 
 router.get('/', isLoggedIn, isRoleAdmin, async (req, res) => {
-	const skip = req.query.skip || 0;
-	const bookingList = await bookings.find().skip(skip).limit(10);
-	res.send(bookingList);
+	let {skip} = req.query;
+
+	if (!skip || skip < 0) {
+		req.query.skip = 0;
+		skip = 0;
+	}
+
+	const results = await bookings.find({}).skip(skip).limit(10);
+
+	return res.render('admin-details', {
+		type: 'booking',
+		results,
+		query: req.query,
+		isFirst: skip === 0,
+		isLast: results.length < 10,
+	});
 });
 
 router.get('/payment-successful', isLoggedIn, isRoleRider, async (req, res) => {
@@ -125,15 +138,23 @@ router.get('/:id', isLoggedIn, async (req, res) => {
 });
 
 router.delete('/:id', isLoggedIn, isRoleAdminOrProvider, async (req, res) => {
-	const {id: bookingID} = req.params;
-	const booking = await bookings.findById({bookingID});
+	try {
+		const {id: bookingID} = req.params;
+		const booking = await bookings.findById({bookingID});
 
-	const {providerID} = req.session.userRoleID;
-	if (booking.owner !== providerID)
-		return res.status(406).send({error: 'Request denied!'});
+		const {providerID} = req.session.userRoleID;
+		if (req.user.role !== 'admin' && booking.owner !== providerID)
+			return res.status(406).send({error: 'Request denied!'});
 
-	const info = await bookings.deleteOne({bookingID});
-	res.send({success: 'booking deleted successfully', info});
+		await riders.updateOne({_id: booking.by}, {$pull: {bookings: booking.id}});
+		await providers.updateOne({_id: booking.owner}, {$pull: {bookingPending: booking.id}});
+
+		await bookings.deleteOne(booking);
+		res.send({success: 'booking deleted successfully'});
+	} catch (e) {
+		console.log(e);
+		res.send({error: 'Could not delete booking!'});
+	}
 });
 
 module.exports = router;
