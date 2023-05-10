@@ -274,7 +274,7 @@ router.delete('/:id', isLoggedIn, isRoleAdminOrProvider, async (req, res) => {
 	const {id} = req.params;
 	const property = await properties.findById({_id: id});
 
-	if (!property.owner.equals(req.session.userRoleID))
+	if (req.user.role !== 'admin' && !property.owner.equals(req.session.userRoleID))
 		return res.status(403).send({error: 'Not Authorized!'});
 
 	const owner = await providers.findById({_id: property.owner});
@@ -285,6 +285,7 @@ router.delete('/:id', isLoggedIn, isRoleAdminOrProvider, async (req, res) => {
 	await bookings.deleteMany({$and: [{property: id}, {completed: false}]});
 	await riders.updateMany({}, {$pull: {bookings: {$and: [{property: id}, {completed: false}]}}});
 
+	await providers.updateOne({_id: property.owner}, {$pull: {properties: property.id}});
 	await properties.deleteOne({_id: id});
 
 	return res.send({success: 'property deleted successfully'});
