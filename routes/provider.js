@@ -4,14 +4,29 @@ const providers = require('../models/provider');
 const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser, isRoleProvider} = require("../middlewares/role_validator");
 const {validateProviderDetails} = require('../middlewares/schema_validator');
 const logins = require('../models/login');
+const properties = require('../models/property');
+const bookings = require('../models/booking');
 
 router.use(isLoggedIn);
 
 router.get('/', isRoleAdmin, async (req, res) => {
 	try {
-		const skip = req.query.skip || 0;
-		const providerList = await providers.find().skip(skip).limit(10);
-		res.send(providerList);
+		let {skip} = req.query;
+
+		if (!skip || skip < 0) {
+			req.query.skip = 0;
+			skip = 0;
+		}
+
+		const results = await providers.find({}).skip(skip).limit(10);
+
+		return res.render('admin-details', {
+			type: 'provider',
+			results,
+			query: req.query,
+			isFirst: skip === 0,
+			isLast: results.length < 10,
+		});
 	} catch (e) {
 		console.log(e);
 		res.status(500).render('error', {error: 'Internal server error!'});
@@ -148,8 +163,16 @@ router.get('/:id/bookings-pending', isCurrentUserOrAdmin, async (req, res) => {
 router.delete('/:id', isRoleAdmin, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const info = await providers.deleteOne({_id: id});
-		res.send({success: true, message: 'User deleted successfully!'});
+		const providerToDelete = await providers.findById({_id: id});
+
+		providerToDelete.properties.map(async pID => {
+			await bookings.deleteMany({property: pID, completed: false});
+			await properties.findByIdAndDelete({_id: pID});
+		});
+
+		await logins.findOneAndDelete({username: providerToDelete.email});
+		await providers.deleteOne(providerToDelete);
+		res.send({success: 'User deleted successfully!'});
 	} catch (e) {
 		console.log(e);
 		res.status(500).render('error', {error: 'Internal server error!'});
