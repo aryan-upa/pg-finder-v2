@@ -5,13 +5,29 @@ const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser, isRoleRider
 const {validateRiderDetails} = require('../middlewares/schema_validator');
 const {uploadRiderFiles} = require("../middlewares/file_uploader");
 const logins = require('../models/login');
+const providers = require('../models/provider');
+const bookings = require('../models/booking');
+const properties = require('../models/property');
 
 router.use(isLoggedIn);
 
 router.get('/', isRoleAdmin, async (req, res) => {
-	const skip = req.query.skip || 0;
-	const riderList = await riders.find().skip(skip).limit(10);
-	res.send(riderList);
+	let {skip} = req.query;
+
+	if (!skip || skip < 0) {
+		req.query.skip = 0;
+		skip = 0;
+	}
+
+	const results = await riders.find({}).skip(skip).limit(10);
+
+	return res.render('admin-details', {
+		type: 'rider',
+		results,
+		query: req.query,
+		isFirst: skip === 0,
+		isLast: results.length < 10,
+	});
 });
 
 router.get('/dashboard', isRoleRider, (req, res) => {
@@ -19,19 +35,27 @@ router.get('/dashboard', isRoleRider, (req, res) => {
 });
 
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
-	const {id} = req.params;
-	const user = await riders.findOne({_id: id});
-	await user.populate({
-		path: 'bookings',
-		populate: {
-			path: 'property'
-		},
-		sort: {
-			date: -1
-		}
-	});
-	await user.populate('likes');
-	res.render('rider-dashboard', {user});
+	try {
+		const {id} = req.params;
+		const user = await riders.findOne({_id: id});
+
+		if (!user)
+			return res.render('error', {code: 404, error: 'User not found!'});
+
+		await user.populate({
+			path: 'bookings',
+			populate: {
+				path: 'property'
+			},
+			sort: {
+				date: -1
+			}
+		});
+		await user.populate('likes');
+		res.render('rider-dashboard', {user});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error!'});
+	}
 });
 
 router.get('/:id/new-user', isCurrentUser, async (req, res) => {
@@ -41,9 +65,13 @@ router.get('/:id/new-user', isCurrentUser, async (req, res) => {
 });
 
 router.get('/:id/edit', isCurrentUser, async (req, res) => {
-	const {id} = req.params;
-	const user = await riders.findOne({_id: id});
-	res.render('update-user', {user}); // working properly
+	try {
+		const {id} = req.params;
+		const user = await riders.findOne({_id: id});
+		res.render('update-user', {user}); // working properly
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error! Check your permissions!'});
+	}
 });
 
 router.patch('/:id',
@@ -96,9 +124,34 @@ router.get('/:id/bookings', isCurrentUserOrAdmin, async (req, res) => {
 });
 
 router.delete('/:id', isRoleAdmin, async (req, res) => {
-	const {id} = req.params;
-	const info = await riders.deleteOne({_id: id});
-	res.send(info);
+	try {
+		const {id} = req.params;
+
+		const user = await riders.findById({_id: id});
+		await user.populate('bookings');
+
+		// deleting all the pending bookings from both bookings collection and providers list.
+		for (const booking of user.bookings) {
+			await providers.updateOne({_id: booking.owner},
+				{$pull: {bookingsPending: booking._id}});
+
+			if (!booking.completed)
+				await bookings.deleteOne({_id: booking.id});
+		}
+
+		// reducing like count of all properties which were in the likes of this user.
+		user.likes.map(async propertyId => {
+			await properties.findOneAndUpdate(
+				{_id: propertyId},
+				{$inc: {interestedCount: -1}});
+		});
+
+		await riders.deleteOne(user);
+		res.send({success: 'User deleted successfully'});
+	} catch (e) {
+		console.log(e);
+		res.send({error: 'Could not delete user!'});
+	}
 });
 
 module.exports = router;
