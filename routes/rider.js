@@ -12,22 +12,27 @@ const properties = require('../models/property');
 router.use(isLoggedIn);
 
 router.get('/', isRoleAdmin, async (req, res) => {
-	let {skip} = req.query;
+	try {
+		let {skip} = req.query;
 
-	if (!skip || skip < 0) {
-		req.query.skip = 0;
-		skip = 0;
+		if (!skip || skip < 0) {
+			req.query.skip = 0;
+			skip = 0;
+		}
+
+		const results = await riders.find({}).skip(skip).limit(10);
+
+		return res.render('admin-details', {
+			type: 'rider',
+			results,
+			query: req.query,
+			isFirst: skip === 0,
+			isLast: results.length < 10,
+		});
+	} catch (e) {
+		console.log(e);
+		res.render('error', {code: 500, error: 'Internal error!'});
 	}
-
-	const results = await riders.find({}).skip(skip).limit(10);
-
-	return res.render('admin-details', {
-		type: 'rider',
-		results,
-		query: req.query,
-		isFirst: skip === 0,
-		isLast: results.length < 10,
-	});
 });
 
 router.get('/dashboard', isRoleRider, (req, res) => {
@@ -59,9 +64,13 @@ router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 });
 
 router.get('/:id/new-user', isCurrentUser, async (req, res) => {
-	const {id} = req.params;
-	const user = await riders.findOne({_id: id});
-	res.render('register-user', {user}); // working properly
+	try {
+		const {id} = req.params;
+		const user = await riders.findOne({_id: id});
+		res.render('register-user', {user}); // working properly
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
 });
 
 router.get('/:id/edit', isCurrentUser, async (req, res) => {
@@ -79,6 +88,7 @@ router.patch('/:id',
 	uploadRiderFiles.fields([{name: "profile-pic"}, {name: "covid-cert"}]),
 	validateRiderDetails,
 	async (req, res) => {
+	try {
 		const {id} = req.params;
 		const {email, phone, gender, dob, occupation, emContactName, emContactRelation, emContactPhone} = req.body;
 
@@ -105,22 +115,9 @@ router.patch('/:id',
 
 		await logins.findOneAndUpdate({username: email}, {isFilled: true});
 		res.send({success: 'Profile Updated!'}); // working properly
-});
-
-router.get('/:id/favourites', isCurrentUserOrAdmin, async (req, res) => {
-	const {id} = req.params;
-	const user = await riders.findOne({_id: id});
-	await user.populate('likes');
-	const likes = user.likes;
-	res.send(likes);
-});
-
-router.get('/:id/bookings', isCurrentUserOrAdmin, async (req, res) => {
-	const {id} = req.params;
-	const user = await riders.findOne({_id: id});
-	await user.populate('bookings');
-	const bookings = user.bookings;
-	res.send(bookings);
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
 });
 
 router.delete('/:id', isRoleAdmin, async (req, res) => {
