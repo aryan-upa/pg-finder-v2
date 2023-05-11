@@ -36,7 +36,11 @@ router.get('/', isRoleAdmin, async (req, res) => {
 });
 
 router.get('/dashboard', isRoleRider, (req, res) => {
-	res.redirect(`/rider/${req.session.userRoleID}`);
+	try {
+		res.redirect(`/rider/${req.session.userRoleID}`);
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
 });
 
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
