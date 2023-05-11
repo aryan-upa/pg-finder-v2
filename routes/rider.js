@@ -141,12 +141,13 @@ router.delete('/:id', isRoleAdmin, async (req, res) => {
 
 		// reducing like count of all properties which were in the likes of this user.
 		user.likes.map(async propertyId => {
-			await properties.findOneAndUpdate(
+			await properties.updateOne(
 				{_id: propertyId},
-				{$inc: {interestedCount: -1}});
+				{$inc: {interested: -1}});
 		});
 
 		await riders.deleteOne(user);
+		await logins.findByIdAndDelete({_id: req.user.id});
 		res.send({success: 'User deleted successfully'});
 	} catch (e) {
 		console.log(e);
