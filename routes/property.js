@@ -14,110 +14,126 @@ const bookings = require("../models/booking");
 const stripe = require('stripe')(stripePrivateKey);
 
 router.get('/all', isLoggedIn, isRoleAdmin, async (req, res) => {
-	let {skip} = req.query;
+	try {
+		let {skip} = req.query;
 
-	if (!skip || skip < 0) {
-		req.query.skip = 0;
-		skip = 0;
-	}
+		if (!skip || skip < 0) {
+			req.query.skip = 0;
+			skip = 0;
+		}
 
-	const results = await properties.find({}).skip(skip).limit(10);
+		const results = await properties.find({}).skip(skip).limit(10);
 
-	return res.render('admin-details', {
-		type: 'property',
-		results,
-		query: req.query,
-		isFirst: skip === 0,
-		isLast: results.length < 10,
-	});
-});
+		return res.render('admin-details', {
+			type: 'property',
+			results,
+			query: req.query,
+			isFirst: skip === 0,
+			isLast: results.length < 10,
+		});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}}
+)
 
 router.get('/search', (req, res) => {
-	const topProperty = [
-		{
-			name: "Top PG 1",
-			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-			id: "6459aa771270670455029226",
-		},
-		{
-			name: "Top PG 2",
-			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-			id: "6459aa771270670455029226"
-		},
-		{
-			name: "Top PG 3",
-			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-			id: "6459aa771270670455029226"
-		},
-		{
-			name: "Top PG 4",
-			img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-			id: "6459aa771270670455029226"
-		}
-	];
+	try {
+		const topProperty = [
+			{
+				name: "Top PG 1",
+				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+				id: "6459aa771270670455029226",
+			},
+			{
+				name: "Top PG 2",
+				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+				id: "6459aa771270670455029226"
+			},
+			{
+				name: "Top PG 3",
+				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+				id: "6459aa771270670455029226"
+			},
+			{
+				name: "Top PG 4",
+				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
+				id: "6459aa771270670455029226"
+			}
+		];
 
-	res.render('search-home', {topProperty});
-});
+		res.render('search-home', {topProperty});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
+})
 
 router.get('/', async (req, res) => {
-	let {
-		searchType, // determining what type of search it is. values: ['zip', 'text']
-		searchText, // text entered for searching
-		gender, // what gender are we looking for
-		rating, // what is the minimum rating
-		rate, // what is the maximum rate
-		skip, // how many results to skip
-		resCount // how many results to return
-	} = req.query;
+	try {
+		let {
+			searchType, // determining what type of search it is. values: ['zip', 'text']
+			searchText, // text entered for searching
+			gender, // what gender are we looking for
+			rating, // what is the minimum rating
+			rate, // what is the maximum rate
+			skip, // how many results to skip
+			resCount // how many results to return
+		} = req.query;
 
-	if (!searchType || !searchText)
-		return res.render('error', {error: 'Invalid search input', code: 403});
+		if (!searchType || !searchText)
+			return res.render('error', {error: 'Invalid search input', code: 403});
 
-	let filter = {};
+		let filter = {};
 
-	if (gender) filter.type = gender;
-	if (rating) filter.rating = { $gte: rating };
-	if (rate) filter.rate = { $lte: Number(rate) };
-	if (searchType === 'zip')
-		filter['address.zipcode'] = searchText;
-	else
-		filter['$text'] = {$search: searchText};
+		if (gender) filter.type = gender;
+		if (rating) filter.rating = { $gte: rating };
+		if (rate) filter.rate = { $lte: Number(rate) };
+		if (searchType === 'zip')
+			filter['address.zipcode'] = searchText;
+		else
+			filter['$text'] = {$search: searchText};
 
-	if (!resCount) {
-		req.query.resCount = 10;
-		resCount = 10;
+		if (!resCount) {
+			req.query.resCount = 10;
+			resCount = 10;
+		}
+
+		let isFirst = false;
+		if (!skip || skip === 0 || skip < 0) {
+			req.query.skip = 0;
+			skip = 0;
+			isFirst = true;
+		}
+
+		let result;
+		if (searchType === 'zip')
+			result = await properties.find(filter).sort({name: 1}).skip(skip).limit(resCount);
+		else
+			result = await properties.find(filter, {
+				score: {$meta: "textScore"}
+			}).sort({score:{$meta:"textScore"}, name: 1}).skip(skip).limit(resCount);
+
+
+		let isLast = false;
+		if (result.length < resCount)
+			isLast = true;
+
+		return res.render('search-result',{
+			results: result,
+			isFirst: isFirst,
+			isLast: isLast,
+			query: req.query,
+		});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
 	}
-
-	let isFirst = false;
-	if (!skip || skip === 0 || skip < 0) {
-		req.query.skip = 0;
-		skip = 0;
-		isFirst = true;
-	}
-
-	let result;
-	if (searchType === 'zip')
-		result = await properties.find(filter).sort({name: 1}).skip(skip).limit(resCount);
-	else
-		result = await properties.find(filter, {
-			score: {$meta: "textScore"}
-		}).sort({score:{$meta:"textScore"}, name: 1}).skip(skip).limit(resCount);
-
-
-	let isLast = false;
-	if (result.length < resCount)
-		isLast = true;
-
-	return res.render('search-result',{
-		results: result,
-		isFirst: isFirst,
-		isLast: isLast,
-		query: req.query,
-	});
-});
+})
 
 router.get('/new', isLoggedIn, isRoleProvider, (req, res) => {
-	res.render('register-pg');
+	try {
+		res.render('register-pg');
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
 });
 
 router.post('/',
@@ -126,228 +142,254 @@ router.post('/',
 	uploadPropertyImages.array('property-image', 5),
 	validatePropertyDetails,
 	async (req, res) => {
-	let {
-		name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
-		amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
-	} = req.body;
-	const address = { building: addBuilding, addL1, addL2, landmark, state, city, zipcode: zipCode, country: 'India' };
+	try {
+		let {
+			name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
+			amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
+		} = req.body;
+		const address = { building: addBuilding, addL1, addL2, landmark, state, city, zipcode: zipCode, country: 'India' };
 
-	const foodProp = [];
-	food = convertToArray(food);
-	foodText = convertToArray(foodText);
-	food.forEach((v, idx) => {
-		foodProp.push({ name: v, detail: foodText[idx], path: `images/svg/${v}`});
-	});
+		const foodProp = [];
+		food = convertToArray(food);
+		foodText = convertToArray(foodText);
+		food.forEach((v, idx) => {
+			foodProp.push({ name: v, detail: foodText[idx], path: `images/svg/${v}`});
+		});
 
-	const amenityProp = [];
-	amenities = convertToArray(amenities);
-	amenities.forEach((v, idx) => {
-		amenityProp.push({ name: v, path: `images/svg/${v}`});
-	});
+		const amenityProp = [];
+		amenities = convertToArray(amenities);
+		amenities.forEach((v, idx) => {
+			amenityProp.push({ name: v, path: `images/svg/${v}`});
+		});
 
-	const allRules = ['visitor', 'non-veg-food', 'other-gender', 'smoking', 'drinking', 'loud-music', 'party'];
-	const rulesProp = [];
-	rules = convertToArray(rules);
-	allRules.forEach((v) => {
-		rulesProp.push({ name: v, allowed: rules.includes(v), path: `images/svg/${v}`});
-	});
+		const allRules = ['visitor', 'non-veg-food', 'other-gender', 'smoking', 'drinking', 'loud-music', 'party'];
+		const rulesProp = [];
+		rules = convertToArray(rules);
+		allRules.forEach((v) => {
+			rulesProp.push({ name: v, allowed: rules.includes(v), path: `images/svg/${v}`});
+		});
 
-	const otherChargesProp = [];
-	otherCharges = convertToArray(otherCharges);
-	otherChargesText = convertToArray(otherChargesText);
-	otherCharges.forEach((v, idx) => {
-		otherChargesProp.push({name: v, detail: otherChargesText[idx], path: `images/svg/${v}`})
-	});
+		const otherChargesProp = [];
+		otherCharges = convertToArray(otherCharges);
+		otherChargesText = convertToArray(otherChargesText);
+		otherCharges.forEach((v, idx) => {
+			otherChargesProp.push({name: v, detail: otherChargesText[idx], path: `images/svg/${v}`})
+		});
 
-	const userRoleID = req.session.userRoleID;
-	const owner = await providers.findById({_id: userRoleID});
+		const userRoleID = req.session.userRoleID;
+		const owner = await providers.findById({_id: userRoleID});
 
-	occupancy = convertToArray(occupancy);
+		occupancy = convertToArray(occupancy);
 
-	const images = req.files.map(v => { return v.path; });
+		const images = req.files.map(v => { return v.path; });
 
-	const propertyCreated = await properties.create({
-		name, address: address, maxOcc: maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
-		otherCharges: otherChargesProp, occupancy, rate, tagline: tagLine, since, interested: 0, rating: 0.0, owner: owner, bookingMoney,
-		images
-	});
+		const propertyCreated = await properties.create({
+			name, address: address, maxOcc: maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
+			otherCharges: otherChargesProp, occupancy, rate, tagline: tagLine, since, interested: 0, rating: 0.0, owner: owner, bookingMoney,
+			images
+		});
 
-	owner.properties.push(propertyCreated.id);
-	owner.save();
+		owner.properties.push(propertyCreated.id);
+		owner.save();
 
-	return res.send({
-		success: 'Property Created Successfully',
-		propertyCreated
-	});
+		return res.send({
+			success: 'Property Created Successfully',
+			propertyCreated
+		});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
 });
 
 router.get('/:id', async (req, res) => {
-	const {id} = req.params;
-	const property = await properties.findById({_id: id});
+	try {
+		const {id} = req.params;
+		const property = await properties.findById({_id: id});
 
-	if (!property)
-		return res.status(404).render('error', {error: 'Property not found!', code: 404});
+		if (!property)
+			return res.status(404).render('error', {error: 'Property not found!', code: 404});
 
-	await property.populate({
-		path: 'reviews',
-		populate: {
-			path: 'userID'
-		},
-		options: {
-			sort: {date: -1}
-		}
-	});
+		await property.populate({
+			path: 'reviews',
+			populate: {
+				path: 'userID'
+			},
+			options: {
+				sort: {date: -1}
+			}
+		});
 
-	await property.populate('owner');
-	res.render('property-page', {property});
-});
+		await property.populate('owner');
+		res.render('property-page', {property});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
+})
 
 router.get('/:id/edit', isLoggedIn, isRoleProvider, async (req, res) => {
-	const {id} = req.params;
-	const property = await properties.findById({_id: id});
+	try {
+		const {id} = req.params;
+		const property = await properties.findById({_id: id});
 
-	if (!property.owner.equals(req.session.userRoleID))
-		return res.status(403).send({error: 'Not Authorized!'});
+		if (!property.owner.equals(req.session.userRoleID))
+			return res.status(403).send({error: 'Not Authorized!'});
 
-	res.render('edit-pg',{property});
-});
+		res.render('edit-pg',{property});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
+})
 
 router.patch('/:id',
 	isLoggedIn,
 	isRoleProvider,
 	validatePropertyDetails,
 	async (req, res) => {
-	const {id} = req.params;
-	const property = await properties.findById({_id: id});
+	try {
+		const {id} = req.params;
+		const property = await properties.findById({_id: id});
 
-	if (!property.owner.equals(req.session.userRoleID))
-		return res.status(403).send({error: 'Not Authorized!'});
+		if (!property.owner.equals(req.session.userRoleID))
+			return res.status(403).send({error: 'Not Authorized!'});
 
-	let {
-		maxOccupancy, type, desc, food, foodText,
-		amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since
-	} = req.body;
+		let {
+			maxOccupancy, type, desc, food, foodText,
+			amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since
+		} = req.body;
 
-	property.food = [];
-	food = convertToArray(food);
-	foodText = convertToArray(foodText);
-	food.forEach((v, idx) => {
-		property.food.push({ name: v, detail: foodText[idx], path: `images/svg/${v}`});
-	});
+		property.food = [];
+		food = convertToArray(food);
+		foodText = convertToArray(foodText);
+		food.forEach((v, idx) => {
+			property.food.push({name: v, detail: foodText[idx], path: `images/svg/${v}`});
+		});
 
-	property.amenities = [];
-	amenities = convertToArray(amenities);
-	amenities.forEach((v, idx) => {
-		property.amenities.push({ name: v, path: `images/svg/${v}`});
-	});
+		property.amenities = [];
+		amenities = convertToArray(amenities);
+		amenities.forEach((v, idx) => {
+			property.amenities.push({name: v, path: `images/svg/${v}`});
+		});
 
-	const allRules = ['visitor-entry', 'non-veg-food', 'opposite-gender', 'smoking', 'drinking', 'loud-music', 'party'];
-	property.rules = [];
-	rules = convertToArray(rules);
-	allRules.forEach((v) => {
-		property.rules.push({ name: v, allowed: rules.includes(v), path: `images/svg/${v}`});
-	});
+		const allRules = ['visitor-entry', 'non-veg-food', 'opposite-gender', 'smoking', 'drinking', 'loud-music', 'party'];
+		property.rules = [];
+		rules = convertToArray(rules);
+		allRules.forEach((v) => {
+			property.rules.push({name: v, allowed: rules.includes(v), path: `images/svg/${v}`});
+		});
 
-	property.otherCharges = [];
-	otherCharges = convertToArray(otherCharges);
-	otherChargesText = convertToArray(otherChargesText);
-	otherCharges.forEach((v, idx) => {
-		property.otherCharges.push({name: v, detail: otherChargesText[idx], path: `images/svg/${v}`})
-	});
+		property.otherCharges = [];
+		otherCharges = convertToArray(otherCharges);
+		otherChargesText = convertToArray(otherChargesText);
+		otherCharges.forEach((v, idx) => {
+			property.otherCharges.push({name: v, detail: otherChargesText[idx], path: `images/svg/${v}`})
+		});
 
-	occupancy = convertToArray(occupancy);
+		occupancy = convertToArray(occupancy);
 
-	property.maxOccupancy = maxOccupancy;
-	property.type = type;
-	property.desc = desc;
-	property.occupancy = occupancy;
-	property.rate = rate;
-	property.tagLine = tagLine;
-	property.since = since;
+		property.maxOccupancy = maxOccupancy;
+		property.type = type;
+		property.desc = desc;
+		property.occupancy = occupancy;
+		property.rate = rate;
+		property.tagLine = tagLine;
+		property.since = since;
 
-	await property.save();
+		await property.save();
 
-	res.send({success: 'property edited successfully'});
+		res.send({success: 'property edited successfully'});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
 });
 
 router.delete('/:id', isLoggedIn, isRoleAdminOrProvider, async (req, res) => {
-	const {id} = req.params;
-	const property = await properties.findById({_id: id});
+	try {
+		const {id} = req.params;
+		const property = await properties.findById({_id: id});
 
-	if (req.user.role !== 'admin' && !property.owner.equals(req.session.userRoleID))
-		return res.status(403).send({error: 'Not Authorized!'});
+		if (req.user.role !== 'admin' && !property.owner.equals(req.session.userRoleID))
+			return res.status(403).send({error: 'Not Authorized!'});
 
-	const owner = await providers.findById({_id: property.owner});
-	await owner.populate('bookingPending');
-	owner.bookingPending = owner.bookingPending.filter(book => !book.property.equals(id));
-	owner.save();
+		const owner = await providers.findById({_id: property.owner});
+		await owner.populate('bookingPending');
+		owner.bookingPending = owner.bookingPending.filter(book => !book.property.equals(id));
+		owner.save();
 
-	await bookings.deleteMany({$and: [{property: id}, {completed: false}]});
-	await riders.updateMany({}, {$pull: {bookings: {$and: [{property: id}, {completed: false}]}}});
+		await bookings.deleteMany({$and: [{property: id}, {completed: false}]});
+		await riders.updateMany({}, {$pull: {bookings: {$and: [{property: id}, {completed: false}]}}});
 
-	await providers.updateOne({_id: property.owner}, {$pull: {properties: property.id}});
-	await properties.deleteOne({_id: id});
+		await providers.updateOne({_id: property.owner}, {$pull: {properties: property.id}});
+		await properties.deleteOne({_id: id});
 
-	return res.send({success: 'property deleted successfully'});
-});
+		return res.send({success: 'property deleted successfully'});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
+})
 
 router.post('/:id/toggle', isLoggedIn, isRoleRider, async (req, res) => {
-	const userId = req.session.userRoleID;
-	const user = await riders.findById({_id: userId});
+	try {
+		const userId = req.session.userRoleID;
+		const user = await riders.findById({_id: userId});
 
-	const {id} = req.params;
-	const property = await properties.findById({_id: id});
+		const {id} = req.params;
+		const property = await properties.findById({_id: id});
 
-	let state;
-	if (user.likes.includes(id)) {
-		property.interested -= 1;
-		await riders.findOneAndUpdate({_id: userId}, {$pull: {likes: property.id}});
-		state = false; // does not exist in likes of user now.
+		let state;
+		if (user.likes.includes(id)) {
+			property.interested -= 1;
+			await riders.findOneAndUpdate({_id: userId}, {$pull: {likes: property.id}});
+			state = false; // does not exist in likes of user now.
+		} else {
+			property.interested += 1;
+			await riders.findOneAndUpdate({_id: userId}, {$push: {likes: property.id}});
+			state = true; // does exist in likes of user now.
+		}
+
+		await property.save();
+		res.send({success: 'updated successfully', state});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
 	}
-
-	else {
-		property.interested += 1;
-		await riders.findOneAndUpdate({_id: userId}, {$push: {likes: property.id}});
-		state = true; // does exist in likes of user now.
-	}
-
-	await property.save();
-	res.send({success: 'updated successfully', state});
 });
 
 router.get('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
-	const {id} = req.params;
-	const property = await properties.findById({_id: id});
+	try {
+		const {id} = req.params;
+		const property = await properties.findById({_id: id});
 
-	const paymentKey = paymentKeyGenerator();
-	const paymentSession = await stripe.checkout.sessions.create({
-		payment_method_types: ['card'],
-		line_items: [{
-			price_data: {
-				currency: 'inr',
-				product_data: {
-					name: property.name
+		const paymentKey = paymentKeyGenerator();
+		const paymentSession = await stripe.checkout.sessions.create({
+			payment_method_types: ['card'],
+			line_items: [{
+				price_data: {
+					currency: 'inr',
+					product_data: {
+						name: property.name
+					},
+					unit_amount: property.bookingMoney*100
 				},
-				unit_amount: property.bookingMoney*100
+				quantity: 1
+			}],
+			mode: 'payment',
+			success_url: `${serverURL}/booking/payment-successful?propertyID=${id}&key=${paymentKey}`,
+			cancel_url: `${serverURL}/property/${id}`
+		});
+
+		res.send({url: paymentSession.url}).json();
+
+		await keys.create({
+			key: paymentKey,
+			content: {
+				user: req.session.userRoleID.toString(),
+				prop: property._id.toString(),
+				paymentID: paymentSession.id,
 			},
-			quantity: 1
-		}],
-		mode: 'payment',
-		success_url: `${serverURL}/booking/payment-successful?propertyID=${id}&key=${paymentKey}`,
-		cancel_url: `${serverURL}/property/${id}`
-	});
-
-	res.send({url: paymentSession.url}).json();
-
-	await keys.create({
-		key: paymentKey,
-		content: {
-			user: req.session.userRoleID.toString(),
-			prop: property._id.toString(),
-			paymentID: paymentSession.id,
-		},
-		purpose: 'payment'
-	});
+			purpose: 'payment'
+		});
+	} catch (e) {
+		res.render('error', {code: 500, error: 'Internal server error'})
+	}
 });
 
 module.exports = router;
