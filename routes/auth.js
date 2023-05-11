@@ -110,7 +110,10 @@ router.post('/login', validateLogin, async (req, res, next) => {
 	if (user) {
 		const {role, isFilled} = user;
 
-		if (!isFilled) {
+		if (role === 'admin')
+			redirectTo = '/admin/';
+
+		else if (!isFilled) {
 			let user;
 			if (role === 'rider')
 				user = await riders.findOne({email: email});
@@ -212,7 +215,7 @@ router.post('/change-password', async (req, res) => {
 	try {
 		const {pass, key} = req.body;
 
-		const keyData = await keys.findOne({key: key});
+		const keyData = await keys.fidOne({key: key});
 		if (!keyData)
 			return res.render('error', {code: 404, error: 'Reset request not found!'});
 
