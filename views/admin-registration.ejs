@@ -1,0 +1,42 @@
+<!-- ADMIN REGISTRATION -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<!-- Section: Design Block -->
+<section style="height: 100vh;" class="overflow-hidden">
+    <div class="d-flex h-100 align-items-center justify-content-center" style="background-color: hsl(0, 0%, 90%)">
+        <div class="row gx-lg-5 w-75">
+            <div class="col-lg-6 mb-5 mb-lg-0 text-center">
+                <h1 class="my-5 display-3 fw-bold"> PG Finder <br />
+                    <span class="text-primary small">Admin Portal Registration</span>
+                </h1>
+                <p style="color: hsl(217, 10%, 50.8%)">
+                    Welcome to PG Finder Admin Registration Page. You can register as an admin by just entering the
+                    provided Admin Key with your email, if you are not yet registered user, first register as rider
+                    and then come back here to register as an admin.
+                </p>
+            </div>
+
+            <div class="col-lg-6 mb-5 mb-lg-0 d-flex align-items-center">
+                <div class="card w-100">
+                    <div class="card-body py-5 px-md-5">
+                        <form class="form text-start" action="/auth/admin-create" method="post" enctype="application/x-www-form-urlencoded">
+                            <div class="mb-4">
+                                <label class="form-label" for="email-input">Email address</label>
+                                <input name="email" type="email" id="email-input" class="form-control" placeholder="Enter Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required/>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" for="key">Validation Key</label>
+                                <input name="adminKey" type="password" id="key" class="form-control" placeholder="Enter Validation Key" required/>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mb-4">
+                                Register
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
