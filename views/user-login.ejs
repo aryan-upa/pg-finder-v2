@@ -1,0 +1,71 @@
+<!-- USER LOGIN -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    #section-holder {
+        background: url("/images/city.svg") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
+
+<section id="section-holder" style="min-height: 100vh;" class="d-grid row-gap-2">
+    <div class="d-flex col-11 col-md-6 mx-auto my-auto text-center" style="background-color: rgba(0,0,0,0.8);">
+        <h1 class="display-3 text-white w-100">Welcome to PG Finder<br />
+            <span class="text-primary small">Login Page</span>
+        </h1>
+    </div>
+
+    <form method="post" id="form" class="col-lg-5 col-md-8 col-10 card shadow-lg pt-3 validation-required align-self-center mx-auto" novalidate>
+        <% if (attempt && attempt === 'failed') { %>
+            <p class="bg-danger text-white text-center h4 fw-light py-2">Invalid Email ID or Password!</p>
+        <% } %>
+        <div class="form-group row">
+            <label for="email" class="col-4 col-form-label">Email</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fa fa-link"></i>
+                        </div>
+                    </div>
+                    <input id="email" name="email" placeholder="Enter Email" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" required="required">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="pass" class="col-4 col-form-label">Password</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <input id="pass" name="pass" placeholder="Enter Password" type="password" required="required" class="form-control" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$">
+                    <div class="input-group-append">
+                        <div class="input-group-text" onclick="toggleVisibility()">
+                            <i class="fa fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="form-label text-muted small">Minimum length 8 characters, 1 Special Character, 1 Capital and 1 Number necessary.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="offset-4 col-8 d-flex justify-content-between align-items-center">
+                <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+                <a href="/auth/forget-password">Forgot Password!</a>
+            </div>
+        </div>
+        <div class="offset-4 col-8 my-3">
+            <a href="/auth/registration">New User? Register now!</a>
+        </div>
+    </form>
+</section>
+
+<script>
+	const pass = document.getElementById('pass');
+	function toggleVisibility() {
+		if (pass.type === 'password')
+			pass.type = 'text';
+		else
+			pass.type = 'password';
+	}
+
+	const form = document.getElementById('form')
+</script>
