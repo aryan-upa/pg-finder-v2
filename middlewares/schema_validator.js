@@ -1,4 +1,4 @@
-const {registrationSchema, loginSchema, riderSchema, providerSchema, propertySchema} = require('../utils/validation_schemas');
+const {registrationSchema, loginSchema, riderSchema, providerSchema, propertySchema, contactSchema} = require('../utils/validation_schemas');
 const {getZipcodeDetails} = require("../utils/zipcode_details");
 
 /* UTILITY FUNCTION TO GET ERROR MESSAGES */
@@ -110,10 +110,25 @@ async function validatePropertyDetails (req, res, next) {
 	next();
 }
 
+function validateContact (req, res, next) {
+	const {email, subject, content} = req.body;
+	const {error} = contactSchema.validate({
+		email, subject, content
+	});
+
+	if (error) {
+		const errors = errorModifier(error);
+		return res.status(406).send({error: true, errors});
+	}
+
+	next();
+}
+
 module.exports = {
 	validateRegistration,
 	validateLogin,
 	validateRiderDetails,
 	validateProviderDetails,
 	validatePropertyDetails,
+	validateContact
 }
