@@ -1,0 +1,89 @@
+<!-- SEARCH HOME-PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .shadow-on-hover {
+        max-width: 200px;
+        transition: 0.25s linear;
+    }
+
+    .shadow-on-hover:hover {
+        box-shadow: 0.5rem 0.5rem 2rem rgba(0, 0, 0, 0.1), -0.5rem 0.5rem 2rem rgba(0, 0, 0, 0.1), 0.5rem -0.5rem 2rem rgba(0, 0, 0, 0.1), -0.5rem -0.5rem 2rem rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<section>
+    <div class="p-5 text-center bg-image border-0" style="
+    margin-top: 3rem;
+    background: url('/images/s-home-back.jpg') center no-repeat;
+    height: 50dvh;
+    background-size: cover;
+    background-blend-mode: color;
+">
+        <div class="mask h-100 p-5" style="background: rgba(0, 0, 0, 0.5)">
+            <div class="d-flex justify-content-start h-100">
+                <div class="text-white text-start">
+                    <p class="mb-3 h3 fw-light">"Where you live determines how you live. What you do determines how well you live."</p>
+                    <p class="mb-3 h4 fw-light">- Lou Holtz</p>
+                </div>
+            </div>
+            <form action="/property" method="get" class="">
+                <div class="input-group col-10 col-sm-8 col-md-5 p-0 m-0 mx-auto">
+                    <select name="searchType" id="search-type" type="text" class="form-control col-2" onchange="modifyInput()">
+                        <option value="text">Text</option>
+                        <option value="zip">ZIP Code</option>
+                    </select>
+                    <input type="text" name="searchText" id="search-text" class="form-control" minlength="2" maxlength="32" required>
+                </div>
+
+                <button type="submit" class="btn btn-outline-primary mt-2"><span class="fst-italic">Find homes!</span></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-10 mx-auto mt-5">
+        <p class="display-5 text-center">Search in Top Cities</p>
+        <div class="d-flex flex-row flex-wrap column-gap-5 p-3 m-5 justify-content-center" style="flex: unset;">
+            <a href="/property?searchType=text&searchText=Delhi">
+                <img src="/images/delhi.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
+                <p class="card-text text-center mt-3">PGs in Delhi</p>
+            </a>
+            <a href="/property?searchType=text&searchText=Ahmedabad">
+                <img src="/images/ahmedabad.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
+                <p class="card-text text-center mt-3">PGs in Ahmedabad</p>
+            </a>
+            <a href="/property?searchType=text&searchText=Mumbai">
+                <img src="/images/mumbai.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
+                <p class="card-text text-center mt-3">PGs in Mumbai</p>
+            </a>
+            <a href="/property?searchType=text&searchText=Bengaluru">
+                <img src="/images/bengaluru.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
+                <p class="card-text text-center mt-3">PGs in Bengaluru</p>
+            </a>
+        </div>
+
+        <hr style="all: revert; height: 1px; background-color: black">
+
+        <p class="display-5 text-center mt-5">See Top Properties</p>
+        <div class="d-flex flex-row flex-wrap column-gap-5 p-3 m-5 justify-content-center" style="flex: unset;">
+            <% for (let prop of topProperty) { %>
+            <a href="/property/<%= prop.id %>">
+                <img src="<%= prop.img %>" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
+                <p class="card-text text-center mt-3"><%= prop.name %></p>
+            </a>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<script>
+    const select = document.getElementById('search-type');
+	const search = document.getElementById('search-text');
+
+    function modifyInput () {
+		if (select.value === 'text')
+			search.removeAttribute('pattern');
+		else
+			search.setAttribute('pattern', '\\d{6}');
+    }
+</script>
