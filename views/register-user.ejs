@@ -1,0 +1,171 @@
+<!-- USER REGISTRATION FORM -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<section>
+    <h1 class="text-center my-4">User Details Form</h1>
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="container">
+    <form id='form' method="post" action="/rider/<%= userRoleID %>?_method=patch" enctype="multipart/form-data" class="card col-lg-10 py-5 mx-auto px-2 border-0 validation-required" novalidate>
+        <div class="form-group row">
+            <label for="name" class="col-4 col-form-label">Name</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fa fa-user"></i>
+                        </div>
+                    </div>
+                    <input id="name" name="name" placeholder="Name" type="text" class="form-control" required="required" value="<%= user.name %>" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="email" class="col-4 col-form-label">Email</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fa fa-link"></i>
+                        </div>
+                    </div>
+                    <input id="email" name="email" placeholder="Email" type="text" class="form-control" required="required" value="<%= user.email %>" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="phone" class="col-4 col-form-label">Phone</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">+91</div>
+                    </div>
+                    <input id="phone" name="phone" placeholder="Enter Phone Number" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="dob" class="col-4 col-form-label">Date of Birth</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fa fa-birthday-cake"></i>
+                        </div>
+                    </div>
+                    <input id="dob" name="dob" type="date" min="1980-01-01" max="<%= new Date(new Date().getFullYear() - 10, new Date().getMonth(), new Date().getDate()).toLocaleDateString('fr-ca') %>" class="form-control" required="required">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-4">Gender</label>
+            <div class="col-8">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input name="gender" id="gender_0" type="radio" class="custom-control-input" value="male" required>
+                    <label for="gender_0" class="custom-control-label">Male</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input name="gender" id="gender_1" type="radio" class="custom-control-input" value="female">
+                    <label for="gender_1" class="custom-control-label">Female</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input name="gender" id="gender_2" type="radio" class="custom-control-input" value="trans">
+                    <label for="gender_2" class="custom-control-label">Trans</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="occupation" class="col-4 col-form-label">Occupation</label>
+            <div class="col-8">
+                <input id="occupation" name="occupation" placeholder="Software Engineer, Policeman, Student, etc." type="text" class="form-control" required="required">
+            </div>
+        </div>
+
+        <br>
+        <h4>File Uploads</h4>
+        <hr class="hr hr-blurry bg-black" />
+        <div class="form-group row">
+            <label for="profile-pic" class="col-4 col-form-label">Profile Picture</label>
+            <div class="col-8">
+                <input type="file" name="profile-pic" class="form-control" accept=".png,.jpg" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="covid-cert" class="col-4 col-form-label">Covid Certificate</label>
+            <div class="col-8">
+                <input type="file" name="covid-cert" class="form-control" accept=".pdf" required>
+            </div>
+        </div>
+
+        <br>
+        <h4>Emergency Contact Links</h4>
+        <hr class="hr hr-blurry bg-black" />
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="emContactName" class="">Name</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fa fa-user-circle"></i>
+                        </div>
+                    </div>
+                    <input id="emContactName" name="emContactName" placeholder="Emergency Contact Name" type="text" class="form-control" required="required">
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="emContactRelation" class="">Relation</label>
+                    <input id="emContactRelation" name="emContactRelation" placeholder="Emergency Contact Relation" type="text" class="form-control" required="required">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="emContactPhone" class="">Phone Number</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">+91</div>
+                    </div>
+                    <input id="emContactPhone" name="emContactPhone" placeholder="Emergency Contact Phone" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}">
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group row justify-content-end">
+            <button name="submit" type="submit" class="btn btn-primary w-auto">Submit</button>
+        </div>
+    </form>
+    </div>
+</section>
+
+<script>
+	const form = document.getElementById('form');
+
+	form.addEventListener('submit', e => {
+		e.preventDefault();
+
+		if (!form.checkValidity())
+			return;
+
+		const url = '/rider/<%= userRoleID %>?_method=patch';
+		const formData = new FormData(form);
+
+		const config = {
+			url: url,
+			method: 'post',
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+			data: formData,
+		};
+
+		axios(config)
+			.then((response) => {
+				addFlash('success', 'Your data has been successfully updated!');
+				setTimeout(() => {
+					window.location = '/rider/<%= userRoleID %>';
+				}, 2000);
+			})
+			.catch((error) => {
+				const errors = error.response.data.errors;
+				for (let err of errors)
+					addFlash ('error', err.msg);
+			});
+	});
+</script>
