@@ -1,0 +1,162 @@
+<!-- RIDER DASHBOARD -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<section>
+    <h1 class="text-center my-4">Rider Dashboard</h1>
+
+    <div class="row justify-content-evenly mt-5 w-100 d-flex">
+        <div class="mb-4 col-lg-3 text-md-left text-center">
+            <div class="card-body">
+                <img src="<%= user.profilePic %>" alt="avatar"
+                     class="rounded-circle img-fluid object-fit-cover" style="width: 150px; border: 1px solid black; aspect-ratio: 1;">
+                <h5 class="my-3"><%= user.name %></h5>
+                <p class="text-muted mb-4"><%= user.occupation %></p>
+                <% if (user.id === userRoleID) { %>
+                <div class="d-flex mb-2 justify-content-md-start justify-content-center">
+                    <a role="button" class="btn btn-primary" style="color: white;" href="/rider/<%= userRoleID %>/edit">Edit Profile</a>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="card mb-4 col-lg-5 col-10">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Full Name</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0"><%= user.name %></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Email</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0"><%= user.email %></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Phone</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">+91 <%= user.phone %></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Gender</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0"><%= user.gender.charAt(0).toUpperCase() + user.gender.substring(1) %></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">DOB</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0"><%= user.dob.toLocaleDateString('fr') %></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Covid Certificate</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0"><%- user.covidCert ? `Uploaded | <a href='${user.covidCert}' target="_blank">Link</a>` : "Not Uploaded"%></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-2">Emergency Contact Details</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="text-muted"><%= user.emergencyContact.name %></div>
+                        <div class="text-muted"><%= user.emergencyContact.phone %></div>
+                        <div class="text-muted"><%= user.emergencyContact.relation %></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="container my-3 py-3">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-pills" role="presentation">
+                <button class="nav-link active" style="padding-left: 3rem; padding-right: 3rem;" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings" type="button" role="tab" aria-controls="bookings" aria-selected="true">Bookings</button>
+            </li>
+            <li class="nav-pills" role="presentation">
+                <button class="nav-link" id="likes  -tab" style="padding-left: 3rem; padding-right: 3rem;" data-bs-toggle="tab" data-bs-target="#likes" type="button" role="tab" aria-controls="likes" aria-selected="false">Likes</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="bookings" role="tabpanel" aria-labelledby="bookings-tab">
+                <% if (user.bookings.length === 0) { %>
+                    <p class="h4 text-center my-4">No Bookings Yet!</p>
+                <% } %>
+                <ul class="list-group-flush list-group">
+                    <% for (let book of user.bookings) { %>
+                    <li class="list-group-item">
+                        <div class="card">
+                            <div class="card-header bg-<%= book.res === undefined ? 'dark' : book.res === false ? 'danger' : 'success'%> "></div>
+                            <div class="card-body pb-0">
+                                <p class="card-title pb-0 mb-0 text-muted small">Booking ID : <%= book.id %></p>
+                                <div class="d-flex flex-column flex-md-row align-items-center gap-3">
+                                    <h5 class="card-body m-0 p-0">Name: <%= book.property.name %></h5>
+                                    <a href="/property/<%= book.property.id %>" target="_blank" class="btn btn-primary">See Property</a>
+                                    <button class="btn disabled"><%= book.comment ? book.comment : 'No Comment Yet!' %></button>
+                                </div>
+                                <p class="text-muted text-center mt-2">
+                                    <% if (book.res === undefined) { %>
+                                        No result yet
+                                    <% } else if (book.res === false) { %>
+                                        Declined
+                                    <% } else { %>
+                                        Accepted
+                                    <% } %>
+                                    | <%= book.date.toLocaleDateString('en') %> | <%= book.property.bookingMoney %> ₹
+                                    <% if (book.res === false) { %>
+                                        | Refund to be initiated
+                                    <% } %>
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <% } %>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="likes" role="tabpanel" aria-labelledby="likes-tab">
+                <% if (user.likes.length === 0) { %>
+                    <p class="h4 text-center my-4">No liked Property yet!</p>
+                <% } %>
+                <ul class="list-group-flush list-group">
+                    <% for (let prop of user.likes) { %>
+                    <li class="list-group-item">
+                        <div class="card border-dark">
+                            <div class="card-header bg-primary-subtle py-1"></div>
+                            <div class="card-body">
+                                <p class="card-title pb-0 mb-0 text-muted small">Property ID : <%= prop.id %></p>
+                                <div class="d-flex align-items-center gap-3">
+                                    <h5 class="card-body m-0 p-0">Name: <%= prop.name %> </h5>
+                                    <a href="/property/<%= prop.id %>" target="_blank" class="btn btn-primary">See Property</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
