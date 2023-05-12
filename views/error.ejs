@@ -1,0 +1,17 @@
+<!-- ERROR PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .sec {
+        background: url('/images/error.jpg') center no-repeat;
+        background-size: cover;
+        background-blend-mode: color-burn;
+    }
+</style>
+
+<section class="bg-dark-subtle sec position-relative min-vh-100 d-grid " style="place-items: center">
+    <div class="card shadow-lg py-2 px-4 invalid-feedback position-absolute text-center rounded-0 border-0 h-auto" style="bottom: 25%;">
+        <h1 class="display-1">Error Code : <%= code %></h1>
+        <h2 class=""><%= error %></h2>
+    </div>
+</section>
