@@ -1,0 +1,308 @@
+<!-- ADMIN DETAILS -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<!-- Data needs to be sent from each endpoint about what type of data is being shown. -->
+<!-- Property Details -->
+<% if (type === 'property') { %>
+<section>
+    <h1 class="h1 text-center py-3">Property Details</h1>
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="py-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="card rounded shadow border-0">
+                <div class="card-body p-5 bg-white rounded">
+                    <div class="table-responsive">
+                        <table id="example" style="width:100%" class="table table-bordered table-hover">
+                            <thead>
+                            <tr class="table-primary">
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Booking Money</th>
+                                <th>Since</th>
+                                <th>Interested Count</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-group-divider border-dark  align-middle">
+                            <% for (let det of results) { %>
+                                <tr>
+                                    <td><a href="/property/<%= det.id %>" target="_blank"><%= det.name %></a></td>
+                                    <td><%= det.address ? det.address.city : 'No Data' %>, <%= det.address ? det.address.state : 'No Data' %></td>
+                                    <td><%= det.bookingMoney ? det.bookingMoney : 'No Data yet' %></td>
+                                    <td><%= det.since ? det.since : 'No Data' %></td>
+                                    <td><%= det.interested ? det.interested : 'No Data' %></td>
+                                    <td><button class="btn btn-sm btn-outline-danger mb-0" onclick="deleteProperty('<%= det.id %>')">Delete!</button></td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end pe-5">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link <%= isFirst && 'disabled' %>" href="/property/all?skip=<%- query.skip - 10 %>">Previous</a></li>
+                        <li class="page-item"><p class="page-link disabled">1</p></li>
+                        <li class="page-item"><a class="page-link <%= isLast && 'disabled' %>" href="/property/all?skip=<%- query.skip + 10 %>">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+	async function deleteProperty (prop_id) {
+		const url = `/property/${prop_id}?_method=delete`
+
+		const config = {
+			url: url,
+			method: 'post'
+		}
+
+		axios(config)
+			.then (res => {
+				addFlash('success', 'Property deleted successfully!');
+				setTimeout(() => {
+					window.location.reload();
+				}, 1000);
+			})
+			.catch (err => {
+				addFlash('error', 'Could not delete property, some error occurred!');
+			});
+	}
+</script>
+<% } else if (type === 'rider') { %>
+
+<!-- User Details -->
+<section>
+    <h1 class="h1 text-center py-3">User Details</h1>
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="py-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="card rounded shadow border-0">
+                <div class="card-body p-5 bg-white rounded">
+                    <div class="table-responsive">
+                        <table id="example" style="width:100%" class="table table-bordered table-hover">
+                            <thead>
+                            <tr class="table-primary">
+                                <th>Name</th>
+                                <th>Occupation</th>
+                                <th>Age</th>
+                                <th>Covid Certificate</th>
+                                <th>Booking Count</th>
+                                <th>Remove</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-group-divider border-dark  align-middle">
+                            <% for (let det of results) { %>
+                            <tr>
+                                <td><a href="/rider/<%= det.id %>" target="_blank"><%= det.name %></a></td>
+                                <td><%= det.occupation ? det.occupation : 'No Data yet!' %></td>
+                                <td><%- det.dob ? (new Date().getFullYear() - det.dob.getFullYear()) : 'No Data yet!' %></td>
+                                <td><a href="<%= det.covidCert ? det.covidCert : '#' %>" target="_blank">Link</a></td>
+                                <td><%= det.bookings.length %></td>
+                                <td><button class="btn btn-sm btn-outline-danger mb-0" onclick="deleteUser('<%= det.id %>')">Delete!</button></td>
+                            </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end pe-5">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link <%= isFirst && 'disabled' %>" href="/rider?skip=<%- query.skip - 10 %>">Previous</a></li>
+                        <li class="page-item"><p class="page-link disabled">1</p></li>
+                        <li class="page-item"><a class="page-link <%= isLast && 'disabled' %>" href="/rider?skip=<%- query.skip + 10 %>">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+	async function deleteUser (user_id) {
+		const url = `/rider/${user_id}?_method=delete`
+
+		const config = {
+			url: url,
+			method: 'post'
+		}
+
+		axios(config)
+			.then (res => {
+				addFlash('success', 'User deleted successfully!');
+				setTimeout(() => {
+					window.location.reload();
+				}, 1000);
+			})
+			.catch (err => {
+				addFlash('error', 'Could not delete user, some error occurred!');
+			});
+	}
+</script>
+<% } else if (type === 'provider') { %>
+<!-- Provider Details -->
+
+<section>
+    <h1 class="h1 text-center py-3">Provider Details</h1>
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="py-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="card rounded shadow border-0">
+                <div class="card-body p-5 bg-white rounded">
+                    <div class="table-responsive">
+                        <table id="example" style="width:100%" class="table table-bordered table-hover">
+                            <thead>
+                            <tr class="table-primary">
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Property Count</th>
+                                <th>GST Number</th>
+                                <th>Total Bookings</th>
+                                <th>Remove</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-group-divider border-dark  align-middle">
+                            <% for (let det of results) { %>
+                            <tr>
+                                <td><a href="/provider/<%= det.id %>" target="_blank"><%= det.name %></a></td>
+                                <td><%= det.address ? det.address.city : 'No Data' %>, <%= det.address ? det.address.state : 'No Data' %></td>
+                                <td><%= det.properties.length %></td>
+                                <td><%= det.gst ? det.gst : 'No Data yet!' %></td>
+                                <td><%- det.bookingPending.length + det.bookingCompleted.length %></td>
+                                <td><button class="btn btn-sm btn-outline-danger mb-0" onclick="deleteProvider('<%= det.id %>')">Delete!</button></td>
+                            </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end pe-5">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link <%= isFirst && 'disabled' %>" href="/provider?skip=<%- query.skip - 10 %>">Previous</a></li>
+                        <li class="page-item"><p class="page-link disabled">1</p></li>
+                        <li class="page-item"><a class="page-link <%= isLast && 'disabled' %>" href="/provider?skip=<%- query.skip + 10 %>">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+	async function deleteProvider (user_id) {
+		const url = `/provider/${user_id}?_method=delete`
+
+		const config = {
+			url: url,
+			method: 'post'
+		}
+
+		axios(config)
+			.then (res => {
+				addFlash('success', 'User deleted successfully!');
+				setTimeout(() => {
+					window.location.reload();
+				}, 1000);
+			})
+			.catch (err => {
+				addFlash('error', 'Could not delete user, some error occurred!');
+			});
+	}
+</script>
+<% } else if (type === 'booking') { %>
+<!-- Booking Details -->
+<section>
+    <h1 class="h1 text-center py-3">Booking Details</h1>
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="py-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="card rounded shadow border-0">
+                <div class="card-body p-5 bg-white rounded">
+                    <div class="table-responsive">
+                        <table id="example" style="width:100%" class="table table-bordered table-hover">
+                            <thead>
+                            <tr class="table-primary">
+                                <th>Booked By</th>
+                                <th>Property</th>
+                                <th>On</th>
+                                <th>Comment</th>
+                                <th>Is Completed</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-group-divider border-dark  align-middle">
+                            <% for (let det of results) { %>
+                            <tr>
+                                <td><a href="/rider/<%= det.by.id %>"><%= det.by.name %></a></td>
+                                <td><a href="/property/<%= det.property.id %>"><%= det.property.name %></a></td>
+                                <td><%= det.date.toLocaleDateString('en') %></td>
+                                <td><%= det.comment ? det.comment : 'No Comment Yet!'%></td>
+                                <td><%= det.completed ? 'Yes' : 'No' %></td>
+                                <td><%= det.property.bookingMoney %></td>
+                            </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation example" class="d-flex justify-content-end pe-5">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link <%= isFirst && 'disabled' %>" href="/booking?skip=<%- query.skip - 10 %>">Previous</a></li>
+                        <li class="page-item"><p class="page-link disabled">1</p></li>
+                        <li class="page-item"><a class="page-link <%= isLast && 'disabled' %>" href="/booking?skip=<%- query.skip + 10 %>">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<% } else if (type === 'contact') { %>
+    <!-- Contact Details -->
+    <section>
+        <h1 class="h1 text-center py-3">Contact Details</h1>
+        <hr style="all: revert; height: 1px; background-color: black">
+
+        <div class="py-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card rounded shadow border-0">
+                    <div class="card-body p-5 bg-white rounded">
+                        <div class="table-responsive">
+                            <table id="example" style="width:100%" class="table table-bordered table-hover">
+                                <thead>
+                                <tr class="table-primary">
+                                    <th>Sender Email</th>
+                                    <th>Date</th>
+                                    <th>Subject</th>
+                                    <th>Content</th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-group-divider border-dark  align-middle">
+                                <% for (let det of results) { %>
+                                    <tr>
+                                        <td><a href="mailto://<%= det.email %>"><%= det.email %></a></td>
+                                        <td><%= det.createdAt.toLocaleDateString('en') %></td>
+                                        <td><%= det.subject %></td>
+                                        <td><%= det.content %></td>
+                                    </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <nav aria-label="Page navigation example" class="d-flex justify-content-end pe-5">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link <%= isFirst && 'disabled' %>" href="/booking?skip=<%- query.skip - 10 %>">Previous</a></li>
+                            <li class="page-item"><p class="page-link disabled">1</p></li>
+                            <li class="page-item"><a class="page-link <%= isLast && 'disabled' %>" href="/booking?skip=<%- query.skip + 10 %>">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+<% } %>
