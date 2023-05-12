@@ -1,0 +1,80 @@
+<!-- RESET PASSWORD PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<section class="min-vh-100 d-flex align-content-center">
+    <div class="row col-10 mx-auto">
+        <div class="row justify-content-center">
+            <div class="col-md-6 my-auto">
+                <div class="card border-0">
+                    <img src="/images/forgot.jpg" class="card-img-left">
+                </div>
+            </div>
+            <div class="col-md-6 my-auto">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <h5 class="card-title display-5">Welcome, <%= name %></h5>
+                        <p class="card-text fw-medium">Enter new password!</p>
+                        <form novalidate id='form' action="/auth/change-password" class="validation-required" method="post">
+                            <div class="form-group">
+                                <label for="pass">New Password</label>
+                                <div class="input-group">
+                                    <input name='pass' type="password" class="form-control" id="pass" aria-describedby="passHelp" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#!%~]).{8,12}$">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" onclick="toggleVisibility()">
+                                            <i class="fa fa-eye"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small id="passHelp" class="form-text text-muted">Minimum length 8 characters, 1 Special Character, 1 Capital and 1 Number necessary.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-pass">Confirm New Password</label>
+                                <input name='confirm-pass' type="password" class="form-control" id="confirm-pass" aria-describedby="confirmPassHelp" required>
+                            </div>
+                            <div class="card bg-danger-subtle text-center h4 mt-2 py-2 small" id="invalid" hidden></div>
+                            <input type="text" name="key" value="<%= key %>" hidden>
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                        </form>
+                        <div class="mt-3">
+                            <a href="#">Go to login page</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+	const pass = document.getElementById('pass');
+	function toggleVisibility() {
+		if (pass.type === 'password')
+			pass.type = 'text';
+		else
+			pass.type = 'password';
+	}
+
+	const invalid = document.getElementById('invalid');
+    const form = document.getElementById('form');
+
+	document.getElementById('form').addEventListener('submit', (e) => {
+		e.preventDefault();
+		invalid.setAttribute('hidden', 'true');
+
+		const pass = document.getElementById('pass').value;
+		const confirmPass = document.getElementById('confirm-pass').value;
+
+		if (form.checkValidity() && pass.trim().length > 0 && pass === confirmPass)
+			form.submit();
+
+		if (pass.trim().length === 0) {
+			invalid.removeAttribute('hidden');
+			invalid.innerText = 'Password length must be greater than 0 without spaces.'
+		}
+
+		if (pass !== confirmPass) {
+			invalid.removeAttribute('hidden');
+			invalid.innerHTML = 'Password and confirm password doesn\'t match.';
+        }
+	});
+</script>
