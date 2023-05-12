@@ -1,0 +1,411 @@
+<!-- SINGLE PROPERTY PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<section>
+    <div class="" style="margin-top: 5rem;">
+        <div class="offset-1 col-8">
+            <h2 class="p text-muted fw-light fst-italic">Property ID: <%= property._id %></h2>
+            <hr style="all: revert; height: 1px; background-color: black">
+        </div>
+    </div>
+
+    <div class="offset-1 d-inline-block d-md-flex">
+        <div class="col-md-4 col-11 card border-0">
+            <a class="img-vala" href="<%= property.images[0] %>"><img class="card-img rounded-4 border shadow-lg" src="<%= property.images[0] %>" style="object-fit: cover; max-width: 100%; aspect-ratio: 1;" alt=""></a>
+        </div>
+        <div class="col-md-8 col-11 d-flex flex-column p-0 m-0 justify-content-between">
+            <div class="d-flex flex-column p-0 m-0 col-11" style="flex: unset">
+                <h1 class="fw-light" style="font-size: clamp(3rem, 10vw, 5rem)"><%= property.name %></h1>
+                <h3 class="fw-normal"><%= property.address.addL1 %></h3>
+                <h3 class="fw-normal fst-italic text-muted"><%= property.tagline %></h3>
+            </div>
+            <div class="d-flex flex-row column-gap-2 col-11 p-0 justify-content-md-start justify-content-center" style="flex: unset">
+                <% for (let i=1; i < property.images.length; i ++) { %>
+                    <a href="<%= property.images[i] %>" class="w-25"><img class="card-img rounded-2 border-2 border-dark shadow-lg" src="<%= property.images[i] %>" alt="property-image" style="object-fit: cover; max-width: 100%; aspect-ratio: 1;"></a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="offset-1 px-3" style="margin-top: 2rem">
+        <button class="btn btn-primary btn-lg" onclick="doPayment()"
+                <%= user && user.role === 'rider' ? '' : 'disabled' %>
+        >Book Now!</button>
+        <% if (user) { %>
+            <% if (user.role === 'rider') { %>
+                <button id='like-button' class="btn btn-lg" onclick="toggleLike()">
+                    <i class="<%= userDet.likes.includes(property.id) ? 'fa-solid' : 'fa-regular' %> fa-heart"
+                       style="color: red"></i>
+                </button>
+            <% } else if (user.role === 'provider' && userDet.id === property.owner.id) { %>
+                <a href="" role="button" class="btn btn-outline-secondary btn-lg">Edit Property</a>
+            <% } %>
+        <% } %>
+    </div>
+
+    <div class="offset-1 card col-10 border-0 ps-0" style="margin-top: 1rem">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Owner</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.owner.name %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Rate</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.rate %> per month</p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Booking Amount</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.bookingMoney %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Rating</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0" id="rating-stars"><%= property.rating %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offset-1 px-3 mt-4 d-flex flex-column row-gap-2">
+    <div class="row col-11 px-0 mt-5 row-gap-3">
+            <h2 class="display-4">About the Property</h2> <br>
+            <div class="card singleAmenity col-12 p-2">
+                <h3 class="fw-light ms-3">Food Related Rules</h3>
+                <div class="d-flex flex-wrap">
+                    <% for (let det of property.food) { %>
+                        <div class="card m-3 border-0" style="width: 150px">
+                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: 75px;">
+                            <div class="card-body text-center">
+                                <div class="card-text text-muted small text-capitalize"><%= det.name && det.name.replace('-', ' ') %></div>
+                                <div class="card-text"><%= det.detail %></div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="card singleAmenity col-12 p-2">
+                <h3 class="fw-light ms-3">Amenities</h3>
+                <div class="d-flex flex-wrap">
+                    <% for (let det of property.amenities) { %>
+                        <div class="card m-3 border-0" style="width: 150px">
+                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: 75px;">
+                            <div class="card-body text-center">
+                                <p class="card-text text-capitalize"><%= det.name && det.name.replace('-', ' ') %></p>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="card singleAmenity col-12 p-2">
+                <h3 class="fw-light ms-3">House Rules</h3>
+                <div class="d-flex flex-wrap">
+                    <% for (let det of property.rules) { %>
+                        <div class="card m-3 border-0" style="width: 150px">
+                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
+                            <div class="card-body text-center mt-2 pt-0">
+                                <div class="card-text text-capitalize mt-0"><%= det.name && det.name.replaceAll('-', ' ') %></div>
+                                <p class="card-text fs-3">
+                                    <% if (det.allowed) { %>
+                                        <i class="fa-solid fa-circle-check" style="color: lightgreen;"></i>
+                                    <% } else { %>
+                                        <i class="fa-solid fa-circle-xmark" style="color: crimson;"></i>
+                                    <% } %>
+                                </p>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="card singleAmenity col-12 p-2">
+                <h3 class="fw-light ms-3">Other Charges & Details</h3>
+                <div class="d-flex flex-wrap">
+                    <% for (let det of property.otherCharges) { %>
+                        <div class="card m-3 border-0" style="width: 150px">
+                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
+                            <div class="card-body text-center">
+                                <div class="card-text text-muted small text-capitalize"><%= det.name && det.name.replaceAll('-', ' ') %></div>
+                                <div class="card-text"><%= det.detail %></div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offset-1 card col-10 border-0 ps-0" style="margin-top: 1rem">
+        <div class="card-header display-3">Details</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Name</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.name %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Owner</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.owner.name %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Address</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.address.building %></p>
+                    <p class="text-muted mb-0"><%= property.address.addL1 %></p>
+                    <p class="text-muted mb-0"><%= property.address.addL2 %></p>
+                    <p class="text-muted mb-0"><%= property.address.city %></p>
+                    <p class="text-muted mb-0"><%= property.address.state %></p>
+                    <p class="text-muted mb-0"><%= property.address.zipcode %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Gender Allowed</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.type === 'co' ? 'Co - Living' : property.type === 'male' ? 'Male' : 'Female' %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Max Occupancy</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.maxOcc %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Since</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= property.since %></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-2">Beds</p>
+                </div>
+                <div class="col-sm-9">
+                    <div class="text-muted mb-0">
+                        <%= property.occupancy.map(v => " " + v.substring(0, 1).toUpperCase() + v.substring(1)) %>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-2">Booking Amount</p>
+                </div>
+                <div class="col-sm-9">
+                    <div class="text-muted mb-0"><%= property.bookingMoney %></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="offset-1 card col-10 border-0 ps-0" style="margin-top: 1rem">
+        <div class="card-header display-3">Reviews</div>
+        <% if (user && user.role === 'rider') { %>
+        <div class="card-body bg-warning-subtle bg-opacity-50 mt-3">
+            <form action="" method="post" id="review-form" class="validation-required" novalidate>
+                <div class="d-flex align-items-center column-gap-2">
+                    <label for="review-stars" class="h5 mb-0" style="width: fit-content">Give Rating: </label>
+                    <fieldset id='review-stars' class="starability-growRotate mt-2 w-auto" style="min-height: unset">
+                        <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="rating" value="1" required/>
+                        <label for="first-rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="first-rate2" name="rating" value="2" />
+                        <label for="first-rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="first-rate3" name="rating" value="3" />
+                        <label for="first-rate3" title="Average">3 stars</label>
+                        <input type="radio" id="first-rate4" name="rating" value="4" />
+                        <label for="first-rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="first-rate5" name="rating" value="5" />
+                        <label for="first-rate5" title="Amazing">5 stars</label>
+                    </fieldset>
+                </div>
+                <div class="input-group shadow-lg">
+                    <input type="text" name="comment" placeholder="Enter Review" class="form-control border-0" maxlength="1500" minlength="10" required/>
+                    <button type="submit" class="btn btn-primary border-0">Submit</button>
+                </div>
+            </form>
+        </div>
+        <% } %>
+
+        <hr class="" style="height: 1px; background-color: var(--bs-orange); opacity: 1">
+
+        <div class="card-body">
+            <% for (let review of property.reviews) { %>
+                <div class="card mb-3">
+                    <div class="card-header py-1">By <%= review.userID.name %> on <%= review.date.toLocaleDateString('en-US', {day: 'numeric', month: 'short', year: 'numeric'}) %> | <%= review.rating %>⭐</div>
+                    <div class="card-body">
+                        <p><%= review.comment %></p>
+                        <% if (userRoleID === review.userID.id) { %>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteReview('<%= review.id %>')">Delete</button>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+         </div>
+    </div>
+</section>
+
+<script>
+    <!-- LIKE BUTTON FUNCTION -->
+    const likeButton = document.getElementById('like-button');
+    function toggleLike () {
+		const url = '/property/<%= property._id %>/toggle';
+
+		const config = {
+			url: url,
+            method: 'post',
+        }
+
+		axios(config)
+            .then(res => {
+				addFlash ('success', `${res.data.state ? 'Added to' : 'Removed from'} your favourites successfully!`);
+
+				const isLiked = !res.data.state;
+	            if (isLiked) {
+		            likeButton.children.item(0).classList.remove('fa-solid');
+		            likeButton.children.item(0).classList.add('fa-regular');
+	            }
+	            else {
+		            likeButton.children.item(0).classList.remove('fa-regular');
+		            likeButton.children.item(0).classList.add('fa-solid');
+	            }
+            })
+            .catch(err => {
+				addFlash ('error', `Request failed due to : ${err.response.data.error || err}`);
+            });
+    }
+
+	// STARS RATING FUNCTION
+    function getStars(rating) {
+	    let i;
+	    rating = Math.round(rating * 2) / 2;
+	    let output = [];
+
+	    for (i = rating; i >= 1; i--)
+		    output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+	    if (i === .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+	    for (let i = (5 - rating); i >= 1; i--)
+		    output.push('<i class="fa fa-star-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+	    return output.join('');
+    }
+
+    const ratingSection = document.getElementById('rating-stars');
+    ratingSection.innerHTML = getStars(<%= property.rating %>);
+
+	// REVIEW FORM SUBMISSION FUNCTION
+    const reviewForm = document.getElementById('review-form');
+	reviewForm.addEventListener('submit', (e) => {
+		e.preventDefault();
+
+		if (!reviewForm.checkValidity())
+			return;
+
+		const formData = new URLSearchParams(new FormData(reviewForm));
+		const url = '/review?propertyID=<%= property._id %>';
+
+		const config = {
+			url: url,
+            method: 'post',
+            headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: formData.toString()
+        }
+
+        axios(config)
+            .then (res => {
+				addFlash('success', 'Your review has been added successfully!');
+	            setTimeout(() => {
+		            window.location.reload();
+	            }, 1000);
+            })
+            .catch (err => {
+				addFlash('error', 'Couldn\'t post your review, there was some issue.');
+            });
+    });
+
+    // DELETE REVIEW SUBMISSION FUNCTION
+    function deleteReview (reviewId) {
+	    const url = '/review/' + reviewId + '?_method=delete';
+
+		const config = {
+			url: url,
+            method: 'post',
+        }
+
+		axios(config).then(res => {
+			if (res.headers['content-type'] === "text/html; charset=utf-8")
+    			throw new Error('Please Login First!');
+
+			addFlash('success', res.data.success);
+			setTimeout(() => {
+				window.location.reload();
+			}, 1000);
+        }).catch(err => {
+			addFlash('error', err.response.data.error || err || 'Review could not be deleted!');
+		});
+    }
+
+	// PAYMENT FUNCTION
+    function doPayment () {
+		const url = '/property/<%= property._id %>/makePayment';
+
+		const config = {
+			url: url,
+            method: 'get',
+        }
+
+		axios(config)
+            .then(res => {
+	            if (res.headers['content-type'] === "text/html; charset=utf-8") {
+                    addFlash('error', 'Please login first!');
+					return;
+	            }
+
+				window.location = res.data.url;
+            })
+            .catch(err => {
+	            addFlash('error', err.response.data.error || err || 'Booking could not be initiated!');
+            });
+    }
+</script>
