@@ -1,0 +1,202 @@
+<!-- SEARCH RESULT PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .prop-card {
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+        margin-bottom: 2rem;
+        transition: 100ms linear;
+    }
+
+    .prop-card:hover {
+        box-sizing: border-box;
+        border: 3px solid lightblue;
+    }
+
+    .prop-card:hover .id-hover {
+        color: white;
+        background-color: var(--bs-primary);
+    }
+
+    .prop-card:hover .count-hover {
+        color: white;
+        background-color: var(--bs-danger);
+    }
+
+    .id-hover {
+        transition: 100ms linear;
+        background-color: var(--bs-primary-bg-subtle);
+    }
+
+    .count-hover {
+        transition: 100ms linear;
+        background-color: var(--bs-danger-bg-subtle)
+    }
+
+</style>
+
+<section>
+    <form action="/property/" id="search-form" method="get" class="mt-5 mb-3">
+        <div class="input-group col-10 col-sm-8 col-md-5 p-0 m-0 mx-auto">
+            <select name="searchType" id="search-type" type="text" class="form-control col-2" onchange="modifyInput()">
+                <option value="text" <%= query.searchType === 'text' && 'selected'%>>Text</option>
+                <option value="zip" <%= query.searchType === 'zip' && 'selected'%>>ZIP Code</option>
+            </select>
+            <input type="text" name="searchText" id="search-text" class="form-control" value="<%= query.searchText %>" required>
+        </div>
+
+        <div class="row col-8 p-0 m-0 mx-auto justify-content-evenly mt-3 flex-wrap row-gap-2">
+            <select name="gender" id="gender" type="text" class="form-control col-5 col-md-4 col-lg-2">
+                <option value="">Select Gender</option>
+                <option value="co" <%= query.gender && query.gender === 'co' && 'selected'%>>Co-Living</option>
+                <option value="male" <%= query.gender && query.gender === 'male' && 'selected'%>>Male</option>
+                <option value="female" <%= query.gender && query.gender === 'female' && 'selected' %>>Female</option>
+            </select>
+
+            <select name="rating" id="rating" type="number" class="form-control col-6 col-md-4 col-lg-2">
+                <option value="">Select Stars</option>
+                <option value="1" <%= query.rating && query.rating === '1' && 'selected'%>>1 stars</option>
+                <option value="2" <%= query.rating && query.rating === '2' && 'selected'%>>2 stars</option>
+                <option value="3" <%= query.rating && query.rating === '3' && 'selected'%>>3 stars</option>
+                <option value="4" <%= query.rating && query.rating === '4' && 'selected'%>>4 stars</option>
+                <option value="5" <%= query.rating && query.rating === '5' && 'selected'%>>5 stars</option>
+            </select>
+
+            <div class="col-6 col-md-4 col-lg-2 input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa-solid fa-rupee"></i></span>
+                </div>
+                <input type="number" name="rate" id="rate" class="form-control " min="100" max="50000" step="100" value="<%= query.rate %>">
+            </div>
+
+            <div class="input-group" style="width: fit-content;">
+                <span class="input-group-text">Sort by Price</span>
+                <div class="form-check-inline">
+                    <div class="form-check d-flex align-items-center">
+                        <input type="radio" name="sort" value="asc" id="sortAsc" class="form-check-input" <%= query.sort === 'asc' && 'checked' %>>
+                        <label for="sortAs" class="form-check-label">Asc</label>
+                    </div>
+
+                    <div class="form-check d-flex align-items-center">
+                        <input type="radio" name="sort" value="desc" id="sortDsc" class="form-check-input" <%= query.sort === 'desc' && 'checked' %>>
+                        <label for="sortDsc" class="form-check-label">Dsc</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mx-auto col-12">
+            <button type="submit" class="btn btn-outline-primary mt-3"><span class="fst-italic">Find homes!</span></button>
+        </div>
+    </form>
+
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="col-10 mx-auto">
+        <div class="breadcrumb">
+            <span class="breadcrumb-item">Showing <span class="text-primary"><%= query.resCount %></span> results</span>
+        </div>
+
+        <% if (results.length === 0) { %>
+            <img src="/images/no-result-found.png" alt="" class="card-img mb-5">
+        <% } else { %>
+        <ul style="list-style: none">
+            <% for (let res of results) { %>
+            <li>
+                <div class="card prop-card">
+                    <div class="card-header small text-muted py-1 justify-content-between d-flex bg-white">
+                        <span class="px-2 px-md-5 id-hover">Property ID: <%= res.id %></span>
+                        <span class="px-2 px-md-5 count-hover">Interested Count: <%= res.interested %></span>
+                    </div>
+                    <div class="container col-12 p-0 m-0 d-flex flex-md-row flex-column">
+                        <img src="<%= res.images[0] %>" alt="" class="card-img m-2 col-10 col-md-5 col-lg-3 mx-auto" style="aspect-ratio: 1; object-fit: cover">
+                        <div class="card-body col-11 col-md-8">
+                            <h4 class=""><%= res.name %></h4>
+                            <p class="fw-light"><%= res.address.addL1 %>, <%= res.address.addL2 %>, <%= res.address.city %>, <%= res.address.state %></p>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Genders:</div>
+                                <div class="w-auto h5 text-capitalize"><%= res.type %></div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Rate:</div>
+                                <div class="w-auto h5" ><%= res.rate %> Rs</div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Rating:</div>
+                                <div class="w-auto h5 stars" data-stars="<%= res.rating %>"></div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Since:</div>
+                                <div class="w-auto h5"><%= res.since %></div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Booking Amount:</div>
+                                <div class="w-auto h5"><%= res.bookingMoney %> Rs.</div>
+                            </div>
+                            <a role="button" class="btn btn-outline-primary" href="/property/<%= res.id %>" target="_blank">See Property!</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <% } %>
+        </ul>
+
+        <div class="row">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    <li class="page-item"><a role="button" id="prev-link" class="page-link <%= isFirst && 'disabled' %>" onclick="goto(<%- query.skip - 10 %>)">Previous</a></li>
+                    <li class="page-item"><a role="button" id="next-link" class="page-link <%= isLast && 'disabled' %>" onclick="goto(<%- query.skip + 10 %>)">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+        <% } %>
+    </div>
+</section>
+
+<script>
+	const select = document.getElementById('search-type');
+	const search = document.getElementById('search-text');
+
+	function modifyInput () {
+		if (select.value === 'text')
+			search.removeAttribute('pattern');
+		else
+			search.setAttribute('pattern', '\\d{6}');
+	}
+
+	const form = document.getElementById('search-form');
+
+	form.addEventListener('submit', (e) => {
+        e.preventDefault();
+		const query = new URLSearchParams(new FormData(form)).toString() + "<%- `&skip=${query.skip}` %>" + "<%- `&resCount=${query.resCount}` %>";
+		window.location = '/property?' + query;
+    });
+
+	for (let obj of document.getElementsByClassName('stars'))
+		obj.innerHTML = getStars(obj.dataset.stars);
+
+	function getStars(rating) {
+		let i;
+		rating = Math.round(rating * 2) / 2;
+		let output = [];
+
+		for (i = rating; i >= 1; i--)
+			output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+		if (i === .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+		for (let i = (5 - rating); i >= 1; i--)
+			output.push('<i class="fa fa-star-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+		return output.join('');
+	}
+
+	function goto (skip) {
+		const query = new URLSearchParams(new FormData(form)).toString() + `&skip=${skip}` + "<%- `&resCount=${query.resCount}` %>";
+		window.location = '/property?' + query;
+    }
+
+
+</script>
