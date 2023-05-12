@@ -1,0 +1,40 @@
+<!-- ADMIN LOGIN -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<!-- Section: Design Block -->
+<section style="height: 100vh;" class="overflow-hidden">
+    <div class="d-flex h-100 align-items-center justify-content-center" style="background-color: hsl(0, 0%, 90%)">
+        <div class="row gx-lg-5 w-75">
+            <div class="col-lg-6 mb-5 mb-lg-0 text-center">
+                <h1 class="my-5 display-3 fw-bold"> PG Finder <br />
+                    <span class="text-primary small">Admin Portal Login</span>
+                </h1>
+            </div>
+
+            <div class="col-lg-6 mb-5 mb-lg-0 d-flex align-items-center">
+                <div class="card w-100">
+                    <div class="card-body py-5 px-md-5">
+                        <form class="form text-start" method="post" enctype="application/x-www-form-urlencoded" action="/auth/admin-login">
+                            <div class="mb-4">
+                                <label class="form-label" for="email-input">Email address</label>
+                                <input name="email" type="email" id="email-input" class="form-control" placeholder="Enter Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" for="key">Password</label>
+                                <input name="pass" type="password" id="pass" class="form-control" placeholder="Enter Password"/>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button type="submit" class="btn btn-primary">Login</button>
+                                    <a href="/auth/forget-password">Forgot Password!</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
