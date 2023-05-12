@@ -1,0 +1,26 @@
+<!-- SUCCESS PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .sec {
+        background: url('/images/High_five.jpg') center no-repeat;
+        background-size: cover;
+        background-blend-mode: color-burn;
+    }
+
+    a {
+        color: white;
+    }
+</style>
+
+<section class="bg-dark-subtle sec position-relative min-vh-100 d-grid " style="place-items: center">
+    <div class="bg-success text-white card shadow-lg py-2 px-4 valid-feedback position-absolute text-center rounded-0 border-0" style="bottom: 25%;">
+        <h1 class="primary"><%- success %></h1>
+    </div>
+</section>
+
+<script>
+    setTimeout(() => {
+		window.location = '/'
+    }, 5000);
+</script>
