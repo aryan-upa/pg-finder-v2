@@ -1,0 +1,161 @@
+<!-- ADMIN DASHBOARD -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .card-inner {
+        background-color: #fff;
+        box-shadow: 0 0.46875rem 2.1875rem rgba(90,97,105,0.1), 0 0.9375rem 1.40625rem rgba(90,97,105,0.1), 0 0.25rem 0.53125rem rgba(90,97,105,0.12), 0 0.125rem 0.1875rem rgba(90,97,105,0.1);
+        overflow: hidden;
+    }
+
+    .l-bg-cherry {
+        background: linear-gradient(to right, #493240, #f09) !important;
+        color: #fff;
+    }
+
+    .l-bg-blue-dark {
+        background: linear-gradient(to right, #373b44, #4286f4) !important;
+        color: #fff;
+    }
+
+    .l-bg-green-dark {
+        background: linear-gradient(to right, #0a504a, #38ef7d) !important;
+        color: #fff;
+    }
+
+    .l-bg-orange-dark {
+        background: linear-gradient(to right, #a86008, #ffba56) !important;
+        color: #fff;
+    }
+
+    .card .card-icon-large .fas, .card .card-icon-large .far {
+        font-size: 110px;
+    }
+
+    .card .card-icon {
+        z-index: 0;
+        text-align: center;
+        line-height: 50px;
+        margin-left: 15px;
+        color: #000;
+        position: absolute;
+        right: -5px;
+        top: 20px;
+        opacity: 0.1;
+    }
+</style>
+
+<section>
+    <h1 class="text-center my-4">Admin Dashboard</h1>
+
+<!--    <div class="row my-5 mx-0 ">-->
+<!--        <div class="container col-10 mx-auto">-->
+<!--            <div class="card border-0">-->
+<!--                <img src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg" alt="some image" class="card-img" style="max-height: 60vh; object-fit: cover">-->
+<!--                <div class="card-img-overlay text-white opacity-75">-->
+<!--                    <h2 class="card-title mb-0">Total Bookings Per Day</h2>-->
+<!--                    <h4 class="card-text mt-1">Data contains of only previous month.</h4>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <hr style="all: revert; height: 1px; background-color: black">
+
+    <div class="row mx-0">
+        <div class="card col-12 my-auto border-0 ">
+            <div class="card-body">
+                <div class="mb-5">
+                    <h2 class="card-title mb-0 text-center">Running Details</h2>
+                    <h3 class="card-title small text-muted mt-1 text-center">Refresh the page to see latest details</h3>
+                </div>
+                <div class="container d-flex flex-column row-gap-4 justify-content-center column-gap-2">
+                    <div class="row d-flex row-gap-4">
+                        <div class="col-md-6">
+                            <div class="card l-bg-cherry card-inner border-0">
+                                <div class="card-icon card-icon-large"><i class="fas fa-solid fa-house"></i></div>
+                                <div class="card-header bg-danger-subtle" style="z-index: 2"></div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Properties Count</h4>
+                                    <div class="d-flex w-50 align-items-center justify-content-between">
+                                        <h3 class="card-title m-0"><%= data.totalProperties %></h3>
+                                        <a role="button" href="/property/all    " class="btn btn-sm btn-outline-warning">See All Properties</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card l-bg-green-dark card-inner border-0">
+                                <div class="card-icon card-icon-large"><i class="fas fa-solid fa-handshake"></i></div>
+                                <div class="card-header bg-success-subtle"></div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Total Bookings</h4>
+                                    <div class="d-flex w-50 align-items-center justify-content-between">
+                                        <h3 class="card-title m-0"><%= data.totalBookings %></h3>
+                                        <a role="button" href="/booking/" class="btn btn-sm btn-outline-light">See All Bookings</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-gap-4">
+                        <div class="col-md-6">
+                            <div class="card l-bg-blue-dark card-inner border-0">
+                                <div class="card-icon card-icon-large"><i class="fas fa-binoculars"></i></div>
+                                <div class="card-header bg-primary-subtle z-2"></div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Rider Count</h4>
+                                    <div class="d-flex w-50 align-items-center justify-content-between">
+                                        <h3 class="card-title m-0"><%= data.totalRiders %></h3>
+                                        <a role="button" href="/rider/" class="btn btn-sm btn-outline-danger text-white">See All Riders</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card l-bg-blue-dark card-inner border-0">
+                                <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
+                                <div class="card-header bg-primary-subtle z-2"></div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Provider Count</h4>
+                                    <div class="d-flex w-50 align-items-center justify-content-between">
+                                        <h3 class="card-title m-0"><%= data.totalProviders %></h3>
+                                        <a role="button" href="/provider/" class="btn btn-sm btn-outline-danger text-white">See All Providers</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card l-bg-orange-dark card-inner border-0">
+                                <div class="card-icon card-icon-large"><i class="far fa-solid fa-indian-rupee-sign"></i></div>
+                                <div class="card-header bg-warning z-2"></div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Amount Generated</h4>
+                                    <div class="d-flex w-50 align-items-center justify-content-between">
+                                        <h3 class="card-title m-0"><%= data.totalBalance %></h3>
+                                        <a role="button" href="https://dashboard.stripe.com/test/dashboard" class="btn btn-sm btn-outline-dark">See Stripe Profile</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card l-bg-cherry card-inner border-0">
+                                <div class="card-icon card-icon-large"><i class="fas fa-solid fa-address-book"></i></div>
+                                <div class="card-header bg-danger-subtle" style="z-index: 2"></div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Total Contacts</h4>
+                                    <div class="d-flex w-50 align-items-center justify-content-between">
+                                        <h3 class="card-title m-0"><%= data.totalContact %></h3>
+                                        <a role="button" href="/contact/" class="btn btn-sm btn-outline-warning">All Contacts</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://kit.fontawesome.com/5a010fa73c.js" crossorigin="anonymous"></script>
