@@ -1,0 +1,445 @@
+<!-- PG EDIT FORM -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<section>
+    <h1 class="text-center my-4">PG Registration Form</h1>
+    <hr style="all: revert; height: 1px; background-color: black">
+    <div class="container">
+        <form id="form" class="card col-lg-10 py-5 mx-auto px-2 border-0 validation-required" enctype="application/x-www-form-urlencoded" novalidate>
+            <div class="form-group row">
+                    <label class="col-4 col-form-label" for="name">Name</label>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-home"></i>
+                                </div>
+                            </div>
+                            <input id="name" name="name" placeholder="PG Name" type="text" class="form-control" required="required" aria-describedby="nameHelpBlock" value="<%= property.name %>" readonly>
+                        </div>
+                        <span id="nameHelpBlock" class="form-text text-muted">People can find you by your PG name, keep it short and simple.</span>
+                    </div>
+                </div>
+
+                <br>
+                <h3>ADDRESS DETAILS</h3>
+                <hr class="hr hr-blurry bg-black" />
+                <div class="form-group row">
+                    <label for="addBuilding" class="col-4 col-form-label">Building Address</label>
+                    <div class="col-8">
+                        <input id="addBuilding" name="addBuilding" placeholder="Building Address" type="text" class="form-control" required="required" value="<%= property.address.building %>" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="addL1" class="col-4 col-form-label">Address Line 1</label>
+                    <div class="col-8">
+                        <input id="addL1" name="addL1" placeholder="Address Line 1" type="text" class="form-control" required="required" value="<%= property.address.addL1 %>" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="addL2" class="col-4 col-form-label">Address Line 2</label>
+                    <div class="col-8">
+                        <input id="addL2" name="addL2" placeholder="Address Line 2" type="text" class="form-control" value="<%= property.address.addL2 %>" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="landmark" class="col-4 col-form-label">Landmark</label>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-map-marker"></i>
+                                </div>
+                            </div>
+                            <input id="landmark" name="landmark" placeholder="Enter nearest landmark" type="text" class="form-control" required="required" value="<%= property.address.landmark %>" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="state" class="col-4 col-form-label">State</label>
+                    <div class="col-8">
+                        <select id="state" name="state" class="form-control" required disabled>
+                            <option value="<%= property.address.state %>" selected><%= property.address.state %></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="city" class="col-4 col-form-label">City</label>
+                    <div class="col-8">
+                        <select id="city" name="city" class="form-control" required disabled>
+                            <option value="<%= property.address.city %>" selected><%= property.address.city %></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="zipCode" class="col-4 col-form-label">Zip Code</label>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-location-arrow"></i>
+                                </div>
+                            </div>
+                            <input id="zipCode" name="zipCode" placeholder="Zip Code" type="text" pattern="\d{6}" class="form-control" required="required" readonly value="<%= property.address.zipcode %>">
+                        </div>
+                    </div>
+                </div>
+
+            <br>
+            <h3>BASIC DETAILS</h3>
+            <hr class="hr hr-blurry bg-black" />
+
+            <div class="form-group row">
+                    <label for="maxOccupancy" class="col-4 col-form-label">Max Occupancy</label>
+                    <div class="col-8">
+                        <input id="maxOccupancy" name="maxOccupancy" placeholder="Enter Maximum Occupancy" type="number" min="1" max="1000" class="form-control" aria-describedby="maxOccupancyHelpBlock" required="required" value="<%= property.maxOcc %>">
+                        <span id="maxOccupancyHelpBlock" class="form-text text-muted">Maximum number of people your PG can accommodate at one time.</span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-4">Type</label>
+                    <div class="col-8">
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input name="type" id="type_0" type="radio" aria-describedby="typeHelpBlock" required="required" class="custom-control-input" value="male" <%= property.type === 'male' && 'checked'%>>
+                            <label for="type_0" class="custom-control-label">Male</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input name="type" id="type_1" type="radio" aria-describedby="typeHelpBlock" required="required" class="custom-control-input" value="female" <%= property.type === 'female' && 'checked'%>>
+                            <label for="type_1" class="custom-control-label">Female</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input name="type" id="type_2" type="radio" aria-describedby="typeHelpBlock" required="required" class="custom-control-input" value="co" <%= property.type === 'co' && 'checked'%>>
+                            <label for="type_2" class="custom-control-label">Co-Living</label>
+                        </div>
+                        <span id="typeHelpBlock" class="form-text text-muted">Enter gender of tenants.</span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="desc" class="col-4 col-form-label">Description</label>
+                    <div class="col-8">
+                        <textarea id="desc" name="desc" cols="40" rows="5" class="form-control" aria-describedby="descHelpBlock" required="required"><%= property.desc %></textarea>
+                        <span id="descHelpBlock" class="form-text text-muted">Enter Description of PG under 1000 characters.</span>
+                    </div>
+                </div>
+
+                    <div class="form-group row">
+                        <label class="col-4 col-form-label">Beds</label>
+                        <div class="col-8">
+                            <div class="custom-controls-stacked">
+                                <div class="custom-control custom-checkbox">
+                                    <input name="occupancy" id="beds_0" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="single" <%= property.occupancy.includes('single') && 'checked'%>>
+                                    <label for="beds_0" class="custom-control-label">Single</label>
+                                </div>
+                            </div>
+                            <div class="custom-controls-stacked">
+                                <div class="custom-control custom-checkbox">
+                                    <input name="occupancy" id="beds_1" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="double" <%= property.occupancy.includes('double') && 'checked'%>>
+                                    <label for="beds_1" class="custom-control-label">Double</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                    <label for="tagLine" class="col-4 col-form-label">Tag Line</label>
+                    <div class="col-8">
+                        <input id="tagLine" name="tagLine" placeholder="Enter Tag Line" type="text" class="form-control" aria-describedby="tagLineHelpBlock" required="required" value="<%= property.tagline %>">
+                        <span id="tagLineHelpBlock" class="form-text text-muted">Keep it simple and catchy</span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="since" class="col-4 col-form-label">Since</label>
+                    <div class="col-8">
+                        <input id="since" name="since" placeholder="Enter starting year" type="number" min="1947" max="<%= new Date().getFullYear() %>" class="form-control" required="required" value="<%= property.since %>">
+                    </div>
+                </div>
+
+                <br>
+                <h3>RULES & AMENITIES</h3>
+                <hr class="hr hr-blurry bg-black" />
+
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Food Related Rules</label>
+                <div class="col-8">
+                    <div class="custom-controls-stacked mb-2">
+                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
+                            <input name="food" id="food_0" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="food-available" >
+                            <label for="food_0" class="custom-control-label">Food Available</label>
+                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter availability details"%>/>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked mb-2">
+                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
+                            <input name="food" id="food_1" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="meals-provided">
+                            <label for="food_1" class="custom-control-label">Meal Type</label>
+                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Veg / Non-Veg"/>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked mb-2">
+                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
+                            <input name="food" id="food_2" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="fridge">
+                            <label for="food_2" class="custom-control-label">Fridge</label>
+                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Details"/>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked mb-2">
+                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
+                            <input name="food" id="food_3" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="food-charges">
+                            <label for="food_3" class="custom-control-label">Food Charges</label>
+                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Included / Not-Included"/>
+                        </div>
+                    </div>
+                    <span id="foodHelpBlock" class="form-text text-muted">Enter food related rules in the PG, you can also enter additional details.</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Amenities Provided</label>
+                <div class="col-8">
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_0" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="wifi">
+                            <label for="amenities_0" class="custom-control-label">WiFi</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_1" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="power-backup">
+                            <label for="amenities_1" class="custom-control-label">Power Backup</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_2" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="room-cleaning">
+                            <label for="amenities_2" class="custom-control-label">Room Cleaning Service</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_3" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="tv">
+                            <label for="amenities_3" class="custom-control-label">TV</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_4" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="lift">
+                            <label for="amenities_4" class="custom-control-label">Lift</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_5" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="laundary">
+                            <label for="amenities_5" class="custom-control-label">Laundary</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_6" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="fridge">
+                            <label for="amenities_6" class="custom-control-label">Fridge</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_7" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="water-cooler">
+                            <label for="amenities_7" class="custom-control-label">Water Cooler</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_8" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="warden">
+                            <label for="amenities_8" class="custom-control-label">Warden</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_9" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="microwave">
+                            <label for="amenities_9" class="custom-control-label">Microwave</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_10" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="parking">
+                            <label for="amenities_10" class="custom-control-label">Parking</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="amenities" id="amenities_11" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="car-parking">
+                            <label for="amenities_11" class="custom-control-label">4-Wheeler Parking</label>
+                        </div>
+                    </div>
+                    <span id="amenitiesHelpBlock" class="form-text text-muted">Check amenities available at the PG.</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-4 col-form-label">House Rules</label>
+                <div class="col-8">
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rules" id="rules_0" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="visitor">
+                            <label for="rules_0" class="custom-control-label">Visitor Entry</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rules" id="rules_1" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="non-veg-food">
+                            <label for="rules_1" class="custom-control-label">Non-Veg Food</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rules" id="rules_2" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="other-gender">
+                            <label for="rules_2" class="custom-control-label">Other gender</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rules" id="rules_3" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="smoking">
+                            <label for="rules_3" class="custom-control-label">Smoking</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rules" id="rules_4" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="drinking">
+                            <label for="rules_4" class="custom-control-label">Drinking</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rules" id="rules_5" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="loud-music">
+                            <label for="rules_5" class="custom-control-label">Loud Music</label>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rules" id="rules_6" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="party">
+                            <label for="rules_6" class="custom-control-label">Party</label>
+                        </div>
+                    </div>
+                    <span id="rulesHelpBlock" class="form-text text-muted">Check what is allowed in the PG</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Other Details</label>
+                <div class="col-8">
+                    <div class="custom-controls-stacked mb-2">
+                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
+                            <input name="otherCharges" id="otherCharges_0" type="checkbox" aria-describedby="otherChargesHelpBlock" class="custom-control-input" value="laundary">
+                            <label for="otherCharges_0" class="custom-control-label">Laundary</label>
+                            <input name="otherChargesText" type="text" aria-describedby="otherChargesHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Included / Not - Included"/>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked mb-2">
+                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
+                            <input name="otherCharges" id="otherCharges_1" type="checkbox" aria-describedby="otherChargesHelpBlock" class="custom-control-input" value="notice-period">
+                            <label for="otherCharges_1" class="custom-control-label">Notice Period</label>
+                            <input name="otherChargesText" type="text" aria-describedby="otherChargesHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Notice Period Length"/>
+                        </div>
+                    </div>
+                    <div class="custom-controls-stacked mb-2">
+                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
+                            <input name="otherCharges" id="otherCharges_2" type="checkbox" aria-describedby="otherChargesHelpBlock" class="custom-control-input" value="gate-time">
+                            <label for="otherCharges_2" class="custom-control-label">Gate Closing Time</label>
+                            <input name="otherChargesText" type="text" aria-describedby="otherChargesHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Gate Closing Time / No Closing Time"/>
+                        </div>
+                    </div>
+                    <span id="otherChargesHelpBlock" class="form-text text-muted">Enter other charges & other Information and their details.</span>
+                </div>
+            </div>
+
+                <br>
+                <h3>MONEY DETAILS</h3>
+                <hr class="hr hr-blurry bg-black" />
+
+                <div class="form-group row">
+                    <label for="rate" class="col-4 col-form-label">Rate</label>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-rupee"></i>
+                                </div>
+                            </div>
+                            <input id="rate" name="rate" placeholder="Enter Price / Month" type="number" class="form-control" required="required" value="<%= property.rate %>">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="bookingMoney" class="col-4 col-form-label">Booking Amount</label>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-rupee"></i>
+                                </div>
+                            </div>
+                            <input id="bookingMoney" name="bookingMoney" placeholder="Enter Booking Amount" type="number" min="1" max="10000" class="form-control" aria-describedby="bookingMoneyHelpBlock" required="required" value="<%= property.bookingMoney %>" readonly>
+                        </div>
+                        <span id="bookingMoneyHelpBlock" class="form-text text-muted">Maximum booking amount is 10,000 ₹.</span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="offset-4 col-8">
+                        <button name="submit" type="submit" class="btn btn-primary">Edit PG</button>
+                    </div>
+                </div>
+            </form>
+    </div>
+</section>
+
+<script>
+    for (let inputHolder of document.getElementsByClassName('has-text-input')) {
+		inputHolder.children[inputHolder.children.length - 1].setAttribute('disabled', 'true');
+
+	    inputHolder.children[0].addEventListener('change', (e) => {
+			const parent = e.target.parentElement;
+			const checked = e.target.checked;
+			if (checked)
+    		    e.target.parentElement.children[parent.children.length - 1].removeAttribute('disabled');
+			else
+				e.target.parentElement.children[parent.children.length - 1].setAttribute('disabled', 'true');
+        });
+    }
+
+    const form = document.getElementById('form');
+    const state = document.getElementById('state');
+    const city = document.getElementById('city');
+
+
+    form.addEventListener('submit', e => {
+	    e.preventDefault();
+
+	    if (!form.checkValidity())
+		    return;
+
+	    const url = '/property/<%= property.id %>?_method=patch';
+        state.removeAttribute('disabled');
+        city.removeAttribute('disabled');
+	    const formData = new URLSearchParams(new FormData(form));
+
+	    const config = {
+		    url: url,
+		    method: 'post',
+		    headers: {
+			    'Content-Type': 'application/x-www-form-urlencoded',
+		    },
+		    data: formData.toString(),
+	    };
+
+	    axios(config)
+		    .then((response) => {
+			    addFlash('success', 'Property has been successfully updated!');
+			    setTimeout(() => {
+				    window.location = '/property/<%= property.id %>/';
+			    }, 2000);
+		    })
+		    .catch((error) => {
+			    const errors = error.response.data.errors;
+			    for (let err of errors)
+				    addFlash ('error', err.msg);
+		    });
+
+		state.setAttribute('disabled', 'true');
+		city.setAttribute('disabled', 'true');
+    });
+</script>
