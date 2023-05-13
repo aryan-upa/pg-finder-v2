@@ -2,13 +2,6 @@
 <% layout('layout/boilerplate.ejs') -%>
 
 <section>
-    <div class="" style="margin-top: 5rem;">
-        <div class="offset-1 col-8">
-            <h2 class="p text-muted fw-light fst-italic">Property ID: <%= property._id %></h2>
-            <hr style="all: revert; height: 1px; background-color: black">
-        </div>
-    </div>
-
     <div class="offset-1 d-inline-block d-md-flex">
         <div class="col-md-4 col-11 card border-0">
             <a class="img-vala" href="<%= property.images[0] %>"><img class="card-img rounded-4 border shadow-lg" src="<%= property.images[0] %>" style="object-fit: cover; max-width: 100%; aspect-ratio: 1;" alt=""></a>
@@ -19,9 +12,9 @@
                 <h3 class="fw-normal"><%= property.address.addL1 %></h3>
                 <h3 class="fw-normal fst-italic text-muted"><%= property.tagline %></h3>
             </div>
-            <div class="d-flex flex-row column-gap-2 col-11 p-0 justify-content-md-start justify-content-center" style="flex: unset">
-                <% for (let i=1; i < property.images.length; i ++) { %>
-                    <a href="<%= property.images[i] %>" class="w-25"><img class="card-img rounded-2 border-2 border-dark shadow-lg" src="<%= property.images[i] %>" alt="property-image" style="object-fit: cover; max-width: 100%; aspect-ratio: 1;"></a>
+            <div id="gallery" class="d-flex flex-row column-gap-2 col-11 p-0 justify-content-md-start justify-content-center" style="flex: unset">
+                <% for (let i=0; i < property.images.length; i ++) { %>
+                    <a href="<%= property.images[i] %>" style="width: 20%"><img class="card-img rounded-2 border-2 border-dark shadow-lg" src="<%= property.images[i] %>" alt="property-image" style="object-fit: cover; max-width: 100%; aspect-ratio: 1;"></a>
                 <% } %>
             </div>
         </div>
@@ -281,6 +274,17 @@
          </div>
     </div>
 </section>
+
+<script type="module">
+	import PhotoSwipeLightbox from '/js/photoswipe.js';
+	const lightbox = new PhotoSwipeLightbox({
+		gallery: '#gallery',
+		children: 'a',
+        initialZoomLevel: 'fit',
+		pswpModule: () => import('/js/photoswipe.esm.js')
+	});
+	lightbox.init();
+</script>
 
 <script>
     <!-- LIKE BUTTON FUNCTION -->
