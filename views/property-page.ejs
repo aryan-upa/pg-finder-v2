@@ -4,7 +4,7 @@
 <section>
     <div class="offset-1 d-inline-block d-md-flex">
         <div class="col-md-4 col-11 card border-0">
-            <a class="img-vala" href="<%= property.images[0] %>"><img class="card-img rounded-4 border shadow-lg" src="<%= property.images[0] %>" style="object-fit: cover; max-width: 100%; aspect-ratio: 1;" alt=""></a>
+            <img class="card-img rounded-4 border shadow-lg" src="<%= property.images[0] %>" style="object-fit: cover; max-width: 100%; aspect-ratio: 1;" alt="">
         </div>
         <div class="col-md-8 col-11 d-flex flex-column p-0 m-0 justify-content-between">
             <div class="d-flex flex-column p-0 m-0 col-11" style="flex: unset">
@@ -84,7 +84,7 @@
                 <div class="d-flex flex-wrap">
                     <% for (let det of property.food) { %>
                         <div class="card m-3 border-0" style="width: 150px">
-                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: 75px;">
+                            <img src="/<%= det.path %>.svg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: 75px;">
                             <div class="card-body text-center">
                                 <div class="card-text text-muted small text-capitalize"><%= det.name && det.name.replace('-', ' ') %></div>
                                 <div class="card-text"><%= det.detail %></div>
@@ -98,7 +98,7 @@
                 <div class="d-flex flex-wrap">
                     <% for (let det of property.amenities) { %>
                         <div class="card m-3 border-0" style="width: 150px">
-                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: 75px;">
+                            <img src="/<%= det.path %>.svg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: 75px;">
                             <div class="card-body text-center">
                                 <p class="card-text text-capitalize"><%= det.name && det.name.replace('-', ' ') %></p>
                             </div>
@@ -111,7 +111,7 @@
                 <div class="d-flex flex-wrap">
                     <% for (let det of property.rules) { %>
                         <div class="card m-3 border-0" style="width: 150px">
-                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
+                            <img src="/<%= det.path %>.svg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
                             <div class="card-body text-center mt-2 pt-0">
                                 <div class="card-text text-capitalize mt-0"><%= det.name && det.name.replaceAll('-', ' ') %></div>
                                 <p class="card-text fs-3">
@@ -131,7 +131,7 @@
                 <div class="d-flex flex-wrap">
                     <% for (let det of property.otherCharges) { %>
                         <div class="card m-3 border-0" style="width: 150px">
-                            <img src="https://www.marthastewart.com/thmb/U3P2_XFbsHLV4ln-_qUSTto6oS4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/kristen-blazek-home-0621-06-2000-51d8b6e2b7054b669f3859cbfc30e80e.jpg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
+                            <img src="/<%= det.path %>.svg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
                             <div class="card-body text-center">
                                 <div class="card-text text-muted small text-capitalize"><%= det.name && det.name.replaceAll('-', ' ') %></div>
                                 <div class="card-text"><%= det.detail %></div>
