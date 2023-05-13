@@ -8,28 +8,154 @@
     <title>PG Finder V2</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/starability-growRotate.min.css"/>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/starability-growRotate.min.css">
+    <link rel="stylesheet" href="/css/photoswipe.css">
 </head>
-<body>
+<body style="scroll-behavior: smooth">
     <section id="flash-holder" class="position-fixed col-10 col-md-3 text-white" style="top: 10%; right: 5%; z-index: 9999"></section>
     <script src="/js/include-first.js"></script>
 
-    <header>
-        <!-- include navbar -->
+    <header style="margin-bottom: 2rem">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #A0DFD4" data-aos="fade-down">
+            <div class="container-fluid">
+                <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-mdb-toggle="collapse"
+                        data-mdb-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                >
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <a class="navbar-brand mt-2 mt-lg-0" href="/">
+                        <img
+                                src="/images/party.png"
+                                height="60"
+                                class="object-fit-cover rounded-circle"
+                                alt="MDB Logo"
+                                loading="lazy"
+                        />
+                    </a>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/property/search">Search Homes</a>
+                        </li>
+                        <% if (user && user.role !== 'admin') { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<%= `/${user.role}/dashboard`%>">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<%= `/${user.role}/${userRoleID}/edit`%>">Edit Profile</a>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+
+                <% if (user) { %>
+                <ul class="navbar-nav mb-2 mb-lg-0 me-3">
+                    <li class="nav-item"><a role="button" href="/auth/logout" class="btn btn-outline-primary nav-link text-black">Logout</a></li>
+                </ul>
+                <% } else { %>
+                    <ul class="navbar-nav mb-2 mb-lg-0 me-3">
+                        <li class="nav-item"><a role="button" href="/auth/login" class="btn btn-outline-primary nav-link text-black">Login</a></li>
+                    </ul>
+                <% } %>
+                <% if (user && user.role !== 'admin') { %>
+                <div class="d-flex align-items-center">
+                    <a href="<%= `/${user.role}/dashboard` %>">
+                        <img
+                                src="<%= userDet.profilePic || '/images/man.svg' %>"
+                                class="rounded-circle"
+                                height="60"
+                                alt="Black and White Portrait of a Man"
+                                loading="lazy"
+                        />
+                    </a>
+                </div>
+                <% } %>
+            </div>
+        </nav>
     </header>
 
-    <section>
+    <section id="main-body" style="min-height: 100vh;">
         <%- body -%>
     </section>
 
-    <footer>
-        <!-- include footer-->
+    <footer data-aos="fade-up" class="" style="min-width: -webkit-fill-available;">
+        <div class="">
+            <footer class="text-center text-dark" style="background-color: #A0DFD4">
+                <div class="container">
+                    <section class="">
+                        <div class="row text-center d-flex justify-content-center pt-5">
+                            <div class="col-md-2">
+                                <h6 class="text-uppercase font-weight-bold">
+                                    <a href="/#about" class="text-black">About us</a>
+                                </h6>
+                            </div>
+                            <div class="col-md-2">
+                                <h6 class="text-uppercase font-weight-bold">
+                                    <a href="/property/search" class="text-black">Homes</a>
+                                </h6>
+                            </div>
+                            <div class="col-md-2">
+                                <h6 class="text-uppercase font-weight-bold">
+                                    <a href="/#team" class="text-black">Team</a>
+                                </h6>
+                            </div>
+                            <div class="col-md-2">
+                                <h6 class="text-uppercase font-weight-bold">
+                                    <a href="/#help" class="text-black">Help</a>
+                                </h6>
+                            </div>
+                            <div class="col-md-2">
+                                <h6 class="text-uppercase font-weight-bold">
+                                    <a href="/#why-us" class="text-black">Why us!</a>
+                                </h6>
+                            </div>
+                        </div>
+                    </section>
+
+                    <hr class="my-3" />
+
+                    <section class="mb-2">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-lg-8">
+                                <p>
+                                    PG Finder is a platform that helps users find the perfect PG or hostel for their stay across different cities and states in India.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="text-center mb-5">
+                        <a href="https://github.com/aryan-upa/pg-finder-v2" target="_blank" class="text-black me-4 fs-1">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </section>
+                </div>
+                <div
+                        class="text-center p-3"
+                        style="background-color: rgba(0, 0, 0, 0.2)">
+                    © 2023 Copyright: PG Finder Team
+                </div>
+            </footer>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/5a010fa73c.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,400;0,600;1,100;1,400;1,600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="/js/include.js"></script>
+
+    <script>
+        AOS.init();
+    </script>
 </body>
 </html>
