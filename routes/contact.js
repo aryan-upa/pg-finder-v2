@@ -2,7 +2,7 @@ const express = require('express');
 const {isAdminLoggedIn, isRoleAdmin} = require("../middlewares/role_validator");
 const contacts = require("../models/contact");
 const {validateContact} = require("../middlewares/schema_validator");
-const router = express.Router;
+const router = express.Router();
 
 router.get('/', isAdminLoggedIn, isRoleAdmin, async (req, res) => {
 	try {
@@ -38,3 +38,5 @@ router.post('/', validateContact, async (req, res) => {
 		res.render('error', {code: 500, error: 'Internal server error'})
 	}
 })
+
+module.exports = router;
