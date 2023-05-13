@@ -16,7 +16,7 @@
                             <i class="fa fa-user"></i>
                         </div>
                     </div>
-                    <input id="name" name="name" placeholder="Name" type="text" class="form-control" required="required" value="<%= user.name %>" readonly>
+                    <input id="name" name="name" placeholder="Name" type="text" class="form-control" required="required" value="<%= userInfo.name %>" readonly>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                             <i class="fa fa-link"></i>
                         </div>
                     </div>
-                    <input id="email" name="email" placeholder="Email" type="text" class="form-control" required="required" value="<%= user.email %>" readonly>
+                    <input id="email" name="email" placeholder="Email" type="text" class="form-control" required="required" value="<%= userInfo.email %>" readonly>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text">+91</div>
                     </div>
-                    <input id="phone" name="phone" placeholder="Enter Phone Number" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}" value="<%= user.phone %>">
+                    <input id="phone" name="phone" placeholder="Enter Phone Number" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}" value="<%= userInfo.phone %>">
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
                     </div>
                     <input id="dob" name="dob" type="date" min="1980-01-01" max="<%= new Date(new Date().getFullYear() - 10, new Date().getMonth(), new Date().getDate()).toLocaleDateString('fr-ca') %>"
                            class="form-control" required="required"
-                           value="<%= new Date(user.dob.getFullYear(), user.dob.getMonth(), user.dob.getDate()).toLocaleDateString('fr-ca') %>">
+                           value="<%= new Date(userInfo.dob.getFullYear(), userInfo.dob.getMonth(), userInfo.dob.getDate()).toLocaleDateString('fr-ca') %>">
                 </div>
             </div>
         </div>
@@ -63,15 +63,15 @@
             <label class="col-4">Gender</label>
             <div class="col-8">
                 <div class="custom-control custom-radio custom-control-inline">
-                    <input name="gender" id="gender_0" type="radio" class="custom-control-input" value="male" <%= user.gender === 'male' ? 'checked' : ''%> required>
+                    <input name="gender" id="gender_0" type="radio" class="custom-control-input" value="male" <%= userInfo.gender === 'male' ? 'checked' : ''%> required>
                     <label for="gender_0" class="custom-control-label">Male</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
-                    <input name="gender" id="gender_1" type="radio" class="custom-control-input" value="female" <%= user.gender === 'female' ? 'checked' : ''%>>
+                    <input name="gender" id="gender_1" type="radio" class="custom-control-input" value="female" <%= userInfo.gender === 'female' ? 'checked' : ''%>>
                     <label for="gender_1" class="custom-control-label">Female</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
-                    <input name="gender" id="gender_2" type="radio" class="custom-control-input" value="trans" <%= user.gender === 'trans' ? 'checked' : ''%>>
+                    <input name="gender" id="gender_2" type="radio" class="custom-control-input" value="trans" <%= userInfo.gender === 'trans' ? 'checked' : ''%>>
                     <label for="gender_2" class="custom-control-label">Trans</label>
                 </div>
             </div>
@@ -79,7 +79,7 @@
         <div class="form-group row">
             <label for="occupation" class="col-4 col-form-label">Occupation</label>
             <div class="col-8">
-                <input id="occupation" name="occupation" placeholder="Software Engineer, Policeman, Student, etc." type="text" class="form-control" required="required" value="<%= user.occupation %>">
+                <input id="occupation" name="occupation" placeholder="Software Engineer, Policeman, Student, etc." type="text" class="form-control" required="required" value="<%= userInfo.occupation %>">
             </div>
         </div>
 
@@ -111,12 +111,12 @@
                             <i class="fa fa-user-circle"></i>
                         </div>
                     </div>
-                    <input id="emContactName" name="emContactName" placeholder="Emergency Contact Name" type="text" class="form-control" required="required" value="<%= user.emergencyContact.name %>">
+                    <input id="emContactName" name="emContactName" placeholder="Emergency Contact Name" type="text" class="form-control" required="required" value="<%= userInfo.emergencyContact.name %>">
                 </div>
             </div>
             <div class="form-group col-md-4">
                 <label for="emContactRelation" class="">Relation</label>
-                    <input id="emContactRelation" name="emContactRelation" placeholder="Emergency Contact Relation" type="text" class="form-control" required="required" value="<%= user.emergencyContact.relation %>">
+                    <input id="emContactRelation" name="emContactRelation" placeholder="Emergency Contact Relation" type="text" class="form-control" required="required" value="<%= userInfo.emergencyContact.relation %>">
             </div>
             <div class="form-group col-md-4">
                 <label for="emContactPhone" class="">Phone Number</label>
@@ -124,7 +124,7 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text">+91</div>
                     </div>
-                    <input id="emContactPhone" name="emContactPhone" placeholder="Emergency Contact Phone" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}" value="<%= user.emergencyContact.phone %>">
+                    <input id="emContactPhone" name="emContactPhone" placeholder="Emergency Contact Phone" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}" value="<%= userInfo.emergencyContact.phone %>">
                 </div>
             </div>
 

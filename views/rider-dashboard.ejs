@@ -7,11 +7,11 @@
     <div class="row justify-content-evenly mt-5 w-100 d-flex">
         <div class="mb-4 col-lg-3 text-md-left text-center">
             <div class="card-body">
-                <img src="<%= user.profilePic %>" alt="avatar"
+                <img src="<%= userInfo.profilePic %>" alt="avatar"
                      class="rounded-circle img-fluid object-fit-cover" style="width: 150px; border: 1px solid black; aspect-ratio: 1;">
-                <h5 class="my-3"><%= user.name %></h5>
-                <p class="text-muted mb-4"><%= user.occupation %></p>
-                <% if (user.id === userRoleID) { %>
+                <h5 class="my-3"><%= userInfo.name %></h5>
+                <p class="text-muted mb-4"><%= userInfo.occupation %></p>
+                <% if (userInfo.id === userRoleID) { %>
                 <div class="d-flex mb-2 justify-content-md-start justify-content-center">
                     <a role="button" class="btn btn-primary" style="color: white;" href="/rider/<%= userRoleID %>/edit">Edit Profile</a>
                 </div>
@@ -26,7 +26,7 @@
                         <p class="mb-0">Full Name</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.name %></p>
+                        <p class="text-muted mb-0"><%= userInfo.name %></p>
                     </div>
                 </div>
                 <hr>
@@ -35,7 +35,7 @@
                         <p class="mb-0">Email</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.email %></p>
+                        <p class="text-muted mb-0"><%= userInfo.email %></p>
                     </div>
                 </div>
                 <hr>
@@ -44,7 +44,7 @@
                         <p class="mb-0">Phone</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0">+91 <%= user.phone %></p>
+                        <p class="text-muted mb-0">+91 <%= userInfo.phone %></p>
                     </div>
                 </div>
                 <hr>
@@ -53,7 +53,7 @@
                         <p class="mb-0">Gender</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.gender.charAt(0).toUpperCase() + user.gender.substring(1) %></p>
+                        <p class="text-muted mb-0 text-capitalize"><%= userInfo.gender %></p>
                     </div>
                 </div>
                 <hr>
@@ -62,7 +62,7 @@
                         <p class="mb-0">DOB</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.dob.toLocaleDateString('fr') %></p>
+                        <p class="text-muted mb-0"><%= userInfo.dob.toLocaleDateString('fr') %></p>
                     </div>
                 </div>
                 <hr>
@@ -71,7 +71,7 @@
                         <p class="mb-0">Covid Certificate</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%- user.covidCert ? `Uploaded | <a href='${user.covidCert}' target="_blank">Link</a>` : "Not Uploaded"%></p>
+                        <p class="text-muted mb-0"><%- userInfo.covidCert ? `Uploaded | <a href='${userInfo.covidCert}' target="_blank">Link</a>` : "Not Uploaded"%></p>
                     </div>
                 </div>
                 <hr>
@@ -80,9 +80,9 @@
                         <p class="mb-2">Emergency Contact Details</p>
                     </div>
                     <div class="col-sm-9">
-                        <div class="text-muted"><%= user.emergencyContact.name %></div>
-                        <div class="text-muted"><%= user.emergencyContact.phone %></div>
-                        <div class="text-muted"><%= user.emergencyContact.relation %></div>
+                        <div class="text-muted"><%= userInfo.emergencyContact.name %></div>
+                        <div class="text-muted"><%= userInfo.emergencyContact.phone %></div>
+                        <div class="text-muted"><%= userInfo.emergencyContact.relation %></div>
                     </div>
                 </div>
             </div>
@@ -102,11 +102,11 @@
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="bookings" role="tabpanel" aria-labelledby="bookings-tab">
-                <% if (user.bookings.length === 0) { %>
+                <% if (userInfo.bookings.length === 0) { %>
                     <p class="h4 text-center my-4">No Bookings Yet!</p>
                 <% } %>
                 <ul class="list-group-flush list-group">
-                    <% for (let book of user.bookings) { %>
+                    <% for (let book of userInfo.bookings) { %>
                     <li class="list-group-item">
                         <div class="card">
                             <div class="card-header bg-<%= book.res === undefined ? 'dark' : book.res === false ? 'danger' : 'success'%> "></div>
@@ -137,11 +137,11 @@
                 </ul>
             </div>
             <div class="tab-pane fade" id="likes" role="tabpanel" aria-labelledby="likes-tab">
-                <% if (user.likes.length === 0) { %>
+                <% if (userInfo.likes.length === 0) { %>
                     <p class="h4 text-center my-4">No liked Property yet!</p>
                 <% } %>
                 <ul class="list-group-flush list-group">
-                    <% for (let prop of user.likes) { %>
+                    <% for (let prop of userInfo.likes) { %>
                     <li class="list-group-item">
                         <div class="card border-dark">
                             <div class="card-header bg-primary-subtle py-1"></div>

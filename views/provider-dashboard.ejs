@@ -9,9 +9,9 @@
             <div class="card-body">
                 <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                      class="rounded-circle img-fluid" style="width: 150px; border: 1px solid black">
-                <h5 class="my-3"><%= user.name %></h5>
+                <h5 class="my-3"><%= userInfo.name %></h5>
                 <p class="text-muted mb-1">Property Provider</p>
-                <p class="text-muted mb-4"><%= user.address.city %>, <%= user.address.state %></p>
+                <p class="text-muted mb-4"><%= userInfo.address.city %>, <%= userInfo.address.state %></p>
                 <div class="d-flex mb-2 justify-content-md-start justify-content-center column-gap-2">
                     <a role="button" class="btn btn-primary" style="color: white;" href="/provider/<%= userRoleID %>/edit">Edit Profile</a>
                     <a role="button" class="btn btn-outline-secondary" href="/property/new">Add a property</a>
@@ -26,7 +26,7 @@
                         <p class="mb-0">Full Name</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.name %></p>
+                        <p class="text-muted mb-0"><%= userInfo.name %></p>
                     </div>
                 </div>
                 <hr>
@@ -35,7 +35,7 @@
                         <p class="mb-0">Email</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.email %></p>
+                        <p class="text-muted mb-0"><%= userInfo.email %></p>
                     </div>
                 </div>
                 <hr>
@@ -44,7 +44,7 @@
                         <p class="mb-0">Phone</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0">+91 <%= user.phone %></p>
+                        <p class="text-muted mb-0">+91 <%= userInfo.phone %></p>
                     </div>
                 </div>
                 <hr>
@@ -53,7 +53,7 @@
                         <p class="mb-0">DOB</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.dob.toLocaleDateString('fr') %></p>
+                        <p class="text-muted mb-0"><%= userInfo.dob.toLocaleDateString('fr') %></p>
                     </div>
                 </div>
                 <hr>
@@ -62,7 +62,7 @@
                         <p class="mb-0">GST Number</p>
                     </div>
                     <div class="col-sm-9">
-                        <p class="text-muted mb-0"><%= user.gst %></p>
+                        <p class="text-muted mb-0"><%= userInfo.gst %></p>
                     </div>
                 </div>
                 <hr>
@@ -71,9 +71,9 @@
                         <p class="mb-2">Details</p>
                     </div>
                     <div class="col-sm-9">
-                        <div class="text-muted">PropertyCount : <%= user.properties.length %></div>
-                        <div class="text-muted">CompletedBooking : <%= user.bookingCompleted.length %></div>
-                        <div class="text-muted">PendingBooking : <%= user.bookingPending.length %></div>
+                        <div class="text-muted">PropertyCount : <%= userInfo.properties.length %></div>
+                        <div class="text-muted">CompletedBooking : <%= userInfo.bookingCompleted.length %></div>
+                        <div class="text-muted">PendingBooking : <%= userInfo.bookingPending.length %></div>
                     </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@
             <!-- PROPERTIES -->
             <div class="tab-pane fade show active" id="properties" role="tabpanel" aria-labelledby="properties-tab">
                 <ul class="list-group-flush list-group">
-                    <% for (let prop of user.properties) { %>
+                    <% for (let prop of userInfo.properties) { %>
                         <li class="list-group-item">
                             <div class="card border-dark">
                                 <div class="card-header bg-primary-subtle py-1"></div>
@@ -120,7 +120,7 @@
             <!-- COMPLETED BOOKINGS -->
             <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
                 <ul class="list-group-flush list-group">
-                    <% for (let com of user.bookingCompleted) { %>
+                    <% for (let com of userInfo.bookingCompleted) { %>
                         <li class="list-group-item">
                         <% if (com.res) { %>
                             <div class="card">
@@ -181,11 +181,11 @@
 
             <!-- PENDING BOOKINGS -->
             <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                <% if (user.bookingPending.length === 0) { %>
+                <% if (userInfo.bookingPending.length === 0) { %>
                     <p class="h5 text-center my-4">No Pending Bookings!</p>
                 <% } %>
                 <ul class="list-group-flush list-group">
-                    <% for (let pend of user.bookingPending) { %>
+                    <% for (let pend of userInfo.bookingPending) { %>
                     <li class="list-group-item">
                         <div class="card">
                             <div class="card-header bg-black bg-opacity-50 "></div>
