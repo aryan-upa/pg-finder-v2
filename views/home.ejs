@@ -1,0 +1,399 @@
+<!-- HOME PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .profile-card-3 {
+        font-family: 'Open Sans', Arial, sans-serif;
+        position: relative;
+        float: left;
+        overflow: hidden;
+        width: 100%;
+        text-align: center;
+        height:368px;
+        border:none;
+    }
+
+    .profile-card-3 .background-block {
+        float: left;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .profile-card-3 .background-block .background {
+        width:100%;
+        vertical-align: top;
+        opacity: 0.9;
+        -webkit-filter: blur(0.5px);
+        filter: blur(0.5px);
+        -webkit-transform: scale(1.8);
+        transform: scale(2.8);
+    }
+
+    .profile-card-3 .card-content {
+        width: 100%;
+        padding: 15px 25px;
+        color:#232323;
+        float:left;
+        background:#efefef;
+        height:50%;
+        border-radius:0 0 5px 5px;
+        position: relative;
+        z-index: 9999;
+    }
+
+    .profile-card-3 .card-content::before {
+        content: '';
+        background: #efefef;
+        width: 120%;
+        height: 100%;
+        left: 11px;
+        bottom: 51px;
+        position: absolute;
+        z-index: -1;
+        transform: rotate(-13deg);
+    }
+
+    .profile-card-3 .profile {
+        border-radius: 50%;
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        max-width: 100px;
+        opacity: 1;
+        box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 1);
+        -webkit-transform: translate(-50%, 0%);
+        transform: translate(-50%, 0%);
+        z-index:99999;
+    }
+
+    .profile-card-3 h2 {
+        margin: 0 0 5px;
+        font-weight: 600;
+        font-size:25px;
+    }
+
+    .profile-card-3 h2 small {
+        display: block;
+        font-size: 15px;
+        margin-top:10px;
+    }
+
+    .profile-card-3 i {
+        display: inline-block;
+        font-size: 16px;
+        color: #232323;
+        text-align: center;
+        border: 1px solid #232323;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        margin:0 5px;
+    }
+
+    .profile-card-3 .icon-block{
+        float:left;
+        width:100%;
+        margin-top:15px;
+    }
+
+    .profile-card-3 .icon-block a{
+        text-decoration:none;
+    }
+
+    .profile-card-3 i:hover {
+        background-color:#232323;
+        color:#fff;
+        text-decoration:none;
+    }
+</style>
+
+<section class="overflow-x-hidden">
+    <section id="hero">
+        <div class="container min-vh-100 d-flex align-items-center mt-5 mt-lg-0">
+            <div class="w-100 d-flex flex-lg-row flex-column justify-content-between align-items-center">
+                <div class="col-lg-6 mb-lg-0 mb-3" data-aos="fade-right" data-aos-duration="1000">
+                    <h1>Welcome to <br> <span class="display-3">PG Finder v2</span></h1>
+                    <h3 class="fw-light">A solution for all your PG Hunting needs.</h3>
+                    <hr>
+
+                    <a role='button' href="/property/search" class="btn btn-primary rounded-3">Search PGs</a>
+                </div>
+                <div class="col-lg-6 d-flex justify-content-center" data-aos="fade-left" data-aos-duration="1000">
+                    <img src="/images/party.png" alt="Logo" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="about" class="about min-vh-100 bg-dark-subtle d-flex align-items-center fs-5">
+        <div class="d-flex justify-content-evenly w-100 flex-lg-row flex-column p-5 p-lg-0" style="font-family: 'Poppins', sans-serif">
+            <div class="col-lg-5">
+                <div class="section-title">
+                    <h2 class="display-3 fst-italic">About Us</h2>
+                </div>
+                <div>
+                       <p>
+                            Whether you're a student, working professional, or just looking for temporary accommodation,
+                            we're here to help you find the perfect place to stay.
+
+                            Our user-friendly platform allows you to search for PGs and hostels in different cities and
+                            states, filter your search results based on your preferences, and book your accommodation with
+                            ease. You can view pictures, read reviews from other users, add it to your favourites or book it
+                            right away.
+                        </p>
+                        <ul class="list-unstyled" >
+                            <li><i class="fa-solid fa-house" style="margin-right: 1rem;"></i> Each PG Owner goes through a verification process.</li>
+                            <li><i class="fa-solid fa-house" style="margin-right: 1rem;"></i> Listed PG details are constantly monitored to remove bad ones.</li>
+                            <li><i class="fa-solid fa-house" style="margin-right: 1rem;"></i> Always ready customer support.</li>
+                        </ul>
+                </div>
+            </div>
+            <div class="col-lg-5 pt-4 pt-lg-0 d-flex align-items-center">
+                <p>
+                    We understand that finding the right accommodation can be a daunting task, especially if you're
+                    new to a city or state. That's why we've made it our mission to simplify the process and provide
+                    you with a hassle-free experience. Our team is constantly working to add more PGs and hostels
+                    to our platform, ensuring that you have a wide range of options to choose from.
+
+                    At PG Finder, we're committed to providing you with high-quality accommodation and excellent
+                    customer service. Our team is available round the clock to answer your queries, resolve any
+                    issues you may face, and ensure that your stay is comfortable and memorable.
+
+                    So what are you waiting for? Start your search for the perfect PG or hostel today on PG Finder!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="why-us" class="d-flex justify-content-center align-items-center flex-lg-row flex-column">
+        <div class="col-lg-6 card border-0">
+            <img src="/images/why-us.jpg" alt="why-us" class="card-img mx-auto" style="max-width: 600px">
+            <div class="card-img-overlay d-flex align-items-center justify-content-center text-white" style="backdrop-filter: brightness(60%)">
+                <h3 class="display-3">Why Us?</h3>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="accordion accordion-flush" style="font-family: 'Poppins', sans-serif;">
+                <div class="accordion-item" data-aos="fade-left">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed disabled" type="button" data-bs-toggle="collapse" data-bs-target="#why-me-item1" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                            <strong>Comprehensive database of PGs and hostels</strong>
+                        </button>
+                    </h2>
+                    <div id="why-me-item1" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            PG Finder has a vast collection of PGs and hostels across India, from budget-friendly options to premium accommodation. Users can browse through our database to find accommodation that suits their needs and preferences, including location, budget, amenities, and more.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" data-aos="fade-left" data-aos-delay="500">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#why-me-item2" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                            <strong>Advanced search and filtering options</strong>
+                        </button>
+                    </h2>
+                    <div id="why-me-item2" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            PG Finder provides advanced search and filtering options to help users refine their search based on their specific requirements. Users can filter their search results by location, budget, amenities, and other preferences to find the perfect accommodation that meets their needs.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" data-aos="fade-left" data-aos-delay="1100">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#why-me-item3" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                            <strong>Hassle-free booking process</strong>
+                        </button>
+                    </h2>
+                    <div id="why-me-item3" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            PG Finder offers a hassle-free booking process that allows users to book their accommodation with just a few clicks. Users can view pictures, read reviews from other users, and compare prices before making their booking. Our team is available round the clock to provide assistance and answer any queries that users may have, ensuring a smooth and comfortable stay for our users.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="w-100" style="margin-top: 4rem;">
+        <div class="row col-10 mx-auto text-center">
+            <h3 class="display-3 fst-italic mb-1" style="font-weight: 200; font-family: 'Poppins', sans-serif">Features</h3>
+            <p class="mt-1 border-top border-primary pt-3" style="font-family: 'Poppins', sans-serif;">At PG Finder, we offer a range of services to help you find the perfect PG or hostel for your stay. Whether you're a student, working professional, or just looking for temporary accommodation, we've got you covered.</p>
+        </div>
+
+        <hr class="bg-dark-subtle">
+
+        <div class="d-flex justify-content-evenly column-gap-4 px-4 flex-wrap" style="margin-top: 4rem;">
+            <div class="card shadow-lg m-4 border-0" style="max-width: 18rem;">
+                <div class="card-header bg-transparent border-dark-subtle text-primary">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 2rem;"></i>
+                </div>
+                <div class="card-body">
+                    <h4>Accommodation search:</h4>
+                    <p>Our user-friendly platform allows you to search for PGs and hostels in different cities and states, filter your search results based on your preferences, and book your accommodation with ease.</p>
+                </div>
+            </div>
+            <div class="card shadow-lg m-4 border-0" style="max-width: 18rem;">
+                <div class="card-header bg-transparent border-dark-subtle text-primary">
+                    <i class="fa-solid fa-money-bill" style="font-size: 2rem;"></i>
+                </div>
+                <div class="card-body">
+                    <h4>Accommodation booking:</h4>
+                    <p>We offer a hassle-free booking process, allowing users to book their accommodation with just a few clicks. Users can view pictures, read reviews from other users, and compare prices before making their booking.</p>
+                </div>
+            </div>
+            <div class="card shadow-lg m-4 border-0" style="max-width: 18rem;">
+                <div class="card-header bg-transparent border-dark-subtle text-primary">
+                    <i class="fa-solid fa-phone" style="font-size: 2rem;"></i>
+                </div>
+                <div class="card-body">
+                    <h4>24/7 customer support:</h4>
+                    <p>Our team is available round the clock to answer your queries, resolve any issues you may face, and ensure that your stay is comfortable and memorable.</p>
+                </div>
+            </div>
+            <div class="card shadow-lg m-4 border-0" style="max-width: 18rem;">
+                <div class="card-header bg-transparent border-dark-subtle text-primary">
+                    <i class="fa-regular fa-circle-check" style="font-size: 2rem;"></i>
+                </div>
+                <div class="card-body">
+                    <h4>Verified listings:</h4>
+                    <p>We only list verified and reliable PGs and hostels on our platform, ensuring that you have a safe and secure stay wherever you choose to stay.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="call" class="call" style="background: url('/images/city.svg') center; background-size: cover;">
+        <div class="container d-flex align-items-center" style="min-height: 60vh; font-family: 'Poppins', sans-serif;">
+            <div class="d-flex row p-4 flex-md-row flex-column text-white" style="backdrop-filter: blur(1rem) brightness(40%);">
+                <div class="col-lg-9 text-center text-lg-start " style="backdrop-filter: blur(10px)">
+                    <h3 class="">Are you a Property Owner!</h3>
+                    <p>Are you a property owner looking to rent out your PG or hostel? List your property on PG Finder today and reach a wider audience of potential tenants. With our user-friendly platform and verified listings, you can be assured that your property is in safe hands. Start listing your property today and see the bookings roll in!</p>
+                </div>
+                <div class="btn-holder col-lg-3 d-flex align-items-center justify-content-center">
+                    <a role='button' class="btn btn-primary" href="/auth/registration">Create Account!</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="d-flex flex-column align-items-center bg-dark-subtle p-0 m-0" style="min-height: 80vh; font-family: 'Poppins', sans-serif">
+        <h3 class="display-3 text-center fst-italic fw-bold" style="margin-top: 2rem">Team</h3>
+        <div class="container d-flex justify-content-evenly align-items-center h-100 flex-column flex-md-row row-gap-5" style="min-height: 60vh">
+            <div class="col-md-4" style="font-family: 'Poppins', sans-serif">
+                <div class="card profile-card-3 shadow-lg" data-aos="flip-left">
+                    <div class="background-block">
+                        <img src="images/proback1.jpg" alt="profile-sample1" class="background"/>
+                    </div>
+                    <div class="profile-thumb-block">
+                        <img src="images/priyanshi.jpg" alt="profile-image" class="profile"/>
+                    </div>
+                    <div class="card-content">
+                        <h2>Priyanshi<small>Developer</small></h2>
+                        <div class="icon-block">
+                            <a href="https://www.linkedin.com/in/pri-mittal2409/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="https://github.com/priyanshi-mittal" target="_blank"><i class="fa fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" style="font-family: 'Poppins', sans-serif">
+                <div class="card profile-card-3 shadow-lg" data-aos="flip-right">
+                    <div class="background-block">
+                        <img src="images/proback2.jpg" alt="profile-sample1" class="background"/>
+                    </div>
+                    <div class="profile-thumb-block">
+                        <img src="images/aryan.jpg" alt="profile-image" class="profile"/>
+                    </div>
+                    <div class="card-content">
+                        <h2>Aryan Upadhyay<small>Developer</small></h2>
+                        <div class="icon-block">
+                            <a href="https://www.linkedin.com/in/aryan-upa/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="https://github.com/aryan-upa" target="_blank"><i class="fa fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="min-height: 60vh" id="help">
+        <h3 class="display-3 text-center fst-italic fw-bold" style="margin-top: 2rem">Contact Us</h3>
+        <div class="d-flex flex-row justify-content-center align-items-center mt-5">
+            <div class="col-lg-5">
+                <img class="img-fluid" src="/images/contact.jpg" alt="Contact Us" style="width: 100%">
+            </div>
+            <form id='contact-form' action="/contact/" class="col-lg-5 validation-required" method="post" novalidate>
+                <div class="form-group">
+                    <label for="email" class="col-4 col-form-label">Email</label>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-address-card"></i>
+                                </div>
+                            </div>
+                            <input id="email" name="email" placeholder="Enter email" type="email" class="form-control" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="subject" class="col-4 col-form-label">Subject</label>
+                    <div class="col-8">
+                        <input id="subject" name="subject" placeholder="Enter subject" type="text" minlength="3" maxlength="100" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="content" class="col-4 col-form-label">Message</label>
+                    <div class="col-10">
+                        <textarea id="content" name="content" placeholder="Enter Message" minlength="20" maxlength="1000" class="form-control" rows="6" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="offset-4 col-8">
+                        <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</section>
+
+<script>
+    const form = document.getElementById('contact-form');
+
+	form.addEventListener('submit', e => {
+		e.preventDefault();
+
+		const formData = new URLSearchParams(new FormData(form));
+		const url = '/contact/'
+
+        const config = {
+			url: url,
+            data: formData.toString(),
+            headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            method: 'post'
+        }
+
+		axios(config)
+            .then(res => {
+	            addFlash('success', 'Message sent successfully!');
+            })
+            .catch(error => {
+	            console.log(error);
+	            if (error.response.data.errors) {
+		            const errors = error.response.data.errors;
+		            for (let err of errors)
+			            addFlash('error', err.msg);
+	            }
+
+	            else if (error.response.data.error)
+		            addFlash('error', error.response.data.error);
+            })
+    })
+</script>
