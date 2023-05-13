@@ -12,12 +12,14 @@ const {paymentKeyGenerator} = require('../utils/key_generator');
 const {stripePrivateKey, serverURL} = require('../config');
 const bookings = require("../models/booking");
 const stripe = require('stripe')(stripePrivateKey);
+const fs = require('fs');
+const path = require('path');
 
 router.get('/all', isLoggedIn, isRoleAdmin, async (req, res) => {
 	try {
 		let {skip} = req.query;
 
-		if (!skip || skip < 0) {
+		if (!skip || skip <= 0) {
 			req.query.skip = 0;
 			skip = 0;
 		}
@@ -36,30 +38,13 @@ router.get('/all', isLoggedIn, isRoleAdmin, async (req, res) => {
 	}}
 )
 
-router.get('/search', (req, res) => {
+router.get('/search', async (req, res) => {
 	try {
-		const topProperty = [
-			{
-				name: "Top PG 1",
-				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-				id: "6459aa771270670455029226",
-			},
-			{
-				name: "Top PG 2",
-				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-				id: "6459aa771270670455029226"
-			},
-			{
-				name: "Top PG 3",
-				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-				id: "6459aa771270670455029226"
-			},
-			{
-				name: "Top PG 4",
-				img: 'https://res.cloudinary.com/dehizvhr6/image/upload/v1683597940/properties/dhee8fjhjmfc3hw3prup.jpg',
-				id: "6459aa771270670455029226"
-			}
-		];
+		const topProperty = JSON.parse(
+			fs.readFileSync(
+				path.join(__dirname, '../data/top_property.json'),
+				"utf-8")
+		) || [];
 
 		res.render('search-home', {topProperty});
 	} catch (e) {
@@ -98,7 +83,7 @@ router.get('/', async (req, res) => {
 		}
 
 		let isFirst = false;
-		if (!skip || skip === 0 || skip < 0) {
+		if (!skip || Number(skip) === 0 || skip < 0) {
 			req.query.skip = 0;
 			skip = 0;
 			isFirst = true;
