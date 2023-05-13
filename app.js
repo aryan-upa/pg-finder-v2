@@ -10,6 +10,7 @@ const methodOverride = require('method-override');
 const engine = require('ejs-mate');
 const path = require('path');
 const {addRoleID} = require("./middlewares/common");
+const cron = require('node-cron');
 
 /* SERVER CONFIGURATIONS */
 app.use(express.urlencoded({extended: true}));
@@ -67,7 +68,7 @@ app.use((req, res, next) => {
 
 /* HOME ROUTE */
 app.get('/', (req, res) => {
-    res.send({
+    res.render('home',{
         message: "Jai shree ram!",
         user: req.user || null,
         userRoleID: req.session.userRoleID || null,
@@ -94,6 +95,7 @@ const propertyRouter = require('./routes/property');
 const bookingRouter = require('./routes/booking');
 const reviewRouter = require('./routes/review');
 const adminRouter = require('./routes/admin');
+const contactRouter = require('./routes/contact');
 
 app.use('/auth', authRouter);
 app.use('/rider', riderRouter);
@@ -102,9 +104,17 @@ app.use('/property', propertyRouter);
 app.use('/booking', bookingRouter);
 app.use('/review', reviewRouter);
 app.use('/admin', adminRouter);
+app.use('/contact', contactRouter);
 
 
 /* LISTENING TO PORT */
 app.listen (port, () => {
     console.log("Listening to port : " + port);
 });
+
+/* CRON JOBS */
+const {fetchTopProperties} = require('./utils/cron_jobs');
+
+cron.schedule('0 0 * * * *', () => {
+    fetchTopProperties();
+}, {});
