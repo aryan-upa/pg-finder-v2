@@ -14,5 +14,5 @@ module.exports = {
 	cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
 	adminKey: process.env.ADMIN_KEY,
 	stripePrivateKey: process.env.STRIPE_PRIVATE_KEY,
-	serverURL: process.env.SERVER_URL,
+	serverURL: process.env.BASE_URL + (process.env.PORT || 3500),
 };
