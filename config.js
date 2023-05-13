@@ -1,5 +1,5 @@
 const path = require('path');
-const dotenv = require('dotenv').config({path: path.join(__dirname, 'secret.env')});
+require('dotenv').config({path: path.join(__dirname, 'secret.env')});
 
 module.exports = {
 	databaseURL: process.env.DATABASE_URL,
