@@ -7,7 +7,12 @@ const riders = require('../models/rider');
 const router = express.Router();
 const keys = require('../models/key');
 const axios = require("axios");
-const {sendBookingSuccessEmail, sendBookingFailEmail} = require('../utils/mail_sender');
+const {
+	sendBookingSuccessEmail,
+	sendBookingFailEmail,
+	sendBookingFinalSuccessEmail,
+	sendBookingFinalFailEmail
+} = require('../utils/mail_sender');
 const {serverURL} = require('../config');
 
 router.get('/', isLoggedIn, isRoleAdmin, async (req, res) => {
@@ -139,6 +144,22 @@ router.patch('/:id', isLoggedIn, isRoleProvider, async (req, res) => {
 			{_id: providerID},
 			{$pull: {bookingPending: updatedBooking._id}, $push: {bookingCompleted: updatedBooking._id}}
 		);
+
+		const property = await properties.findById({_id: booking.property})
+		const owner = await providers.findById({_id: providerID});
+		const by = await riders.findById({_id: booking.by});
+
+		const emailContent = {
+			bookingID: bookingID,
+			propName: property.name,
+			propEmail: owner.email,
+			propPhone: owner.phone
+		}
+
+		if (booking.res)
+			sendBookingFinalSuccessEmail(by.email, emailContent).then(() => {});
+		else
+			sendBookingFinalFailEmail(by.email, emailContent).then(() => {});
 
 		res.send({success: 'booking updated'});
 	} catch (e) {
