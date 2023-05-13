@@ -2,7 +2,7 @@ const joi = require('joi');
 const {stateUTList, cityMap} = require('./state_city_provider');
 
 const registrationSchema = joi.object({
-	email: joi.string().email().pattern(new RegExp('^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$')).required().messages({
+	email: joi.string().email().pattern(new RegExp('^\\w+([\.-]?\\w+)*@\\w+([\.-]?\\w+)*(\\.\\w{2,3})+$')).required().messages({
 			'string.email': 'Please enter a valid email!',
 			'string.empty': 'Email is required!',
 			'string.pattern.base': 'Please enter a valid email!'
@@ -24,7 +24,7 @@ const registrationSchema = joi.object({
 }).options({abortEarly: false});
 
 const loginSchema = joi.object({
-	email: joi.string().email().pattern(new RegExp('^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$')).required().messages({
+	email: joi.string().email().pattern(new RegExp('^\\w+([\.-]?\\w+)*@\\w+([\.-]?\\w+)*(\\.\\w{2,3})+$')).required().messages({
 		'string.email': 'Please enter a valid email!',
 		'string.empty': 'Email is required!',
 		'string.pattern.base': 'Please enter a valid email!'
@@ -35,7 +35,7 @@ const loginSchema = joi.object({
 }).options({abortEarly: false});
 
 const riderSchema = joi.object({
-	phone: joi.string().pattern(new RegExp('^[6789]\d{9}')).required().messages({
+	phone: joi.string().pattern(new RegExp('^[6789]\\d{9}')).required().messages({
 		'string.empty': 'Please provide phone number.',
 		'string.pattern.base': 'Phone number invalid.'
 	}),
@@ -54,14 +54,14 @@ const riderSchema = joi.object({
 	emContactRelation: joi.string().trim().required().messages({
 		'string.empty': 'require emergency contact relation!',
 	}),
-	emContactPhone: joi.string().pattern(new RegExp('^([6789])\d{9}$')).required().messages({
+	emContactPhone: joi.string().pattern(new RegExp('^([6789])\\d{9}$')).required().messages({
 		'string.empty': 'Please provide emergency contact phone number.',
 		'string.pattern.base': 'Phone number invalid.'
 	}),
 }).options({abortEarly: false});
 
 const providerSchema = joi.object({
-	phone: joi.string().pattern(new RegExp('^[6789]\d{9}$')).required().messages({
+	phone: joi.string().pattern(new RegExp('^[6789]\\d{9}$')).required().messages({
 		'string.empty': 'Please provide phone number.',
 		'string.pattern.base': 'Phone number invalid.'
 	}),
@@ -192,7 +192,7 @@ const propertySchema = joi.object({
 }).options({abortEarly: false});
 
 const contactSchema = joi.object({
-	email: joi.string().email().pattern(new RegExp('^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$')).required(),
+	email: joi.string().email().pattern(new RegExp('^\\w+([\.-]?\\w+)*@\\w+([\.-]?\\w+)*(\\.\\w{2,3})+$')).required(),
 	subject: joi.string().min(5).max(100).required(),
 	content: joi.string().min(10).max(1000).required()
 });
