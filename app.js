@@ -4,7 +4,7 @@ const {port, databaseURL, sessionSecret} = require('./config.js');
 require('./utils/database_connect');
 const logins = require('./models/login');
 const session = require('express-session');
-const sessionStore = require('connect-mongodb-session')(session);
+const MongoDBStore = require('connect-mongodb-session')(session);
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const engine = require('ejs-mate');
@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 /* SESSION STORE */
-const store = new sessionStore({
+const store = new MongoDBStore({
     uri: databaseURL,
     collection: 'sessionStore'
 });
@@ -38,7 +38,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week,
         secure: false
     },
-    Store: store
+    store: store
 }));
 
 
