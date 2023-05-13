@@ -46,12 +46,12 @@ router.get('/dashboard', isRoleRider, (req, res) => {
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const user = await riders.findOne({_id: id});
+		const userInfo = await riders.findOne({_id: id});
 
-		if (!user)
+		if (!userInfo)
 			return res.render('error', {code: 404, error: 'User not found!'});
 
-		await user.populate({
+		await userInfo.populate({
 			path: 'bookings',
 			populate: {
 				path: 'property'
@@ -60,8 +60,9 @@ router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 				date: -1
 			}
 		});
-		await user.populate('likes');
-		res.render('rider-dashboard', {user});
+
+		await userInfo.populate('likes');
+		res.render('rider-dashboard', {userInfo});
 	} catch (e) {
 		res.render('error', {code: 500, error: 'Internal server error!'});
 	}
@@ -70,8 +71,8 @@ router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 router.get('/:id/new-user', isCurrentUser, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const user = await riders.findOne({_id: id});
-		res.render('register-user', {user}); // working properly
+		const userInfo = await riders.findOne({_id: id});
+		res.render('register-user', {userInfo}); // working properly
 	} catch (e) {
 		res.render('error', {code: 500, error: 'Internal server error'})
 	}
@@ -80,8 +81,8 @@ router.get('/:id/new-user', isCurrentUser, async (req, res) => {
 router.get('/:id/edit', isCurrentUser, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const user = await riders.findOne({_id: id});
-		res.render('update-user', {user}); // working properly
+		const userInfo = await riders.findOne({_id: id});
+		res.render('update-user', {userInfo}); // working properly
 	} catch (e) {
 		res.render('error', {code: 500, error: 'Internal server error! Check your permissions!'});
 	}

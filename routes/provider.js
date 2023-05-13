@@ -40,13 +40,13 @@ router.get('/dashboard', isRoleProvider, (req, res) => {
 router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const user = await providers.findOne({_id: id});
+		const userInfo = await providers.findOne({_id: id});
 
-		if (!user)
+		if (!userInfo)
 			return res.status(404).send({error: true, message: 'User not found!'});
 
-		await user.populate('properties');
-		await user.populate({
+		await userInfo.populate('properties');
+		await userInfo.populate({
 			path: 'bookingPending',
 			populate: [
 				{ path: 'by' },
@@ -54,7 +54,7 @@ router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 			]
 		});
 
-		await user.populate({
+		await userInfo.populate({
 			path: 'bookingCompleted',
 			populate: [
 				{ path: 'by' },
@@ -62,7 +62,7 @@ router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 			]
 		});
 
-		res.render('provider-dashboard', {user}); // working properly
+		res.render('provider-dashboard', {userInfo}); // working properly
 	} catch (e) {
 		console.log(e);
 		res.status(500).render('error', {error: 'Internal server error!'});
@@ -72,8 +72,8 @@ router.get('/:id', isCurrentUserOrAdmin, async (req, res) => {
 router.get('/:id/new-user', isCurrentUser, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const user = await providers.findById({_id: id});
-		res.render('register-provider', {user}); // working properly
+		const userInfo = await providers.findById({_id: id});
+		res.render('register-provider', {userInfo}); // working properly
 	} catch (e) {
 		console.log(e);
 		res.status(500).render('error', {error: 'Internal server error!'});
@@ -82,8 +82,8 @@ router.get('/:id/new-user', isCurrentUser, async (req, res) => {
 router.get('/:id/edit', isCurrentUser, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const user = await providers.findById({_id: id});
-		res.render('update-provider', {user}); // working properly
+		const userInfo = await providers.findById({_id: id});
+		res.render('update-provider', {userInfo}); // working properly
 	} catch (e) {
 		console.log(e);
 		res.status(500).render('error', {error: 'Internal server error!'});
