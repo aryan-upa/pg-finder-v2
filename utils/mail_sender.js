@@ -1,4 +1,4 @@
-const {emailAdd, appPass, baseURL, port, serverURL} = require('../config');
+const {emailAdd, appPass, serverURL} = require('../config');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -153,6 +153,57 @@ const bookingFailHTML = '' +
 '	</body>                                                                                                                         ' +
 '</html>                                                                                                                            ';
 
+const bookingFinalSuccessEmailHTML = '' +
+'	<div>                                                                                                            ' +
+'		<h1>Hurray 🎉🥳, Your Booking is confirmed!</h1>                                                               ' +
+'		<p>We are glad to inform you that your booking with id : <pre>insertBookingID</pre> for PG / Hostel          ' +
+'			<strong>insertPropName</strong> has been confirmed by the owner. You can view complete details of the    ' +
+'			booking                                                                                                  ' +
+'			on your dashboard.                                                                                       ' +
+'		</p>                                                                                                         ' +
+'		<h3>For any further details about the PG, you may contact the owner.</h3>                                    ' +
+'		<table>                                                                                                      ' +
+'			<tbody>                                                                                                  ' +
+'			<tr>                                                                                                     ' +
+'				<td><strong>Email</strong></td>                                                                     ' +
+'				<td>insertPropEmail</td>                                                                                  ' +
+'			</tr>                                                                                                    ' +
+'			<tr>                                                                                                     ' +
+'				<td><strong>Phone</strong></td>                                                                     ' +
+'				<td>insertPropPhone</td>                                                                                  ' +
+'			</tr>                                                                                                    ' +
+'			</tbody>                                                                                                 ' +
+'		</table>                                                                                                     ' +
+'		<p>For any further information on our side, we are always here to help!</p>                                  ' +
+'		<p>Team PG Finder ❤</p>                                                                                      ' +
+'	</div>                                                                                                        ';
+
+const bookingFinalFailEmailHTML = '' +
+	'	<div>                                                                                                            ' +
+	'		<h1>Sorry, Booking Failed!</h1>                                                               ' +
+	'		<p>We are sad to inform you that your booking with id : <pre>insertBookingID</pre> for PG / Hostel          ' +
+	'			<strong>insertPropName</strong> has been denied by the owner. You can view complete details of the    ' +
+	'			booking                                                                                                  ' +
+	'			on your dashboard.                                                                                       ' +
+	'		</p>                                                                                                         ' +
+	'		<h3>For any further details about the PG, you may contact the owner.</h3>                                    ' +
+	'		<table>                                                                                                      ' +
+	'			<tbody>                                                                                                  ' +
+	'			<tr>                                                                                                     ' +
+	'				<td><strong>Email</strong></td>                                                                     ' +
+	'				<td>insertPropEmail</td>                                                                                  ' +
+	'			</tr>                                                                                                    ' +
+	'			<tr>                                                                                                     ' +
+	'				<td><strong>Phone</strong></td>                                                                     ' +
+	'				<td>insertPropPhone</td>                                                                                  ' +
+	'			</tr>                                                                                                    ' +
+	'			</tbody>                                                                                                 ' +
+	'		</table>                                                                                                     ' +
+	'		<p>For any further information on our side, we are always here to help!</p>                                  ' +
+	'		<p>Team PG Finder ❤</p>                                                                                      ' +
+	'	</div>                                                                                                        ';
+
+
 const forgotPasswordHTML = '' +
 "<div>" +
 `	<div style='padding: 1rem; background-color: gray; text-align: center'>   	` +
@@ -246,10 +297,46 @@ async function sendPasswordChangeEmail (recipientAddress) {
 	return await transporter.sendMail(mailOptions);
 }
 
+async function sendBookingFinalSuccessEmail (recipientAddress, content) {
+	const bookingFinalSuccessContent = bookingFinalSuccessEmailHTML
+		.replaceAll('insertBookingID', content.bookingID)
+		.replaceAll('insertPropName', content.propName)
+		.replaceAll('insertPropEmail', content.propEmail)
+		.replaceAll('insertPropPhone', content.propPhone)
+
+	const mailOptions = {
+		from: emailAdd,
+		to: recipientAddress,
+		subject: "PG Finder | Booking Finalized ",
+		html: bookingFinalSuccessContent,
+	};
+
+	return await transporter.sendMail(mailOptions);
+}
+
+async function sendBookingFinalFailEmail (recipientAddress, content) {
+	const bookingFinalFailContent = bookingFinalFailEmailHTML
+		.replaceAll('insertBookingID', content.bookingID)
+		.replaceAll('insertPropName', content.propName)
+		.replaceAll('insertPropEmail', content.propEmail)
+		.replaceAll('insertPropPhone', content.propPhone)
+
+	const mailOptions = {
+		from: emailAdd,
+		to: recipientAddress,
+		subject: "PG Finder | Booking Finalized ",
+		html: bookingFinalFailContent,
+	};
+
+	return await transporter.sendMail(mailOptions);
+}
+
 module.exports = {
 	sendRegistrationEmail,
 	sendBookingSuccessEmail,
 	sendBookingFailEmail,
 	sendForgotPasswordEmail,
 	sendPasswordChangeEmail,
+	sendBookingFinalSuccessEmail,
+	sendBookingFinalFailEmail,
 }
