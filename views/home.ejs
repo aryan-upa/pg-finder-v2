@@ -322,14 +322,14 @@
 
     <section style="min-height: 60vh" id="help">
         <h3 class="display-3 text-center fst-italic fw-bold" style="margin-top: 2rem">Contact Us</h3>
-        <div class="d-flex flex-row justify-content-center align-items-center mt-5">
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center mt-5">
             <div class="col-lg-5">
                 <img class="img-fluid" src="/images/contact.jpg" alt="Contact Us" style="width: 100%">
             </div>
             <form id='contact-form' action="/contact/" class="col-lg-5 validation-required" method="post" novalidate>
                 <div class="form-group">
                     <label for="email" class="col-4 col-form-label">Email</label>
-                    <div class="col-8">
+                    <div class="col-12">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
@@ -342,18 +342,18 @@
                 </div>
                 <div class="form-group">
                     <label for="subject" class="col-4 col-form-label">Subject</label>
-                    <div class="col-8">
+                    <div class="col-12">
                         <input id="subject" name="subject" placeholder="Enter subject" type="text" minlength="3" maxlength="100" class="form-control" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="content" class="col-4 col-form-label">Message</label>
-                    <div class="col-10">
+                    <div class="col-12">
                         <textarea id="content" name="content" placeholder="Enter Message" minlength="20" maxlength="1000" class="form-control" rows="6" required></textarea>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="offset-4 col-8">
+                    <div class="d-flex justify-content-center">
                         <button name="submit" type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
