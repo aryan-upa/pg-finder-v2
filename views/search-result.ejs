@@ -47,7 +47,7 @@
             <input type="text" name="searchText" id="search-text" class="form-control" value="<%= query.searchText %>" required>
         </div>
 
-        <div class="row col-8 p-0 m-0 mx-auto justify-content-evenly mt-3 flex-wrap row-gap-2">
+        <div class="row col-12 col-md-8 p-0 m-0 mx-auto justify-content-evenly mt-3 flex-wrap row-gap-2">
             <select name="gender" id="gender" type="text" class="form-control col-5 col-md-4 col-lg-2">
                 <option value="">Select Gender</option>
                 <option value="co" <%= query.gender && query.gender === 'co' && 'selected'%>>Co-Living</option>
@@ -71,7 +71,7 @@
                 <input type="number" name="rate" id="rate" class="form-control " min="100" max="50000" step="100" value="<%= query.rate %>">
             </div>
 
-            <div class="input-group" style="width: fit-content;">
+            <div class="input-group" style="width: max-content;">
                 <span class="input-group-text">Sort by Price</span>
                 <div class="form-check-inline">
                     <div class="form-check d-flex align-items-center">
@@ -96,13 +96,13 @@
 
     <div class="col-10 mx-auto">
         <div class="breadcrumb">
-            <span class="breadcrumb-item">Showing <span class="text-primary"><%= query.resCount %></span> results</span>
+            <span class="breadcrumb-item">Showing <span class="text-primary"><%= results.length %></span> result(s)</span>
         </div>
 
         <% if (results.length === 0) { %>
             <img src="/images/no-result-found.png" alt="" class="card-img mb-5">
         <% } else { %>
-        <ul style="list-style: none">
+        <ul style="list-style: none" class="ps-0">
             <% for (let res of results) { %>
             <li>
                 <div class="card prop-card">

@@ -402,7 +402,7 @@
     document.getElementById('city').setAttribute('disabled', 'true');
 
 	async function fetchStates () {
-        return await fetch('http://localhost:3500/state-list').then(function(response) {
+        return await fetch('/state-list').then(function(response) {
 				return response.json();
 			}).then(function(data) {
 			return data;
@@ -427,7 +427,7 @@
 			console.log('true')
 			citySelector.removeAttribute('disabled');
 			citySelector.innerText = '';
-			fetch('http://localhost:3500/city/' + val).then(response => {
+			fetch('/city/' + val).then(response => {
 				return response.json()
 			}).then(data => {
 					data.forEach(v => {

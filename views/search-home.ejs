@@ -13,10 +13,9 @@
 </style>
 
 <section>
-    <div class="p-5 text-center bg-image border-0" style="
+    <div class="p-md-5 p-0 text-center bg-image border-0" style="
     margin-top: 3rem;
     background: url('/images/s-home-back.jpg') center no-repeat;
-    height: 50dvh;
     background-size: cover;
     background-blend-mode: color;
 ">
@@ -28,8 +27,8 @@
                 </div>
             </div>
             <form action="/property" method="get" class="">
-                <div class="input-group col-10 col-sm-8 col-md-5 p-0 m-0 mx-auto">
-                    <select name="searchType" id="search-type" type="text" class="form-control col-2" onchange="modifyInput()">
+                <div class="input-group col-12 col-sm-8 col-md-5 p-0 m-0 mx-auto">
+                    <select name="searchType" id="search-type" type="text" class="form-control col-md-2 col-4" onchange="modifyInput()">
                         <option value="text">Text</option>
                         <option value="zip">ZIP Code</option>
                     </select>
@@ -44,21 +43,21 @@
     <div class="col-10 mx-auto mt-5">
         <p class="display-5 text-center">Search in Top Cities</p>
         <div class="d-flex flex-row flex-wrap column-gap-5 p-3 m-5 justify-content-center" style="flex: unset;">
-            <a href="/property?searchType=text&searchText=Delhi">
+            <a href="/property?searchType=text&searchText=Delhi" class="mb-4">
                 <img src="/images/delhi.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
-                <p class="card-text text-center mt-3">PGs in Delhi</p>
+                <p class="card-text text-center mt-1">PGs in Delhi</p>
             </a>
-            <a href="/property?searchType=text&searchText=Ahmedabad">
+            <a href="/property?searchType=text&searchText=Ahmedabad" class="mb-4">
                 <img src="/images/ahmedabad.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
-                <p class="card-text text-center mt-3">PGs in Ahmedabad</p>
+                <p class="card-text text-center mt-1">PGs in Ahmedabad</p>
             </a>
-            <a href="/property?searchType=text&searchText=Mumbai">
+            <a href="/property?searchType=text&searchText=Mumbai" class="mb-4">
                 <img src="/images/mumbai.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
-                <p class="card-text text-center mt-3">PGs in Mumbai</p>
+                <p class="card-text text-center mt-1">PGs in Mumbai</p>
             </a>
-            <a href="/property?searchType=text&searchText=Bengaluru">
+            <a href="/property?searchType=text&searchText=Bengaluru" class="mb-4">
                 <img src="/images/bengaluru.jpg" alt="" class="card-img object-fit-cover rounded-circle border-2 border-dark shadow-on-hover" style="aspect-ratio: 1">
-                <p class="card-text text-center mt-3">PGs in Bengaluru</p>
+                <p class="card-text text-center mt-1">PGs in Bengaluru</p>
             </a>
         </div>
 

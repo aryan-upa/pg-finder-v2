@@ -84,7 +84,7 @@
                 <div class="d-flex flex-wrap">
                     <% for (let det of property.food) { %>
                         <div class="card m-3 border-0" style="width: 150px">
-                            <img src="/<%= det.path %>.svg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: 75px;">
+                            <img src="/<%= det.path %>.svg" alt="" class="card-img object-fit-cover mx-auto" style="aspect-ratio: 1; width: min(75px, 100%);">
                             <div class="card-body text-center">
                                 <div class="card-text text-muted small text-capitalize"><%= det.name && det.name.replace('-', ' ') %></div>
                                 <div class="card-text"><%= det.detail %></div>
