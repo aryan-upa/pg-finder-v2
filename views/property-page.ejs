@@ -113,7 +113,7 @@
                         <div class="card m-3 border-0" style="width: 150px">
                             <img src="/<%= det.path %>.svg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
                             <div class="card-body text-center mt-2 pt-0">
-                                <div class="card-text text-capitalize mt-0"><%= det.name && det.name.replaceAll('-', ' ') %></div>
+                                <div class="card-text text-capitalize mt-0"><%= det.name && det.name.replace('\-.\g', ' ') %></div>
                                 <p class="card-text fs-3">
                                     <% if (det.allowed) { %>
                                         <i class="fa-solid fa-circle-check" style="color: lightgreen;"></i>
@@ -133,7 +133,7 @@
                         <div class="card m-3 border-0" style="width: 150px">
                             <img src="/<%= det.path !== 'undefined' ? det.path : 'blank' %>.svg" alt="" class="card-img object-fit-cover mx-auto mb-0" style="aspect-ratio: 1; width: 75px;">
                             <div class="card-body text-center">
-                                <div class="card-text text-muted small text-capitalize"><%= det.name && det.name.replaceAll('-', ' ') %></div>
+                                <div class="card-text text-muted small text-capitalize"><%= det.name && det.name.replace('\-.\g', ' ') %></div>
                                 <div class="card-text"><%= det.detail %></div>
                             </div>
                         </div>

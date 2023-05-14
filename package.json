@@ -1,15 +1,15 @@
 {
   "name": "pg-finder-v2",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A PG Finding application built using Node & Express JS.",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
     "start": "npm start"
   },
   "keywords": [],
-  "author": "",
+  "author": "Aryan Upadhyay",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0",
@@ -37,5 +37,8 @@
     "path": "^0.12.7",
     "request": "^2.88.2",
     "stripe": "^12.2.0"
+  },
+  "engines": {
+    "node": "16.16.0"
   }
 }
