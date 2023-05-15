@@ -6,7 +6,7 @@ Express JS and MongoDB, PG Finder is easy to deploy and customize.
 
 Live at : [pg-finder-dart.onrender.com](https://pg-finder-dart.onrender.com/)
 
----
+![PG Finder Logo](https://github.com/aryan-upa/pg-finder-v2/blob/e8ccc16cfe6a85e43e2c8da75dd7fd83b51e2f38/public/images/party.png "PG Finder")
 
 ## Usage:
 
