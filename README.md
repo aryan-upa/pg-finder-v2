@@ -5,9 +5,9 @@ user-friendly interface to search and book accommodations based on location, pri
 Express JS and MongoDB, PG Finder is easy to deploy and customize.
 
 Live at : [pg-finder-dart.onrender.com](https://pg-finder-dart.onrender.com/)
-
+<p align="center">
 ![PG Finder Logo](https://github.com/aryan-upa/pg-finder-v2/blob/e8ccc16cfe6a85e43e2c8da75dd7fd83b51e2f38/public/images/party.png "PG Finder")
-
+</p>
 ## Usage:
 
 The PG Finder application has been divided into 3 working modules, namely: Rider, Provider & Admin.
