@@ -5,9 +5,9 @@ user-friendly interface to search and book accommodations based on location, pri
 Express JS and MongoDB, PG Finder is easy to deploy and customize.
 
 Live at : [pg-finder-dart.onrender.com](https://pg-finder-dart.onrender.com/)
-<p align="center">
-![PG Finder Logo](https://github.com/aryan-upa/pg-finder-v2/blob/e8ccc16cfe6a85e43e2c8da75dd7fd83b51e2f38/public/images/party.png "PG Finder")
-</p>
+
+![Logo Finder Logo](https://github.com/aryan-upa/pg-finder-v2/blob/85b77a2356efa82f4f49fdf6c34e354a85f50b1c/public/images/logo-large.png)
+
 ## Usage:
 
 The PG Finder application has been divided into 3 working modules, namely: Rider, Provider & Admin.
@@ -54,7 +54,7 @@ git clone https://github.com/aryan-upa/pg-finder-v2.git
 ```
 
 After this, go into the folder where you've cloned the repo to create a file called `secret.env`, for the required API 
-Keys follow guide [environment-variables](). Then open your fav shell and type:
+Keys follow guide [environment-variables](https://github.com/aryan-upa/pg-finder-v2/blob/b98747938cae97aab20475a8abad180d86c2fbec/Documents/environment-variables.md). Then open your fav shell and type:
 ```
 npm init
 npm start
@@ -64,7 +64,7 @@ Congratulations 🎉, you've successfully started the service on your local syst
 
 ## Contributing
 
-The project is open for contribution, follow the [contributing-guidelines]() to create meaningful contributions in the 
+The project is open for contribution, follow the [contributing-guidelines](https://github.com/aryan-upa/pg-finder-v2/blob/b98747938cae97aab20475a8abad180d86c2fbec/CONTRIBUTING.md) to create meaningful contributions in the 
 project.
 
 ## License
