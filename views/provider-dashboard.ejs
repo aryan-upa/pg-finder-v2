@@ -152,11 +152,15 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-4 col-md-4 col-sm-4">Booking Date:</div>
-                                                <div class="col-6 col-md-6 col-sm-8 text-muted"><%= com.date.toLocaleDateString('en') %></div>
+                                                <div class="col-6 col-md-6 col-sm-8 text-muted"><%= com.date.toLocaleDateString('fr') %></div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-4 col-md-4 col-sm-4">Booking Amount:</div>
                                                 <div class="col-6 col-md-6 col-sm-8 text-muted"><%= com.property.bookingMoney %> ₹</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4 col-md-4 col-sm-4">User Profile Pic:</div>
+                                                <div class="col-6 col-md-6 col-sm-8 text-muted"><a href="<%= com.by.profilePic %>" target="_blank">Profile Picture</a></div>
                                             </div>
                                         </div>
                                     </div>
@@ -221,7 +225,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-4 col-md-4 col-sm-4">Booking Date:</div>
-                                            <div class="col-6 col-md-6 col-sm-8 text-muted"><%= pend.date.toLocaleDateString('en') %></div>
+                                            <div class="col-6 col-md-6 col-sm-8 text-muted"><%= pend.date.toLocaleDateString('fr') %></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-4 col-md-4 col-sm-4">Booking Amount:</div>
