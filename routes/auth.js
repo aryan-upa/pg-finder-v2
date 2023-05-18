@@ -233,7 +233,7 @@ router.post('/forget-password', async (req, res) => {
 		});
 
 		await sendForgotPasswordEmail(resetUser.username, key);
-		res.send({success: 'Email sent successfully, check email to change password!'});
+		res.render('success', {success: 'Email sent successfully, check email to change password!'});
 	} catch (e) {
 		res.render('error', {code: 500, error: 'Internal server error'})
 	}
@@ -267,14 +267,14 @@ router.post('/change-password', async (req, res) => {
 
 		resetUser.setPassword(pass, (err) => {
 			if (err)
-				return res.status(500).send({error: 'could not update password!'});
+				return res.status(500).render('error', {error: 'could not update password!'});
 
 			resetUser.save();
 		});
 
 		await keys.deleteOne({key: key});
 		await sendPasswordChangeEmail(username);
-		return res.send({success: 'Password changed successfully!'});
+		return res.render('success', {success: 'Password changed successfully!'});
 	} catch (e) {
 		res.render('error', {code: 500, error: 'Could not change password, internal server failure!'});
 	}
