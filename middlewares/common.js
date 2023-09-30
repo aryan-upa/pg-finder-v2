@@ -1,26 +1,37 @@
-const riders = require('../models/rider');
-const providers = require('../models/provider');
+const riders = require("../models/rider");
+const providers = require("../models/provider");
 
-async function addRoleID (req, res, next) {
-	if (req.user) {
-		const {username, role} = req.user;
+async function addRoleID(req, res, next) {
+  if (req.user) {
+    const { username, role } = req.user;
 
-		if (role === 'rider') {
-			const user = await riders.findOne({email: username});
-			req.session.userDet = user;
-			req.session.userRoleID = user.id;
-		}
+    switch (role) {
+      case "rider": {
+        const user = await riders.findOne({ email: username });
+        req.session.userDet = user;
+        req.session.userRoleID = user.id;
+        break;
+      }
 
-		else if (role === 'provider') {
-			const user = await providers.findOne({email: username});
-			req.session.userDet = user;
-			req.session.userRoleID = user.id;
-		}
-	}
+      case "provider": {
+        const user = await providers.findOne({ email: username });
+        req.session.userDet = user;
+        req.session.userRoleID = user.id;
+        break;
+      }
 
-	next();
+      case "admin": {
+        break;
+      }
+
+      default: {
+      }
+    }
+  }
+
+  next();
 }
 
 module.exports = {
-	addRoleID,
-}
+  addRoleID,
+};
